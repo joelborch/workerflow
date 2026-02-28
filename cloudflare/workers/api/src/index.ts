@@ -5,8 +5,12 @@ import { isSyncHttpPassthrough } from "../../../shared/types";
 import type { Env, QueueTask } from "../../../shared/types";
 
 const CORS_ALLOWED_METHODS = "POST, OPTIONS";
-const CORS_ALLOWED_HEADERS = "content-type, authorization, x-api-token, x-api-key, x-webhook-token, x-trace-id";
+const CORS_ALLOWED_HEADERS =
+  "content-type, authorization, x-api-token, x-api-key, x-webhook-token, x-trace-id, x-signature, x-signature-timestamp";
 const LEGACY_ALERT_MAX_BODY_CHARS = 4000;
+const DEFAULT_HMAC_MAX_SKEW_SECONDS = 300;
+
+const rateLimitWindow = new Map<string, { windowStartMs: number; count: number }>();
 
 type SecretsStoreBinding = {
   get: () => Promise<string>;
@@ -126,6 +130,125 @@ function isIngressAuthorized(request: Request, env: Env) {
 
   const provided = readIngressToken(request);
   return provided === requiredToken;
+}
+
+function envInt(env: Env, key: keyof Env) {
+  const raw = env[key];
+  if (typeof raw !== "string") {
+    return 0;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return 0;
+  }
+  return parsed;
+}
+
+function readClientKey(request: Request) {
+  const forwarded = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for");
+  if (forwarded && forwarded.trim().length > 0) {
+    return forwarded.split(",")[0]?.trim() ?? "unknown";
+  }
+  return "unknown";
+}
+
+function checkRateLimit(request: Request, env: Env) {
+  const limitPerMinute = envInt(env, "API_RATE_LIMIT_PER_MINUTE");
+  if (limitPerMinute === 0) {
+    return { allowed: true as const };
+  }
+
+  const clientKey = readClientKey(request);
+  const now = Date.now();
+  const windowMs = 60_000;
+  const bucket = rateLimitWindow.get(clientKey);
+  if (!bucket || now - bucket.windowStartMs >= windowMs) {
+    rateLimitWindow.set(clientKey, { windowStartMs: now, count: 1 });
+    return { allowed: true as const };
+  }
+
+  if (bucket.count >= limitPerMinute) {
+    const retryAfterMs = Math.max(1_000, windowMs - (now - bucket.windowStartMs));
+    return { allowed: false as const, retryAfterSeconds: Math.ceil(retryAfterMs / 1_000) };
+  }
+
+  bucket.count += 1;
+  rateLimitWindow.set(clientKey, bucket);
+  return { allowed: true as const };
+}
+
+function hex(bytes: ArrayBuffer) {
+  return Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function normalizeSignature(value: string) {
+  const trimmed = value.trim();
+  const prefixed = trimmed.match(/^v1=([a-f0-9]{64})$/i);
+  if (prefixed?.[1]) {
+    return prefixed[1].toLowerCase();
+  }
+  if (/^[a-f0-9]{64}$/i.test(trimmed)) {
+    return trimmed.toLowerCase();
+  }
+  return "";
+}
+
+function secureEqualHex(a: string, b: string) {
+  if (a.length !== b.length) {
+    return false;
+  }
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+async function validateIngressSignature(request: Request, env: Env) {
+  const secret = env.API_HMAC_SECRET?.trim();
+  if (!secret) {
+    return { valid: true as const };
+  }
+
+  const timestamp = request.headers.get("x-signature-timestamp")?.trim() ?? "";
+  const signatureRaw = request.headers.get("x-signature")?.trim() ?? "";
+  if (!timestamp || !signatureRaw) {
+    return { valid: false as const, reason: "missing signature headers" };
+  }
+
+  const timestampSeconds = Number.parseInt(timestamp, 10);
+  if (!Number.isFinite(timestampSeconds) || timestampSeconds <= 0) {
+    return { valid: false as const, reason: "invalid signature timestamp" };
+  }
+
+  const maxSkew = envInt(env, "API_HMAC_MAX_SKEW_SECONDS") || DEFAULT_HMAC_MAX_SKEW_SECONDS;
+  const nowSeconds = Math.floor(Date.now() / 1_000);
+  if (Math.abs(nowSeconds - timestampSeconds) > maxSkew) {
+    return { valid: false as const, reason: "signature timestamp outside allowed skew" };
+  }
+
+  const normalizedSignature = normalizeSignature(signatureRaw);
+  if (!normalizedSignature) {
+    return { valid: false as const, reason: "invalid signature format" };
+  }
+
+  const bodyText = await request.clone().text();
+  const payload = `${timestamp}.${bodyText}`;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const digest = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  const expected = hex(digest);
+
+  if (!secureEqualHex(expected, normalizedSignature)) {
+    return { valid: false as const, reason: "signature mismatch" };
+  }
+
+  return { valid: true as const };
 }
 
 async function postAlertToGoogleChat(webhookUrl: string, text: string) {
@@ -361,6 +484,37 @@ export default {
 
     if (!isIngressAuthorized(request, env)) {
       return respond(json({ error: "unauthorized" }, { status: 401 }));
+    }
+
+    const rateLimit = checkRateLimit(request, env);
+    if (!rateLimit.allowed) {
+      return respond(
+        json(
+          {
+            error: "rate limit exceeded",
+            retryAfterSeconds: rateLimit.retryAfterSeconds
+          },
+          {
+            status: 429,
+            headers: {
+              "retry-after": String(rateLimit.retryAfterSeconds)
+            }
+          }
+        )
+      );
+    }
+
+    const signatureValidation = await validateIngressSignature(request, env);
+    if (!signatureValidation.valid) {
+      return respond(
+        json(
+          {
+            error: "invalid signature",
+            reason: signatureValidation.reason
+          },
+          { status: 401 }
+        )
+      );
     }
 
     const devScheduleId = devCronScheduleIdFromUrl(url);

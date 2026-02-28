@@ -1,0 +1,6 @@
+cloudflare/node_modules/
+cloudflare/.wrangler/
+cloudflare/.dev.vars
+cloudflare/config/routes.config.json
+cloudflare/config/schedules.config.json
+infra/cloudflare.resources.local.json

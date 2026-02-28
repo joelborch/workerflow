@@ -31,3 +31,5 @@ jobs:
       - run: npm run test:runtime-config
       - run: npm run test:route-fixtures
       - run: npm run test:handler-fixtures
+      - run: npm run test:ingress-security
+      - run: npm run test:failure-modes

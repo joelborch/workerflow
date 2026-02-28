@@ -1,7 +1,7 @@
 WorkerFlow LLM Quickstart
 
 Goal:
-- Stand up or extend WorkerFlow runtime on Cloudflare using deterministic contracts.
+- provision, configure, and extend WorkerFlow runtime on Cloudflare with contract-safe changes.
 
 Important Paths:
 - Runtime code: `cloudflare/`
@@ -14,15 +14,11 @@ Important Paths:
 
 Primary Commands:
 - `cd cloudflare && npm install`
+- `cd cloudflare && npm run init`
 - `cd cloudflare && npm run preflight`
 - `cd cloudflare && npm run bootstrap`
 - `cd cloudflare && npm run bootstrap:apply`
-- `cd cloudflare && npm run test:compat-contract`
-- `cd cloudflare && npm run test:manifest-mode`
-- `cd cloudflare && npm run test:schedule-fixtures`
-- `cd cloudflare && npm run test:runtime-config`
-- `cd cloudflare && npm run test:route-fixtures`
-- `cd cloudflare && npm run test:handler-fixtures`
+- `cd cloudflare && npm run release:check`
 
 Manifest Modes:
 - `legacy`: checked-in manifests (`shared/routes.ts`, `shared/schedules.ts`)
@@ -31,12 +27,17 @@ Manifest Modes:
   - `ROUTES_CONFIG_JSON=<json array>`
   - `SCHEDULES_CONFIG_JSON=<json array>`
 
-Security Defaults:
-- protect ingress with `API_INGRESS_TOKEN`
-- protect ops dashboard with `OPS_DASHBOARD_TOKEN`
+Security Controls:
+- `API_INGRESS_TOKEN`
+- `API_HMAC_SECRET`
+- `API_HMAC_MAX_SKEW_SECONDS`
+- `API_RATE_LIMIT_PER_MINUTE`
+- `OPS_DASHBOARD_READ_TOKEN`
+- `OPS_DASHBOARD_WRITE_TOKEN`
 
 Extension Workflow:
-1. add route/schedule in shared manifest
+1. add route/schedule in manifest
 2. add handler implementation
-3. add contract + fixture test coverage
-4. update docs entrypoints
+3. update contracts
+4. add fixture tests
+5. run `npm run release:check`

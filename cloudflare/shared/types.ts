@@ -37,8 +37,12 @@ export interface Env {
   ENABLED_HTTP_ROUTES?: string;
   DISABLED_HTTP_ROUTES?: string;
   API_INGRESS_TOKEN?: string;
+  API_HMAC_SECRET?: string;
+  API_HMAC_MAX_SKEW_SECONDS?: string;
+  API_RATE_LIMIT_PER_MINUTE?: string;
   LEGACY_ALERT_WEBHOOK_URL?: string;
   CHAT_WEBHOOK_URL?: string;
+  FANOUT_SHARED_WEBHOOK_URL?: string;
   CLEANUP_SIGNING_SECRET?: string;
   LEAD_NORMALIZER_API_KEY?: string;
   GCHAT_ALERTS_WEBHOOK?: string;

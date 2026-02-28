@@ -2,9 +2,9 @@
 
 This directory contains modular extraction targets for WorkerFlow.
 
-- `core-runtime`: target home for reusable runtime primitives.
-- `handler-sdk`: stable contracts and registries for route/schedule handlers.
-- `recipes-example`: public example routes/schedules.
-- `recipes-joel`: placeholder package used as an example of private overlay recipes.
+- `core-runtime`: extracted runtime primitives shared across adapters.
+- `handler-sdk`: contracts and registries for building route/schedule handlers.
+- `recipes-example`: generic public recipe bundle.
+- `recipes-private`: placeholder/example for private overlay recipe packs.
 
-Current production-compatible runtime remains in `cloudflare/` while package extraction progresses.
+Current production runtime still executes from `cloudflare/` while extraction continues.

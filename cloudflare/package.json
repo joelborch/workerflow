@@ -1,9 +1,10 @@
 {
   "name": "workerflow-cloudflare-runtime",
   "private": true,
-  "version": "0.1.0",
-  "description": "Cloudflare Workers scaffold for building WorkerFlow automations",
+  "version": "0.2.0",
+  "description": "WorkerFlow v1 runtime for Cloudflare-hosted automation orchestration",
   "scripts": {
+    "init": "node scripts/init_workerflow_project.mjs",
     "typecheck": "tsc --noEmit",
     "preflight": "node scripts/preflight.mjs",
     "preflight:strict": "node scripts/preflight.mjs --strict",
@@ -20,6 +21,10 @@
     "test:runtime-config": "npx tsx scripts/test_runtime_config.ts",
     "test:route-fixtures": "npx tsx scripts/test_route_fixtures.ts",
     "test:handler-fixtures": "npx tsx scripts/test_handler_fixtures.ts",
+    "test:ingress-security": "npx tsx scripts/test_ingress_security.ts",
+    "test:failure-modes": "npx tsx scripts/test_failure_modes.ts",
+    "bench:manifest": "npx tsx scripts/bench_manifest_resolution.ts",
+    "release:check": "npm run preflight && npm run test:compat-contract && npm run test:manifest-mode && npm run test:schedule-fixtures && npm run test:runtime-config && npm run test:route-fixtures && npm run test:handler-fixtures && npm run test:ingress-security && npm run test:failure-modes && npm run typecheck",
     "smoke:handlers": "npx tsx scripts/smoke_workflow_handlers.ts",
     "smoke:ops": "bash scripts/smoke_ops_dashboard.sh",
     "dev:api": "wrangler dev --config workers/api/wrangler.jsonc",

@@ -16,5 +16,59 @@
     "requestType": "sync",
     "flowPath": "f/examples/lead_normalizer",
     "wrapBody": true
+  },
+  {
+    "routePath": "json_transform",
+    "requestType": "sync",
+    "flowPath": "f/examples/json_transform",
+    "wrapBody": true
+  },
+  {
+    "routePath": "text_extract",
+    "requestType": "sync",
+    "flowPath": "f/examples/text_extract",
+    "wrapBody": true
+  },
+  {
+    "routePath": "payload_hash",
+    "requestType": "sync",
+    "flowPath": "f/examples/payload_hash",
+    "wrapBody": true
+  },
+  {
+    "routePath": "template_render",
+    "requestType": "sync",
+    "flowPath": "f/examples/template_render",
+    "wrapBody": true
+  },
+  {
+    "routePath": "timestamp_enrich",
+    "requestType": "async",
+    "flowPath": "f/examples/timestamp_enrich",
+    "wrapBody": true
+  },
+  {
+    "routePath": "webhook_fanout",
+    "requestType": "async",
+    "flowPath": "f/examples/webhook_fanout",
+    "wrapBody": true
+  },
+  {
+    "routePath": "incident_create",
+    "requestType": "async",
+    "flowPath": "f/examples/incident_create",
+    "wrapBody": true
+  },
+  {
+    "routePath": "health_note",
+    "requestType": "sync",
+    "flowPath": "f/examples/health_note",
+    "wrapBody": true
+  },
+  {
+    "routePath": "noop_ack",
+    "requestType": "async",
+    "flowPath": "f/examples/noop_ack",
+    "wrapBody": false
   }
 ]

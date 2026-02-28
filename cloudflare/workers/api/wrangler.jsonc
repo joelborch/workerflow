@@ -12,6 +12,16 @@
   },
   "secrets_store_secrets": [
     {
+      "binding": "API_INGRESS_TOKEN",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "API_INGRESS_TOKEN"
+    },
+    {
+      "binding": "API_HMAC_SECRET",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "API_HMAC_SECRET"
+    },
+    {
       "binding": "LEGACY_ALERT_WEBHOOK_URL",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
       "secret_name": "GCHAT_ALERTS_WEBHOOK_URL"
