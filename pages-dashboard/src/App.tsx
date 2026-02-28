@@ -293,8 +293,8 @@ function App() {
       : runs;
 
     const sorted = [...searched].sort((a, b) => {
-      let left = "";
-      let right = "";
+      let left: string;
+      let right: string;
       if (runsSortKey === "startedAt") {
         left = a.startedAt;
         right = b.startedAt;
