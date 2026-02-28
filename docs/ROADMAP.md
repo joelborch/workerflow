@@ -1,5 +1,7 @@
 # Roadmap
 
+WorkerFlow roadmap focuses on an open, Cloudflare-native automation platform that starts lightweight and scales with contributor ecosystem growth.
+
 ## V1 (Current)
 
 - stable execution core on Cloudflare workers

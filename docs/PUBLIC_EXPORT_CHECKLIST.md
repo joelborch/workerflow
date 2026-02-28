@@ -2,7 +2,7 @@
 
 Use this checklist when exporting from private production code into the public OSS repo.
 
-## 1. Start From a Tagged Private Baseline
+## 1. Start from a Tagged Private Baseline
 
 - Create a private tag first:
   - `git tag private-freeze-YYYYMMDD`
@@ -55,14 +55,7 @@ Run full suite:
 
 ```bash
 cd cloudflare
-npm run preflight
-npm run bootstrap
-npm run test:compat-contract
-npm run test:manifest-mode
-npm run test:schedule-fixtures
-npm run test:runtime-config
-npm run test:route-fixtures
-npm run test:handler-fixtures
+npm run release:check
 ```
 
 ## 7. Publish Public Release

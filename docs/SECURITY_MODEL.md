@@ -1,5 +1,7 @@
 # Security Model
 
+WorkerFlow defaults to explicit security controls so public OSS deployments can be hardened without custom patches.
+
 ## Ingress Protection
 
 `workers/api` supports layered controls:
@@ -31,7 +33,7 @@ Recommended production posture:
 
 ## Multi-Tenant Guidance
 
-WorkerFlow is single-tenant by default; for multi-tenant deployments:
+WorkerFlow is single-tenant by default. For multi-tenant deployments:
 
 - isolate tenants by route namespace and queue/task metadata
 - include tenant identity in every task payload and D1 writes

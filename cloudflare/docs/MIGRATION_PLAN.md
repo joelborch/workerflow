@@ -1,6 +1,6 @@
 # Migration Plan
 
-This plan tracks WorkerFlow evolution from starter catalog to production-scale platform.
+This plan tracks WorkerFlow evolution from a starter Cloudflare runtime into a broader open-source automation platform.
 
 ## Phase 1: Reliable Core (Current)
 
@@ -9,13 +9,13 @@ This plan tracks WorkerFlow evolution from starter catalog to production-scale p
 - manifest contracts + fixture tests in CI
 - security controls for ingress + dashboard role split
 
-## Phase 2: Catalog + Connector Growth
+## Phase 2: Catalog and Connector Growth
 
 - expand generic recipe catalog beyond starter set
 - publish connector profiles with explicit secret requirements
 - add curated deployment templates for common use-cases
 
-## Phase 3: Packaging And Ecosystem
+## Phase 3: Packaging and Ecosystem
 
 - complete runtime extraction into `packages/core-runtime`
 - keep cloudflare runtime as thin deployment adapter

@@ -1,16 +1,18 @@
 # WorkerFlow Cloudflare Runtime
 
-This directory contains the Cloudflare-native runtime powering WorkerFlow.
+Cloudflare-native automation runtime for WorkerFlow.
+
+This directory contains the deployable workers, shared contracts, migration files, and runtime checks that power an event-driven automation platform without requiring a VPS.
 
 ## Runtime Components
 
-- `workers/api`: ingress, auth, signature checks, route gating, idempotency.
-- `workers/queue-consumer`: async task consumption and workflow invocation.
-- `workers/workflow`: task dispatch to route/schedule handlers.
-- `workers/scheduler`: cron producer.
-- `workers/ops-dashboard`: run/dead-letter/replay APIs.
-- `shared/`: contracts and helpers.
-- `migrations/d1/`: D1 schema.
+- `workers/api`: ingress policy, auth/signature checks, route gating, idempotency
+- `workers/workflow`: route/schedule dispatch and handler execution
+- `workers/queue-consumer`: async queue consumption and workflow invocation
+- `workers/scheduler`: cron producer for scheduled jobs
+- `workers/ops-dashboard`: run/dead-letter/retry and operational APIs
+- `shared/`: route/schedule contracts + helper utilities
+- `migrations/d1/`: D1 schema migrations
 
 ## Starter Catalog
 
@@ -21,17 +23,16 @@ Default manifest includes:
 
 See [../docs/ENTRYPOINTS.md](../docs/ENTRYPOINTS.md).
 
-## Setup
+## Local Setup
 
 ```bash
 cd cloudflare
 npm install
 npm run init
 npm run preflight
-npm run bootstrap
 ```
 
-## Validation + Release Gate
+## Validation Gate
 
 ```bash
 npm run release:check

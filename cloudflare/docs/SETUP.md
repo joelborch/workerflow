@@ -1,6 +1,8 @@
 # Setup Checklist
 
-## 1. Install + Initialize
+Use this checklist to stand up WorkerFlow on Cloudflare with clean, repeatable steps.
+
+## 1. Install and Initialize
 
 ```bash
 cd cloudflare

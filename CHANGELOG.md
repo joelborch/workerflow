@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- stronger top-level positioning and cost-profile documentation
+- brand language standard for docs (`docs/BRAND_STANDARD.md`)
+- expanded docs coverage for agent setup and connector catalog usage
+
+### Changed
+
+- rewritten `README.md` to emphasize Cloudflare-native, free-tier-friendly self-hosting
+- standardized wording/style across runtime and platform markdown docs
+- improved contributing guidance and quality-gate instructions
+
 ## [0.2.0] - 2026-02-28
 
 ### Added

@@ -1,6 +1,6 @@
 # Agent Clone-To-Deploy Runbook
 
-This runbook is written for an LLM coding agent operating in a terminal.
+This runbook is written for coding agents operating in a terminal.
 
 Goal: clone WorkerFlow, create Cloudflare resources, configure bindings/secrets, run checks, and deploy.
 
@@ -13,7 +13,7 @@ Goal: clone WorkerFlow, create Cloudflare resources, configure bindings/secrets,
   - `oss`: only generic/public routes and docs
   - `private-overlay`: internal routes/secrets layered on top in a separate private repo
 
-## 1. Clone + Install
+## 1. Clone and Install
 
 ```bash
 git clone https://github.com/joelborch/workerflow.git

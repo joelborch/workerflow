@@ -2,9 +2,11 @@
 
 Last updated: 2026-02-28
 
-## V1 Scope (Implemented)
+## Positioning
 
-WorkerFlow v1 focuses on a reliable automation execution core:
+WorkerFlow v1 is a practical automation runtime for teams that want cloud automation control without recurring per-seat SaaS pricing or VPS maintenance.
+
+## V1 Scope (Implemented)
 
 - API ingress with sync/async route handling
 - queue-based background execution
@@ -20,9 +22,9 @@ Default manifest currently ships with:
 - 12 HTTP routes
 - 6 cron schedules
 
-These are generic starter recipes intended to demonstrate common patterns (transform, notify, fanout, incident, digest, cleanup, rollups).
+These are generic starter recipes for common patterns (transform, notify, fanout, incident, digest, cleanup, rollups).
 
-## Reliability And Security
+## Reliability and Security
 
 Implemented:
 

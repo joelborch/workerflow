@@ -1,5 +1,7 @@
 # Code of Conduct
 
+This code of conduct applies to all WorkerFlow project spaces, including issues, pull requests, discussions, and chat channels.
+
 ## Our Standards
 
 Contributors are expected to:

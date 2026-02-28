@@ -1,37 +1,44 @@
 # Contributing
 
+Thanks for contributing to WorkerFlow, a Cloudflare-native automation runtime.
+
 ## Development Setup
 
-1. Install dependencies:
-   - Root: `npm install`
-   - Cloudflare runtime: `cd cloudflare && npm install`
-2. Run preflight checks:
-   - `npm run preflight`
+1. install runtime dependencies:
+   - `cd cloudflare && npm install`
+2. run preflight checks:
+   - `cd cloudflare && npm run preflight`
+3. for dashboard changes, install dashboard dependencies:
+   - `cd pages-dashboard && npm install`
 
 ## Before Opening a PR
 
-Run the Cloudflare test suite:
+Run runtime quality gates:
 
 ```bash
 cd cloudflare
-npm run preflight
-npm run test:compat-contract
-npm run test:schedule-fixtures
-npm run test:runtime-config
-npm run test:route-fixtures
-npm run test:handler-fixtures
+npm run release:check
+```
+
+For dashboard changes, also run:
+
+```bash
+cd pages-dashboard
+npm run release:check
 ```
 
 ## Pull Request Guidelines
 
-- Keep changes scoped and focused.
-- Avoid unrelated refactors in the same PR.
-- Add or update tests for behavior changes.
-- Document new environment variables in `cloudflare/docs/ENVIRONMENT.md`.
+- keep changes scoped and focused
+- avoid unrelated refactors in the same PR
+- add or update tests for behavior changes
+- document new environment variables in `cloudflare/docs/ENVIRONMENT.md`
+- align new docs language with `docs/BRAND_STANDARD.md`
 
 ## Breaking Changes
 
 If a change intentionally breaks route or schedule compatibility:
 
-1. Update `cloudflare/contracts/routes.v1.json` and/or `cloudflare/contracts/schedules.v1.json`.
-2. Call out the breaking change explicitly in the PR description.
+1. update `cloudflare/contracts/routes.v1.json` and/or `cloudflare/contracts/schedules.v1.json`
+2. call out the breaking change explicitly in the PR description
+3. update `docs/UPGRADE_GUIDE.md`
