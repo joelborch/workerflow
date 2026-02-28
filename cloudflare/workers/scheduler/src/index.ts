@@ -1,5 +1,7 @@
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { runtimeLog } from "../../../shared/logger";
 import type { Env, QueueTask } from "../../../shared/types";
+import { resolveWorkspaceId } from "../../../shared/workspace";
 
 function findSchedulesByCron(cron: string, env: Env) {
   const manifest = resolveRuntimeManifest(env);
@@ -15,9 +17,11 @@ export default {
     }
 
     for (const schedule of schedules) {
+      const workspaceId = resolveWorkspaceId(env.DEFAULT_WORKSPACE_ID);
       const task: QueueTask = {
         kind: "scheduled_job",
         traceId: crypto.randomUUID(),
+        workspaceId,
         scheduleId: schedule.id,
         payload: {
           target: schedule.target,
@@ -29,6 +33,14 @@ export default {
       };
 
       await env.AUTOMATION_QUEUE.send(task);
+      runtimeLog({
+        level: "info",
+        event: "scheduler.task_enqueued",
+        traceId: task.traceId,
+        workspaceId,
+        scheduleId: schedule.id,
+        status: "queued"
+      });
       console.log(`Enqueued schedule ${schedule.id} trace=${task.traceId}`);
     }
   }

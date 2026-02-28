@@ -1,10 +1,13 @@
 import type {
+  AuditEventsResponse,
   CatalogResponse,
   DeadLettersResponse,
   ErrorClustersResponse,
   RunDetailResponse,
   RunsResponse,
+  SecretsHealthResponse,
   SummaryResponse,
+  TemplatesResponse,
   TimelineDetailResponse,
   TimelineResponse
 } from "../types";
@@ -45,6 +48,7 @@ export type RunsFilterParams = {
   routePath?: string;
   scheduleId?: string;
   kind?: string;
+  workspaceId?: string;
   limit?: number;
 };
 
@@ -149,6 +153,7 @@ export function loadRuns(token: string, filters: RunsFilterParams = {}) {
     routePath: filters.routePath,
     scheduleId: filters.scheduleId,
     kind: filters.kind,
+    workspace: filters.workspaceId,
     limit: filters.limit ?? 80
   })}`;
   return apiGet<RunsResponse>({ path, token });
@@ -168,6 +173,22 @@ export function loadErrorClusters(token: string, params: TimeWindowParams & { li
   return apiGet<ErrorClustersResponse>({ path: `/api/ops/error-clusters${query}`, token });
 }
 
+export function loadSecretsHealth(token: string) {
+  return apiGet<SecretsHealthResponse>({ path: "/api/ops/secrets-health", token });
+}
+
+export function loadTemplates(token: string) {
+  return apiGet<TemplatesResponse>({ path: "/api/ops/templates", token });
+}
+
+export function loadAuditEvents(token: string, params: { workspaceId?: string; limit?: number } = {}) {
+  const query = buildQuery({
+    workspace: params.workspaceId,
+    limit: params.limit ?? 30
+  });
+  return apiGet<AuditEventsResponse>({ path: `/api/ops/audit-events${query}`, token });
+}
+
 export function loadTimelineDetail(
   token: string,
   params: { bucket: string; resolution: "hour" | "minute"; limit?: number }
@@ -183,4 +204,36 @@ export function loadTimelineDetail(
 export function loadRunDetail(token: string, traceId: string) {
   const encoded = encodeURIComponent(traceId);
   return apiGet<RunDetailResponse>({ path: `/api/ops/run-detail/${encoded}`, token });
+}
+
+export async function replayRun(token: string, traceId: string) {
+  const encoded = encodeURIComponent(traceId);
+  const path = `/api/ops/replay/${encoded}`;
+  const bases = getApiBaseUrls();
+  const base = bases[0] || "";
+  const headers: HeadersInit = {
+    "content-type": "application/json"
+  };
+  if (token && token.trim().length > 0) {
+    headers.authorization = `Bearer ${token.trim()}`;
+  }
+
+  const response = await fetch(`${base}${path}`, {
+    method: "POST",
+    headers
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    const message =
+      payload && typeof payload === "object" && "error" in payload
+        ? String((payload as { error: unknown }).error)
+        : `Replay request failed (${response.status})`;
+    throw new ApiError(message, response.status);
+  }
+  return payload as {
+    accepted: boolean;
+    retriedFromTraceId: string;
+    newTraceId: string;
+    retryCount: number | null;
+  };
 }

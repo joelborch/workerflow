@@ -16,6 +16,7 @@ Use `wrangler secret put` for all sensitive values.
 - `API_HMAC_SECRET`
 - `API_HMAC_MAX_SKEW_SECONDS` (seconds, defaults to 300)
 - `API_RATE_LIMIT_PER_MINUTE`
+- `API_ROUTE_LIMITS_JSON` (route-level overrides: `{\"route\":{\"rpm\":60,\"burst\":10}}`)
 
 ## Optional Dashboard RBAC
 
@@ -36,6 +37,13 @@ Use `wrangler secret put` for all sensitive values.
 - `STRIPE_API_KEY` (for `stripe_payment_intent_create` and `stripe_customer_upsert`)
 - `NOTION_TOKEN` (for `notion_database_item_create` and `notion_database_item_get`)
 - `HUBSPOT_ACCESS_TOKEN` (for `hubspot_contact_upsert` and `hubspot_deal_upsert`)
+- OAuth token metadata is persisted in D1 (`oauth_tokens`) via ops API endpoints.
+
+## Workspace Isolation
+
+- optional request header: `x-workspace-id`
+- default workspace fallback: `DEFAULT_WORKSPACE_ID` (defaults to `default`)
+- runs and dead letters are stored with `workspace_id`
 
 Compatibility aliases:
 

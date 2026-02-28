@@ -149,6 +149,36 @@ async function run() {
     assert.equal(second.status, 429);
   }
 
+  {
+    const { env } = createTestEnv({
+      API_RATE_LIMIT_PER_MINUTE: "10",
+      API_ROUTE_LIMITS_JSON: JSON.stringify({
+        webhook_echo: {
+          rpm: 1,
+          burst: 0
+        }
+      })
+    });
+
+    const first = await apiWorker.fetch(
+      makeRequest("/api/webhook_echo", body, "security-route-limit-1", { "cf-connecting-ip": "203.0.113.90" }),
+      env
+    );
+    assert.equal(first.status, 202);
+
+    const blocked = await apiWorker.fetch(
+      makeRequest("/api/webhook_echo", body, "security-route-limit-2", { "cf-connecting-ip": "203.0.113.90" }),
+      env
+    );
+    assert.equal(blocked.status, 429);
+
+    const allowedOtherRoute = await apiWorker.fetch(
+      makeRequest("/api/noop_ack", body, "security-route-limit-3", { "cf-connecting-ip": "203.0.113.90" }),
+      env
+    );
+    assert.equal(allowedOtherRoute.status, 202);
+  }
+
   console.log("ingress security tests passed");
 }
 

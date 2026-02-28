@@ -25,14 +25,18 @@ import {
 } from "recharts";
 import {
   getDefaultOpsToken,
+  loadAuditEvents,
   loadCatalog,
   loadDeadLetters,
   loadErrorClusters,
   loadRunDetail,
   loadRuns,
+  loadSecretsHealth,
   loadSummary,
+  loadTemplates,
   loadTimeline,
-  loadTimelineDetail
+  loadTimelineDetail,
+  replayRun
 } from "./lib/api";
 import { clampText, compactNumber, fmtTs, pct } from "./lib/format";
 
@@ -44,12 +48,14 @@ type TimeRangePreset = "1h" | "6h" | "24h" | "7d";
 type TimelineBucket = "hour" | "minute";
 type RunsSortKey = "startedAt" | "status" | "scope";
 type RunsSortDir = "asc" | "desc";
+type SecretStatusFilter = "" | "ready" | "partial" | "missing";
 
 type Filters = {
   range: TimeRangePreset;
   bucket: TimelineBucket;
   status: string;
   kind: string;
+  workspaceId: string;
   routePath: string;
   scheduleId: string;
   search: string;
@@ -62,6 +68,7 @@ const DEFAULT_FILTERS: Filters = {
   bucket: "hour",
   status: "",
   kind: "",
+  workspaceId: "",
   routePath: "",
   scheduleId: "",
   search: "",
@@ -92,6 +99,7 @@ function readFiltersFromUrl(): Filters {
     bucket: bucket === "minute" ? "minute" : "hour",
     status: params.get("status") ?? "",
     kind: params.get("kind") ?? "",
+    workspaceId: params.get("workspace") ?? "",
     routePath: params.get("routePath") ?? "",
     scheduleId: params.get("scheduleId") ?? "",
     search: params.get("search") ?? "",
@@ -133,6 +141,7 @@ function readFiltersFromStorage(): Filters | null {
     bucket: bucket === "minute" ? "minute" : "hour",
     status: typeof candidate.status === "string" ? candidate.status : DEFAULT_FILTERS.status,
     kind: typeof candidate.kind === "string" ? candidate.kind : DEFAULT_FILTERS.kind,
+    workspaceId: typeof candidate.workspaceId === "string" ? candidate.workspaceId : DEFAULT_FILTERS.workspaceId,
     routePath: typeof candidate.routePath === "string" ? candidate.routePath : DEFAULT_FILTERS.routePath,
     scheduleId: typeof candidate.scheduleId === "string" ? candidate.scheduleId : DEFAULT_FILTERS.scheduleId,
     search: typeof candidate.search === "string" ? candidate.search : DEFAULT_FILTERS.search,
@@ -154,8 +163,8 @@ function hasUrlFilterOverrides() {
     return false;
   }
   const params = new URLSearchParams(window.location.search);
-  return ["range", "bucket", "status", "kind", "routePath", "scheduleId", "search", "limit", "refresh"].some((key) =>
-    params.has(key)
+  return ["range", "bucket", "status", "kind", "workspace", "routePath", "scheduleId", "search", "limit", "refresh"].some(
+    (key) => params.has(key)
   );
 }
 
@@ -180,6 +189,9 @@ function writeFiltersToUrl(filters: Filters, paused: boolean) {
   }
   if (filters.kind) {
     params.set("kind", filters.kind);
+  }
+  if (filters.workspaceId) {
+    params.set("workspace", filters.workspaceId);
   }
   if (filters.routePath) {
     params.set("routePath", filters.routePath);
@@ -293,6 +305,7 @@ function App() {
   const [runsSortKey, setRunsSortKey] = useState<RunsSortKey>("startedAt");
   const [runsSortDir, setRunsSortDir] = useState<RunsSortDir>("desc");
   const [runsPage, setRunsPage] = useState(1);
+  const [secretStatusFilter, setSecretStatusFilter] = useState<SecretStatusFilter>("");
 
   const since = useMemo(() => isoSinceForRange(filters.range), [filters.range]);
   const refetchInterval = paused ? false : filters.refreshSeconds * 1000;
@@ -327,6 +340,7 @@ function App() {
       "runs",
       filters.status,
       filters.kind,
+      filters.workspaceId,
       filters.routePath,
       filters.scheduleId,
       filters.limit
@@ -335,6 +349,7 @@ function App() {
       loadRuns(opsToken, {
         status: filters.status || undefined,
         kind: filters.kind || undefined,
+        workspaceId: filters.workspaceId || undefined,
         routePath: filters.routePath || undefined,
         scheduleId: filters.scheduleId || undefined,
         limit: filters.limit
@@ -375,7 +390,35 @@ function App() {
     refetchInterval
   });
 
-  const queries = [summaryQuery, timelineQuery, catalogQuery, runsQuery, deadLettersQuery, clustersQuery];
+  const secretsHealthQuery = useQuery({
+    queryKey: ["ops", opsToken, "secrets-health"],
+    queryFn: () => loadSecretsHealth(opsToken),
+    refetchInterval
+  });
+
+  const templatesQuery = useQuery({
+    queryKey: ["ops", opsToken, "templates"],
+    queryFn: () => loadTemplates(opsToken),
+    refetchInterval: false
+  });
+
+  const auditEventsQuery = useQuery({
+    queryKey: ["ops", opsToken, "audit-events", filters.workspaceId],
+    queryFn: () => loadAuditEvents(opsToken, { workspaceId: filters.workspaceId || undefined, limit: 25 }),
+    refetchInterval
+  });
+
+  const queries = [
+    summaryQuery,
+    timelineQuery,
+    catalogQuery,
+    runsQuery,
+    deadLettersQuery,
+    clustersQuery,
+    secretsHealthQuery,
+    templatesQuery,
+    auditEventsQuery
+  ];
   const loading = queries.some((query) => query.isLoading);
   const error = queries.map((query) => query.error).find(Boolean);
 
@@ -385,6 +428,13 @@ function App() {
   const runs = useMemo(() => runsQuery.data?.runs ?? [], [runsQuery.data]);
   const deadLetters = deadLettersQuery.data?.deadLetters ?? [];
   const clusters = clustersQuery.data?.clusters ?? [];
+  const templates = templatesQuery.data?.templates ?? [];
+  const auditEvents = auditEventsQuery.data?.events ?? [];
+  const connectorSecrets = useMemo(() => secretsHealthQuery.data?.connectors ?? [], [secretsHealthQuery.data]);
+  const filteredConnectorSecrets = useMemo(
+    () => (secretStatusFilter ? connectorSecrets.filter((item) => item.status === secretStatusFilter) : connectorSecrets),
+    [connectorSecrets, secretStatusFilter]
+  );
 
   const failRate = summary ? pct(summary.failedRuns, summary.totalRuns) : "0.0";
 
@@ -517,6 +567,9 @@ function App() {
     void runDetailQuery.refetch();
     void deadLettersQuery.refetch();
     void clustersQuery.refetch();
+    void secretsHealthQuery.refetch();
+    void templatesQuery.refetch();
+    void auditEventsQuery.refetch();
   }
 
   function saveToken() {
@@ -561,6 +614,19 @@ function App() {
       return;
     }
     setSelectedTimelineBucket(bucket);
+  }
+
+  async function replaySelectedRun() {
+    if (!selectedTraceId) {
+      return;
+    }
+    await replayRun(opsToken, selectedTraceId);
+    await Promise.all([
+      runsQuery.refetch(),
+      runDetailQuery.refetch(),
+      deadLettersQuery.refetch(),
+      auditEventsQuery.refetch()
+    ]);
   }
 
   return (
@@ -635,6 +701,14 @@ function App() {
               <option value="http_route">HTTP Route</option>
               <option value="scheduled_job">Scheduled Job</option>
             </select>
+          </label>
+          <label>
+            Workspace
+            <input
+              value={filters.workspaceId}
+              onChange={(event) => updateFilters({ workspaceId: event.target.value })}
+              placeholder="default"
+            />
           </label>
           <label>
             Route Path
@@ -718,6 +792,67 @@ function App() {
             <KpiCard label="Succeeded" value={compactNumber(summary?.succeededRuns ?? 0)} icon={<ShieldCheck size={16} />} tone="ok" />
             <KpiCard label="Failed" value={compactNumber(summary?.failedRuns ?? 0)} icon={<AlertTriangle size={16} />} tone="bad" />
           </div>
+        </section>
+
+        <section className="panel table-panel">
+          <div className="panel-head">
+            <h2>Connector Secrets</h2>
+            <span>{filteredConnectorSecrets.length}/{connectorSecrets.length} connectors</span>
+          </div>
+          <div className="run-toolbar">
+            <label>
+              Secret Status
+              <select
+                value={secretStatusFilter}
+                onChange={(event) => setSecretStatusFilter(event.target.value as SecretStatusFilter)}
+              >
+                <option value="">All</option>
+                <option value="ready">Ready</option>
+                <option value="partial">Partial</option>
+                <option value="missing">Missing</option>
+              </select>
+            </label>
+          </div>
+          <ul className="flow-list">
+            {filteredConnectorSecrets.map((connector) => (
+              <li key={connector.id} className={clsx({ bad: connector.status !== "ready" })}>
+                <div className="flow-title">
+                  <ShieldCheck size={14} />
+                  <span>{connector.id}</span>
+                </div>
+                <div className="flow-stats">
+                  <span>status: {connector.status}</span>
+                  <span>required: {connector.requiredSecrets.join(", ") || "-"}</span>
+                  <span>missing: {connector.missingSecrets.join(", ") || "none"}</span>
+                </div>
+              </li>
+            ))}
+            {filteredConnectorSecrets.length === 0 ? <li className="muted">No connector secret data yet.</li> : null}
+          </ul>
+        </section>
+
+        <section className="panel table-panel">
+          <div className="panel-head">
+            <h2>Template Gallery</h2>
+            <span>{templates.length} templates</span>
+          </div>
+          <ul className="flow-list">
+            {templates.map((template) => (
+              <li key={template.id}>
+                <div className="flow-title">
+                  <Route size={14} />
+                  <span>{template.name}</span>
+                </div>
+                <div className="flow-stats">
+                  <span>category: {template.category}</span>
+                  <span>routes: {template.routes.join(", ") || "-"}</span>
+                  <span>schedules: {template.schedules.join(", ") || "-"}</span>
+                </div>
+                <p className="muted">{template.description}</p>
+              </li>
+            ))}
+            {templates.length === 0 ? <li className="muted">No templates returned.</li> : null}
+          </ul>
         </section>
 
         <section className="panel chart-panel">
@@ -903,6 +1038,7 @@ function App() {
             <thead>
               <tr>
                 <th>Trace</th>
+                <th>Workspace</th>
                 <th>Scope</th>
                 <th>Status</th>
                 <th>Kind</th>
@@ -919,6 +1055,7 @@ function App() {
                   onClick={() => setSelectedTraceId(run.traceId)}
                 >
                   <td className="mono">{clampText(run.traceId, 14)}</td>
+                  <td>{run.workspaceId ?? "-"}</td>
                   <td>{run.routePath ?? run.scheduleId ?? "-"}</td>
                   <td>
                     <span className={clsx("pill", `pill-${String(run.status).toLowerCase()}`)}>{run.status}</span>
@@ -956,7 +1093,7 @@ function App() {
               ))}
               {paginatedRuns.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="muted">
+                  <td colSpan={8} className="muted">
                     No matching runs.
                   </td>
                 </tr>
@@ -970,10 +1107,21 @@ function App() {
             <h2>Run Detail</h2>
             <span>{selectedTraceId ? clampText(selectedTraceId, 18) : "Select a run"}</span>
           </div>
+          <div className="run-toolbar">
+            <button
+              type="button"
+              className="refresh-btn ghost"
+              onClick={() => void replaySelectedRun()}
+              disabled={!selectedTraceId || runDetailQuery.data?.run.status !== "failed"}
+            >
+              Replay Failed Run
+            </button>
+          </div>
           {runDetailQuery.data ? (
             <div className="detail-stack">
               <div className="detail-kpis">
                 <span>status: {runDetailQuery.data.run.status}</span>
+                <span>workspace: {runDetailQuery.data.run.workspaceId ?? "-"}</span>
                 <span>scope: {runDetailQuery.data.run.routePath ?? runDetailQuery.data.run.scheduleId ?? "-"}</span>
                 <span>duration: {runDetailQuery.data.run.duration ?? "-"}</span>
               </div>
@@ -1090,6 +1238,40 @@ function App() {
             ))}
             {deadLetters.length === 0 ? <li className="muted">No dead letters in queue.</li> : null}
           </ul>
+        </section>
+
+        <section className="panel table-panel">
+          <div className="panel-head">
+            <h2>Audit Events</h2>
+            <span>{auditEvents.length} events</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Workspace</th>
+                <th>Action</th>
+                <th>Resource</th>
+                <th>Actor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {auditEvents.slice(0, 20).map((event) => (
+                <tr key={String(event.id)}>
+                  <td>{fmtTs(event.createdAt)}</td>
+                  <td>{event.workspaceId}</td>
+                  <td>{event.action}</td>
+                  <td>{event.resourceType}:{event.resourceId ?? "-"}</td>
+                  <td>{clampText(event.actor, 36)}</td>
+                </tr>
+              ))}
+              {auditEvents.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="muted">No audit events recorded.</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
         </section>
 
         <section className="panel table-panel wide">
