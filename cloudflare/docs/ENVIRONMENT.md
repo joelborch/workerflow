@@ -4,23 +4,37 @@ Use `wrangler secret put` for sensitive values.
 
 ## Required Secrets (Default Manifest)
 
-- `GOOGLEAI_API_KEY` (required by `lead_normalizer`)
-- `CHAT_WEBHOOK_URL` (required by `chat_notify`)
-- `CLEANUP_SIGNING_SECRET` (required by `cleanup_daily`)
+- `API_INGRESS_TOKEN` (workers/api)
+- `GOOGLEAI_API_KEY` (lead normalization route)
+- `CHAT_WEBHOOK_URL` (notify/incident routes)
+- `CLEANUP_SIGNING_SECRET` (cleanup schedule)
 
-Compatibility aliases for chat webhook:
+## Optional Ingress Security
+
+- `API_HMAC_SECRET`
+- `API_HMAC_MAX_SKEW_SECONDS` (seconds, defaults to 300)
+- `API_RATE_LIMIT_PER_MINUTE`
+
+## Optional Dashboard RBAC
+
+- `OPS_DASHBOARD_READ_TOKEN`
+- `OPS_DASHBOARD_WRITE_TOKEN`
+- compatibility fallback: `OPS_DASHBOARD_TOKEN`
+
+## Optional Runtime Secrets
+
+- `FANOUT_SHARED_WEBHOOK_URL` (used when `webhook_fanout` has no explicit webhook list)
+- `LEAD_NORMALIZER_API_KEY` (fallback alias)
+- `LEGACY_ALERT_WEBHOOK_URL` (legacy endpoint alerting)
+
+Compatibility aliases:
 
 - `GCHAT_ALERTS_WEBHOOK_URL`
 - `GCHAT_ALERTS_WEBHOOK`
 
-## Recommended Security
+## Manifest Mode
 
-- `API_INGRESS_TOKEN` on `workers/api`
-- `OPS_DASHBOARD_TOKEN` on `workers/ops-dashboard`
-
-## Manifest Mode Configuration
-
-Default mode: `legacy` (checked-in manifests)
+Default mode: `legacy`.
 
 Config mode:
 
@@ -28,26 +42,19 @@ Config mode:
 - `ROUTES_CONFIG_JSON`
 - `SCHEDULES_CONFIG_JSON`
 
-Example route gating:
+Route gating example:
 
-- `ENABLED_HTTP_ROUTES=chat_notify,lead_normalizer`
-- `DISABLED_HTTP_ROUTES=webhook_echo`
+- `ENABLED_HTTP_ROUTES=chat_notify,incident_create`
+- `DISABLED_HTTP_ROUTES=noop_ack`
 
-## Legacy Endpoint Alert Hook (Optional)
-
-- `LEGACY_ALERT_WEBHOOK_URL`
-
-Fallbacks:
-
-- `GCHAT_ALERTS_WEBHOOK`
-- `GCHAT_ALERTS_WEBHOOK_URL`
-
-## Quick Commands
+## Quick Secret Commands
 
 ```bash
+npx wrangler secret put API_INGRESS_TOKEN --config workers/api/wrangler.jsonc
+npx wrangler secret put API_HMAC_SECRET --config workers/api/wrangler.jsonc
 npx wrangler secret put GOOGLEAI_API_KEY --config workers/workflow/wrangler.jsonc
 npx wrangler secret put CHAT_WEBHOOK_URL --config workers/workflow/wrangler.jsonc
 npx wrangler secret put CLEANUP_SIGNING_SECRET --config workers/workflow/wrangler.jsonc
-npx wrangler secret put API_INGRESS_TOKEN --config workers/api/wrangler.jsonc
-npx wrangler secret put OPS_DASHBOARD_TOKEN --config workers/ops-dashboard/wrangler.jsonc
+npx wrangler secret put OPS_DASHBOARD_READ_TOKEN --config workers/ops-dashboard/wrangler.jsonc
+npx wrangler secret put OPS_DASHBOARD_WRITE_TOKEN --config workers/ops-dashboard/wrangler.jsonc
 ```

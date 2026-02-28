@@ -37,39 +37,24 @@
       "secret_name": "GOOGLEAI_API_KEY"
     },
     {
-      "binding": "CLICKUP_TOKEN",
+      "binding": "LEAD_NORMALIZER_API_KEY",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "CLICKUP_TOKEN"
+      "secret_name": "LEAD_NORMALIZER_API_KEY"
     },
     {
-      "binding": "MAILCHIMP_API_KEY",
+      "binding": "CHAT_WEBHOOK_URL",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "MAILCHIMP_API_KEY"
+      "secret_name": "CHAT_WEBHOOK_URL"
     },
     {
-      "binding": "MAILCHIMP_SERVER",
+      "binding": "FANOUT_SHARED_WEBHOOK_URL",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "MAILCHIMP_SERVER"
+      "secret_name": "FANOUT_SHARED_WEBHOOK_URL"
     },
     {
-      "binding": "TELEGRAM_BOT_TOKEN",
+      "binding": "CLEANUP_SIGNING_SECRET",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "TELEGRAM_BOT_TOKEN"
-    },
-    {
-      "binding": "TELEGRAM_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "TELEGRAM_TOKEN"
-    },
-    {
-      "binding": "ZYTE_API_KEY",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "ZYTE_API_KEY"
-    },
-    {
-      "binding": "ZYTE_API_KEY_SECRET",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "ZYTE_API_KEY_SECRET"
+      "secret_name": "CLEANUP_SIGNING_SECRET"
     },
     {
       "binding": "GCHAT_ALERTS_WEBHOOK_URL",
@@ -77,199 +62,9 @@
       "secret_name": "GCHAT_ALERTS_WEBHOOK_URL"
     },
     {
-      "binding": "GCHAT_FORMS_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_FORMS_WEBHOOK_URL"
-    },
-    {
-      "binding": "GCHAT_SHAPE_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_SHAPE_WEBHOOK_URL"
-    },
-    {
-      "binding": "GCHAT_GMAIL_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_GMAIL_WEBHOOK_URL"
-    },
-    {
       "binding": "GCHAT_ALERTS_WEBHOOK",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
       "secret_name": "GCHAT_ALERTS_WEBHOOK"
-    },
-    {
-      "binding": "GCHAT_FORMS_WEBHOOK",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_FORMS_WEBHOOK"
-    },
-    {
-      "binding": "PRICE_UPDATER_WEBHOOK_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "PRICE_UPDATER_WEBHOOK_TOKEN"
-    },
-    {
-      "binding": "LEGACY_PLATFORM_API_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "LEGACY_PLATFORM_API_TOKEN"
-    },
-    {
-      "binding": "LEGACY_PLATFORM_BASE_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "LEGACY_PLATFORM_BASE_URL"
-    },
-    {
-      "binding": "LEGACY_PLATFORM_WORKSPACE",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "LEGACY_PLATFORM_WORKSPACE"
-    },
-    {
-      "binding": "JOURNEE_R2_ENDPOINT",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_ENDPOINT"
-    },
-    {
-      "binding": "JOURNEE_R2_ACCESS_KEY",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_ACCESS_KEY"
-    },
-    {
-      "binding": "JOURNEE_R2_SECRET_KEY",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_SECRET_KEY"
-    },
-    {
-      "binding": "JOURNEE_R2_BUCKET",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_BUCKET"
-    },
-    {
-      "binding": "JOURNEE_R2_REGION",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_REGION"
-    },
-    {
-      "binding": "JOURNEE_R2_PORT",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_PORT"
-    },
-    {
-      "binding": "JOURNEE_R2_PATH_STYLE",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_PATH_STYLE"
-    },
-    {
-      "binding": "JOURNEE_R2_USE_SSL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_USE_SSL"
-    },
-    {
-      "binding": "GOOGLE_CHAT_ALERTS_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_ALERTS_WEBHOOK_URL"
-    },
-    {
-      "binding": "GOOGLE_CHAT_FORMS_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_FORMS_WEBHOOK_URL"
-    },
-    {
-      "binding": "GOOGLE_CHAT_SHAPE_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_SHAPE_WEBHOOK_URL"
-    },
-    {
-      "binding": "GOOGLE_CHAT_GMAIL_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_GMAIL_WEBHOOK_URL"
-    },
-    {
-      "binding": "KURATED_GCHAT_FORMS_WEBHOOK_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GCHAT_FORMS_WEBHOOK_URL"
-    },
-    {
-      "binding": "JOURNEE_TELEGRAM_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "TELEGRAM_TOKEN"
-    },
-    {
-      "binding": "CLICKUP_QA_CLICKUP_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "CLICKUP_TOKEN"
-    },
-    {
-      "binding": "CLICKUP_QA_GOOGLEAI_API_KEY",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "GOOGLEAI_API_KEY"
-    },
-    {
-      "binding": "CLICKUP_QA_ZYTE_API_KEY_SECRET",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "ZYTE_API_KEY_SECRET"
-    },
-    {
-      "binding": "AIRWAYS_CLICKUP_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "CLICKUP_TOKEN"
-    },
-    {
-      "binding": "JOURNEE_CLICKUP_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "CLICKUP_TOKEN"
-    },
-    {
-      "binding": "WISE_CLICKUP_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "CLICKUP_TOKEN"
-    },
-    {
-      "binding": "CONTENT_SCRIPTS_CLICKUP_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "CLICKUP_TOKEN"
-    },
-    {
-      "binding": "WM_BASE_URL",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "LEGACY_PLATFORM_BASE_URL"
-    },
-    {
-      "binding": "WM_WORKSPACE",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "LEGACY_PLATFORM_WORKSPACE"
-    },
-    {
-      "binding": "WM_TOKEN",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "LEGACY_PLATFORM_API_TOKEN"
-    },
-    {
-      "binding": "R2_ENDPOINT",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_ENDPOINT"
-    },
-    {
-      "binding": "R2_ACCESS_KEY",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_ACCESS_KEY"
-    },
-    {
-      "binding": "R2_SECRET_KEY",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_SECRET_KEY"
-    },
-    {
-      "binding": "R2_BUCKET",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_BUCKET"
-    },
-    {
-      "binding": "R2_REGION",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_REGION"
-    },
-    {
-      "binding": "R2_PORT",
-      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
-      "secret_name": "JOURNEE_R2_PORT"
     }
   ],
   "d1_databases": [

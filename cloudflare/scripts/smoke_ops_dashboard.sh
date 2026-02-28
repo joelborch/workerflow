@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-CONFIG="workers/ops-dashboard/wrangler.jsonc"
+CONFIG="workers/ops-dashboard/wrangler.smoke.jsonc"
 PORT="${PORT:-8791}"
 BASE_URL="http://127.0.0.1:${PORT}"
 TOKEN="${OPS_DASHBOARD_TOKEN:-smoke-test-token}"
@@ -19,6 +19,10 @@ fi
 run_sql() {
   local sql="$1"
   npx wrangler d1 execute workerflow-runtime --local --config "$CONFIG" --command "$sql" >/dev/null
+}
+
+iso_minutes_ago() {
+  node -e 'const minutes = Number(process.argv[1]); console.log(new Date(Date.now() - minutes * 60_000).toISOString())' "$1"
 }
 
 echo "Applying local D1 migrations for smoke test..."
@@ -64,17 +68,25 @@ trap cleanup EXIT
 
 run_sql "DELETE FROM runs; DELETE FROM dead_letters; DELETE FROM idempotency_keys; DELETE FROM cursor_state;"
 
+SUCCESS_STARTED_AT="$(iso_minutes_ago 35)"
+SUCCESS_FINISHED_AT="$(iso_minutes_ago 34)"
+FAILED_STARTED_AT="$(iso_minutes_ago 25)"
+FAILED_FINISHED_AT="$(iso_minutes_ago 24)"
+STARTED_AT="$(iso_minutes_ago 15)"
+ENQUEUED_AT="$(iso_minutes_ago 20)"
+DEAD_LETTER_CREATED_AT="$(iso_minutes_ago 10)"
+
 run_sql "
 INSERT INTO runs (trace_id, kind, route_path, schedule_id, status, started_at, finished_at, output, error) VALUES
-  ('trace-success-1', 'http_route', 'webhook_echo', NULL, 'succeeded', '2026-02-27T00:00:00.000Z', '2026-02-27T00:00:04.000Z', '{"ok":true}', NULL),
-  ('trace-failed-1', 'http_route', 'chat_notify', NULL, 'failed', '2026-02-27T00:10:00.000Z', '2026-02-27T00:10:02.000Z', NULL, 'simulated failure'),
-  ('trace-started-1', 'scheduled_job', NULL, 'heartbeat_hourly', 'started', '2026-02-27T00:20:00.000Z', NULL, NULL, NULL);
+  ('trace-success-1', 'http_route', 'webhook_echo', NULL, 'succeeded', '${SUCCESS_STARTED_AT}', '${SUCCESS_FINISHED_AT}', '{"ok":true}', NULL),
+  ('trace-failed-1', 'http_route', 'chat_notify', NULL, 'failed', '${FAILED_STARTED_AT}', '${FAILED_FINISHED_AT}', NULL, 'simulated failure'),
+  ('trace-started-1', 'scheduled_job', NULL, 'heartbeat_hourly', 'started', '${STARTED_AT}', NULL, NULL, NULL);
 "
 
-DEAD_PAYLOAD=$(json_for_sql '{"kind":"http_route","traceId":"trace-dead-1","routePath":"webhook_echo","payload":{"body":{"smoke":"ok"}},"enqueuedAt":"2026-02-27T00:15:00.000Z"}')
+DEAD_PAYLOAD=$(json_for_sql "{\"kind\":\"http_route\",\"traceId\":\"trace-dead-1\",\"routePath\":\"webhook_echo\",\"payload\":{\"body\":{\"smoke\":\"ok\"}},\"enqueuedAt\":\"${ENQUEUED_AT}\"}")
 run_sql "
 INSERT INTO dead_letters (trace_id, payload_json, error, created_at)
-VALUES ('trace-dead-1', '${DEAD_PAYLOAD}', 'simulated dead letter', '2026-02-27T00:30:00.000Z');
+VALUES ('trace-dead-1', '${DEAD_PAYLOAD}', 'simulated dead letter', '${DEAD_LETTER_CREATED_AT}');
 "
 
 OPS_DASHBOARD_TOKEN="$TOKEN" npx wrangler dev --config "$CONFIG" --port "$PORT" --log-level error >"$LOG_FILE" 2>&1 &

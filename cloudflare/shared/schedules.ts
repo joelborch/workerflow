@@ -14,5 +14,33 @@ export const SCHEDULES: ScheduleDefinition[] = [
     enabled: true,
     target: "f/examples/cleanup_daily",
     timeZone: "UTC"
+  },
+  {
+    id: "digest_daily",
+    cron: "30 8 * * *",
+    enabled: true,
+    target: "f/examples/digest_daily",
+    timeZone: "UTC"
+  },
+  {
+    id: "retry_dead_letters_hourly",
+    cron: "15 * * * *",
+    enabled: true,
+    target: "f/examples/retry_dead_letters_hourly",
+    timeZone: "UTC"
+  },
+  {
+    id: "usage_rollup_15m",
+    cron: "*/15 * * * *",
+    enabled: true,
+    target: "f/examples/usage_rollup_15m",
+    timeZone: "UTC"
+  },
+  {
+    id: "config_snapshot_daily",
+    cron: "45 2 * * *",
+    enabled: true,
+    target: "f/examples/config_snapshot_daily",
+    timeZone: "UTC"
   }
 ];

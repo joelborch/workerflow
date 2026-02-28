@@ -1,44 +1,40 @@
 # WorkerFlow Cloudflare Runtime
 
-This directory contains the Cloudflare-native runtime that powers WorkerFlow.
+This directory contains the Cloudflare-native runtime powering WorkerFlow.
 
-## Runtime Model
+## Runtime Components
 
-- `workers/api`: ingress, auth, route lookup, idempotency, sync/async branching.
-- `workers/queue-consumer`: asynchronous queue execution loop.
-- `workers/workflow`: task dispatch and handler execution.
-- `workers/scheduler`: cron trigger producer.
-- `workers/ops-dashboard`: ops APIs + dashboard UI.
-- `shared/`: cross-worker contracts and helpers.
-- `migrations/d1/`: persistent schema evolution.
+- `workers/api`: ingress, auth, signature checks, route gating, idempotency.
+- `workers/queue-consumer`: async task consumption and workflow invocation.
+- `workers/workflow`: task dispatch to route/schedule handlers.
+- `workers/scheduler`: cron producer.
+- `workers/ops-dashboard`: run/dead-letter/replay APIs.
+- `shared/`: contracts and helpers.
+- `migrations/d1/`: D1 schema.
 
-## What You Get Out Of The Box
+## Starter Catalog
 
-- API ingress with deterministic route contracts.
-- Queue and scheduler orchestration.
-- Dead-letter and replay support.
-- Route/schedule compatibility contracts.
-- Manifest mode (`legacy` or `config`) with JSON schemas.
-- Bootstrap planning/apply scripts for infra setup.
+Default manifest includes:
 
-## Install And Validate
+- 12 HTTP routes
+- 6 schedules
+
+See [../docs/ENTRYPOINTS.md](../docs/ENTRYPOINTS.md).
+
+## Setup
 
 ```bash
 cd cloudflare
 npm install
+npm run init
 npm run preflight
-npm run typecheck
+npm run bootstrap
 ```
 
-## Validation Suite
+## Validation + Release Gate
 
 ```bash
-npm run test:compat-contract
-npm run test:manifest-mode
-npm run test:schedule-fixtures
-npm run test:runtime-config
-npm run test:route-fixtures
-npm run test:handler-fixtures
+npm run release:check
 ```
 
 ## Local Development
@@ -51,16 +47,7 @@ npm run dev:scheduler
 npm run dev:ops
 ```
 
-## Infra Bootstrap
-
-```bash
-npm run bootstrap
-npm run bootstrap:apply
-```
-
-`bootstrap` prints a machine-readable plan from `../infra/cloudflare.resources.json`.
-
-## Deployment
+## Deploy
 
 ```bash
 npm run preflight:strict
@@ -71,11 +58,10 @@ npm run deploy:scheduler
 npm run deploy:ops
 ```
 
-## Key References
+## Key Docs
 
-- Setup checklist: [docs/SETUP.md](docs/SETUP.md)
-- Secrets/env: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
-- Ops API: [docs/OPS_DASHBOARD_API.md](docs/OPS_DASHBOARD_API.md)
-- OpenAPI: [openapi.json](openapi.json)
-- Route schema: [schemas/routes.config.schema.json](schemas/routes.config.schema.json)
-- Schedule schema: [schemas/schedules.config.schema.json](schemas/schedules.config.schema.json)
+- [docs/SETUP.md](docs/SETUP.md)
+- [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
+- [docs/OPS_DASHBOARD_API.md](docs/OPS_DASHBOARD_API.md)
+- [../docs/SECURITY_MODEL.md](../docs/SECURITY_MODEL.md)
+- [../docs/RELEASE_PROCESS.md](../docs/RELEASE_PROCESS.md)

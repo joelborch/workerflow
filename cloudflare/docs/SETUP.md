@@ -1,25 +1,23 @@
 # Setup Checklist
 
-## 1. Install + Authenticate
+## 1. Install + Initialize
 
 ```bash
 cd cloudflare
 npm install
+npm run init
 npm run preflight
 npx wrangler login
-cp .dev.vars.example .dev.vars
 ```
 
 ## 2. Provision Resources
-
-Generate and apply plan:
 
 ```bash
 npm run bootstrap
 npm run bootstrap:apply
 ```
 
-If applying manually, ensure D1 + queue + worker bindings match `wrangler.jsonc` files.
+Ensure placeholders are replaced in worker configs and infra spec.
 
 ## 3. Apply Migrations
 
@@ -31,11 +29,13 @@ npx wrangler d1 migrations apply workerflow-runtime --remote
 ## 4. Configure Secrets
 
 ```bash
+npx wrangler secret put API_INGRESS_TOKEN --config workers/api/wrangler.jsonc
+npx wrangler secret put API_HMAC_SECRET --config workers/api/wrangler.jsonc
 npx wrangler secret put GOOGLEAI_API_KEY --config workers/workflow/wrangler.jsonc
 npx wrangler secret put CHAT_WEBHOOK_URL --config workers/workflow/wrangler.jsonc
 npx wrangler secret put CLEANUP_SIGNING_SECRET --config workers/workflow/wrangler.jsonc
-npx wrangler secret put API_INGRESS_TOKEN --config workers/api/wrangler.jsonc
-npx wrangler secret put OPS_DASHBOARD_TOKEN --config workers/ops-dashboard/wrangler.jsonc
+npx wrangler secret put OPS_DASHBOARD_READ_TOKEN --config workers/ops-dashboard/wrangler.jsonc
+npx wrangler secret put OPS_DASHBOARD_WRITE_TOKEN --config workers/ops-dashboard/wrangler.jsonc
 ```
 
 ## 5. Deploy
@@ -49,12 +49,18 @@ npm run deploy:scheduler
 npm run deploy:ops
 ```
 
-## 6. Smoke Validation
+## 6. Validate
+
+```bash
+npm run release:check
+```
+
+Endpoint smoke checks:
 
 - `GET /api/health`
-- invoke one route: `POST /api/webhook_echo`
-- enqueue one schedule: `POST /api/dev/cron/heartbeat_hourly`
-- inspect run/dead-letter endpoints on ops dashboard
+- `POST /api/webhook_echo`
+- `POST /api/dev/cron/heartbeat_hourly`
+- ops dashboard `GET /api/summary` with auth token
 
 ## 7. References
 

@@ -1,8 +1,20 @@
 [
   {
-    "routePath": "example_ping",
+    "routePath": "webhook_echo",
     "requestType": "async",
-    "flowPath": "f/example/ping",
+    "flowPath": "f/examples/webhook_echo",
     "wrapBody": false
+  },
+  {
+    "routePath": "template_render",
+    "requestType": "sync",
+    "flowPath": "f/examples/template_render",
+    "wrapBody": true
+  },
+  {
+    "routePath": "incident_create",
+    "requestType": "async",
+    "flowPath": "f/examples/incident_create",
+    "wrapBody": true
   }
 ]

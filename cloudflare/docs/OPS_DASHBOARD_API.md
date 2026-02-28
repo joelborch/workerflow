@@ -1,6 +1,18 @@
 # Ops Dashboard API
 
-All `/api/*` routes require dashboard auth when `OPS_DASHBOARD_TOKEN` is set.
+All `/api/*` routes are token-protected when dashboard tokens are configured.
+
+## Auth Modes
+
+- single-token mode (backward compatible): `OPS_DASHBOARD_TOKEN`
+- RBAC mode:
+  - `OPS_DASHBOARD_READ_TOKEN` for GET/read endpoints
+  - `OPS_DASHBOARD_WRITE_TOKEN` for POST/write endpoints
+
+Auth headers:
+
+- `Authorization: Bearer <token>`
+- `x-dashboard-token: <token>`
 
 ## Core Endpoints
 
@@ -19,19 +31,6 @@ All `/api/*` routes require dashboard auth when `OPS_DASHBOARD_TOKEN` is set.
 ## Extension-Friendly Endpoints
 
 - `GET /api/meta`
-  - Returns runtime metadata, manifest mode, and extension counts.
 - `GET /api/extensions`
-  - Returns extension descriptors configured via `OPS_DASHBOARD_EXTENSIONS_JSON`.
 
-Example `OPS_DASHBOARD_EXTENSIONS_JSON`:
-
-```json
-[
-  {
-    "id": "crm-connector",
-    "label": "CRM Connector",
-    "description": "Adds CRM-oriented workflow templates",
-    "docsUrl": "https://example.com/docs/crm"
-  }
-]
-```
+`/api/extensions` is driven by `OPS_DASHBOARD_EXTENSIONS_JSON`.

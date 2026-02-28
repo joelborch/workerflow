@@ -41,10 +41,14 @@ function run() {
   const chatErrors = validateTaskConfig(httpTask("chat_notify"), minimalEnv as any);
   expectIncludes(chatErrors, "chat webhook URL");
 
+  const incidentErrors = validateTaskConfig(httpTask("incident_create"), minimalEnv as any);
+  expectIncludes(incidentErrors, "chat webhook URL");
+
   const chatOkEnv = makeEnv({
     CHAT_WEBHOOK_URL: "https://chat.example/incoming"
   });
   assert.equal(validateTaskConfig(httpTask("chat_notify"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("incident_create"), chatOkEnv as any).length, 0);
 
   const normalizerErrors = validateTaskConfig(httpTask("lead_normalizer"), minimalEnv as any);
   expectIncludes(normalizerErrors, "Google AI key");

@@ -9,6 +9,8 @@ type Env = {
   WORKFLOW_SERVICE?: Fetcher;
   ENV_NAME: string;
   OPS_DASHBOARD_TOKEN?: string;
+  OPS_DASHBOARD_READ_TOKEN?: string;
+  OPS_DASHBOARD_WRITE_TOKEN?: string;
   OPS_DASHBOARD_EXTENSIONS_JSON?: string;
   MANIFEST_MODE?: string;
   ROUTES_CONFIG_JSON?: string;
@@ -178,25 +180,38 @@ function readAuthToken(request: Request) {
   return authorization.trim();
 }
 
-function isAuthorized(request: Request, env: Env) {
-  const requiredToken = env.OPS_DASHBOARD_TOKEN?.trim();
-  if (!requiredToken) {
-    return true;
+type DashboardAccess = "none" | "read" | "write";
+
+function dashboardAccess(request: Request, env: Env): DashboardAccess {
+  const writeToken = env.OPS_DASHBOARD_WRITE_TOKEN?.trim() || env.OPS_DASHBOARD_TOKEN?.trim() || "";
+  const readToken = env.OPS_DASHBOARD_READ_TOKEN?.trim() || writeToken;
+
+  if (!readToken && !writeToken) {
+    return "write";
   }
 
   const providedToken = readAuthToken(request);
   if (!providedToken) {
-    return false;
+    return "none";
   }
 
-  return providedToken === requiredToken;
+  if (writeToken && providedToken === writeToken) {
+    return "write";
+  }
+
+  if (readToken && providedToken === readToken) {
+    return "read";
+  }
+
+  return "none";
 }
 
 function unauthorizedResponse() {
   return json(
     {
       error: "unauthorized",
-      message: "Provide Authorization: Bearer <OPS_DASHBOARD_TOKEN> or x-dashboard-token"
+      message:
+        "Provide Authorization: Bearer <OPS_DASHBOARD_WRITE_TOKEN|OPS_DASHBOARD_READ_TOKEN|OPS_DASHBOARD_TOKEN> or x-dashboard-token"
     },
     {
       status: 401,
@@ -204,6 +219,16 @@ function unauthorizedResponse() {
         "www-authenticate": "Bearer"
       }
     }
+  );
+}
+
+function forbiddenResponse() {
+  return json(
+    {
+      error: "forbidden",
+      message: "Write operations require OPS_DASHBOARD_WRITE_TOKEN (or OPS_DASHBOARD_TOKEN)"
+    },
+    { status: 403 }
   );
 }
 
@@ -4217,8 +4242,13 @@ export default {
       return json({ error: "not found" }, { status: 404 });
     }
 
-    if (!isAuthorized(request, env)) {
+    const access = dashboardAccess(request, env);
+    if (access === "none") {
       return unauthorizedResponse();
+    }
+
+    if (request.method !== "GET" && access !== "write") {
+      return forbiddenResponse();
     }
 
     const manifest = resolveRuntimeManifest(env);

@@ -10,6 +10,23 @@
   "vars": {
     "ENV_NAME": "dev"
   },
+  "secrets_store_secrets": [
+    {
+      "binding": "OPS_DASHBOARD_READ_TOKEN",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "OPS_DASHBOARD_READ_TOKEN"
+    },
+    {
+      "binding": "OPS_DASHBOARD_WRITE_TOKEN",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "OPS_DASHBOARD_WRITE_TOKEN"
+    },
+    {
+      "binding": "OPS_DASHBOARD_TOKEN",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "OPS_DASHBOARD_TOKEN"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",

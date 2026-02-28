@@ -27,24 +27,14 @@ function makeDefaultEnv(): Env & Record<string, unknown> {
     ENV_NAME: "smoke",
     GOOGLEAI_API_KEY: "smoke-google-ai",
     CHAT_WEBHOOK_URL: "https://chat.example/incoming",
+    FANOUT_SHARED_WEBHOOK_URL: "https://hooks.example/default",
     CLEANUP_SIGNING_SECRET: "smoke-cleanup-secret"
   } as Env & Record<string, unknown>;
 }
 
 function buildMockFetch() {
-  return async (input: RequestInfo | URL, init?: RequestInit) => {
-    const requestUrl = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
-    const url = new URL(requestUrl);
-
-    if (url.hostname === "chat.example") {
-      return jsonResponse({ ok: true, accepted: true });
-    }
-
-    if (init?.method === "POST") {
-      return jsonResponse({ ok: true });
-    }
-
-    return jsonResponse({ ok: true });
+  return async (_input: RequestInfo | URL, _init?: RequestInit) => {
+    return jsonResponse({ ok: true, accepted: true });
   };
 }
 
@@ -59,7 +49,26 @@ const routePayloads: Record<string, unknown> = {
       phone: "(555) 111-2222",
       source: "smoke"
     }
-  }
+  },
+  json_transform: {
+    body: {
+      data: { first_name: "Smoke", last_name: "Lead" },
+      rename: { first_name: "firstName", last_name: "lastName" }
+    }
+  },
+  text_extract: { body: { text: "alpha beta", pattern: "[a-z]+" } },
+  payload_hash: { body: { value: "smoke" } },
+  template_render: { body: { template: "Hi {{name}}", values: { name: "Smoke" } } },
+  timestamp_enrich: { body: { event: "smoke" } },
+  webhook_fanout: {
+    body: {
+      webhooks: ["https://hooks.example/a", "https://hooks.example/b"],
+      payload: { event: "smoke" }
+    }
+  },
+  incident_create: { body: { title: "Smoke Incident", severity: "high", details: "smoke" } },
+  health_note: { body: { service: "api", status: "ok" } },
+  noop_ack: { event: "noop" }
 };
 
 const cronPayloads: Record<string, unknown> = {
@@ -69,6 +78,19 @@ const cronPayloads: Record<string, unknown> = {
   cleanup_daily: {
     dryRun: true,
     retentionDays: 14
+  },
+  digest_daily: {
+    channel: "ops"
+  },
+  retry_dead_letters_hourly: {
+    maxRetries: 25,
+    dryRun: true
+  },
+  usage_rollup_15m: {
+    bucketMinutes: 15
+  },
+  config_snapshot_daily: {
+    includeDisabled: true
   }
 };
 

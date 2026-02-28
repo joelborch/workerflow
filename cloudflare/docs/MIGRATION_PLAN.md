@@ -1,43 +1,28 @@
 # Migration Plan
 
-This plan tracks evolution from the default scaffold to a production-grade automation platform.
+This plan tracks WorkerFlow evolution from starter catalog to production-scale platform.
 
-## Phase 1: Foundation
+## Phase 1: Reliable Core (Current)
 
-Status: active
+- ingress/queue/workflow/scheduler/ops workers implemented
+- D1 state schema and dead-letter support in place
+- manifest contracts + fixture tests in CI
+- security controls for ingress + dashboard role split
 
-- keep ingress/queue/workflow/scheduler/ops workers stable
-- preserve compatibility contracts for route/schedule IDs
-- maintain full fixture and contract test coverage
+## Phase 2: Catalog + Connector Growth
 
-## Phase 2: Modularization
+- expand generic recipe catalog beyond starter set
+- publish connector profiles with explicit secret requirements
+- add curated deployment templates for common use-cases
 
-Status: active
+## Phase 3: Packaging And Ecosystem
 
-- extract reusable runtime pieces into `packages/core-runtime`
-- stabilize handler APIs in `packages/handler-sdk`
-- expand example/public recipe packages
-
-## Phase 3: Ecosystem
-
-Status: planned
-
-- grow connector set and recipe catalog
-- publish clearer deployment presets and templates
-- improve operator UX for replay/retry workflows
+- complete runtime extraction into `packages/core-runtime`
+- keep cloudflare runtime as thin deployment adapter
+- harden handler-sdk ergonomics for community recipes
 
 ## Release Gates
 
-- `npm run preflight`
-- `npm run test:compat-contract`
-- `npm run test:manifest-mode`
-- `npm run test:schedule-fixtures`
-- `npm run test:runtime-config`
-- `npm run test:route-fixtures`
-- `npm run test:handler-fixtures`
-- `npm run typecheck`
-
-## Known Constraints
-
-- Some legacy flows may rely on Node-only APIs and need externalization for Worker runtime compatibility.
-- Connector-specific secret sprawl should be reduced into clearer secret profiles over time.
+- `npm run release:check`
+- changelog + upgrade guide updates
+- semver tag cut

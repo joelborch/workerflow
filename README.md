@@ -2,25 +2,20 @@
 
 WorkerFlow is an open-source automation control plane built for Cloudflare Workers.
 
-If you like the flexibility of Zapier/Activepieces/Windmill but want your own runtime, your own data boundaries, and your own deployment pipeline, this project is built for that model.
+It is designed for teams who want Zapier/Activepieces/Windmill-style automation capabilities while retaining full control of runtime, secrets, contracts, and deploy lifecycle.
 
-## Why WorkerFlow
+## Current Release Scope
 
-- Own the runtime: deploy on your Cloudflare account, not someone else's control plane.
-- Own reliability: explicit queue execution, dead letters, replay paths, and idempotency.
-- Own contracts: route/schedule manifests and compatibility tests are first-class.
-- Own extensibility: plug in handlers, connectors, and recipe packs.
+WorkerFlow `0.2.0` includes:
 
-## Core Capabilities
+- Cloudflare worker-based orchestration core
+- starter catalog (12 HTTP routes, 6 schedules)
+- D1 idempotency/run/dead-letter model
+- queue-backed async execution
+- ops dashboard APIs with retry/replay support
+- ingress hardening (token auth, HMAC, rate limiting)
 
-- HTTP route ingress with sync and async modes.
-- Queue-backed task processing.
-- Scheduled execution via cron.
-- D1 state for runs, idempotency, cursors, and dead letters.
-- Ops dashboard APIs for observability and retry operations.
-- Config-driven manifest mode for modular deployments.
-
-## System Architecture
+## Architecture
 
 ```text
 Callers / Webhooks
@@ -46,36 +41,21 @@ workers/ops-dashboard -------> D1 + Queue APIs
 ```bash
 cd cloudflare
 npm install
+npm run init
 npm run preflight
 npm run bootstrap
 ```
 
-Run core checks:
+Validate everything:
 
 ```bash
-npm run test:compat-contract
-npm run test:manifest-mode
-npm run test:schedule-fixtures
-npm run test:runtime-config
-npm run test:route-fixtures
-npm run test:handler-fixtures
-npm run typecheck
-```
-
-Run local workers:
-
-```bash
-npm run dev:workflow
-npm run dev:queue
-npm run dev:api
-npm run dev:scheduler
-npm run dev:ops
+npm run release:check
 ```
 
 ## Repository Map
 
 - `cloudflare/`: deployable runtime (workers, shared logic, scripts, contracts).
-- `docs/`: setup runbooks and platform docs.
+- `docs/`: architecture, roadmap, setup, and release docs.
 - `infra/`: Cloudflare resource spec/schema.
 - `packages/`: modular extraction targets (`core-runtime`, `handler-sdk`, recipes).
 
@@ -84,10 +64,8 @@ npm run dev:ops
 - [Cloudflare Runtime Guide](cloudflare/README.md)
 - [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md)
 - [Architecture Notes](docs/ARCHITECTURE.md)
-- [Entrypoints](docs/ENTRYPOINTS.md)
-- [LLM Quickstart](docs/llms.txt)
-- [Public Export Checklist](docs/PUBLIC_EXPORT_CHECKLIST.md)
-
-## Project Stage
-
-WorkerFlow is in active foundation stage: runtime primitives are stable, while package extraction and broader connector/recipe ecosystem are still being expanded.
+- [Security Model](docs/SECURITY_MODEL.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Release Process](docs/RELEASE_PROCESS.md)
+- [Upgrade Guide](docs/UPGRADE_GUIDE.md)
+- [Changelog](CHANGELOG.md)

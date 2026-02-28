@@ -29,6 +29,7 @@ function validateHttpRoute(routePath: string, env: RuntimeEnv, errors: string[])
 
   switch (routePath) {
     case "chat_notify":
+    case "incident_create":
       requireAny(env, errors, context, "chat webhook URL", [
         "CHAT_WEBHOOK_URL",
         "GCHAT_ALERTS_WEBHOOK_URL",
