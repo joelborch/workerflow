@@ -1,27 +1,42 @@
 # WorkerFlow
 
-Cloudflare-native automation orchestration you can self-host without paying SaaS automation platform pricing.
+Cloudflare-native automation orchestration you can self-host without paying recurring automation SaaS platform pricing.
 
-WorkerFlow gives you Zapier/Activepieces-style building blocks on Cloudflare Workers so you can keep control of runtime, secrets, and deployment.
+WorkerFlow gives you Zapier/Activepieces-style workflow building blocks on Cloudflare Workers so you keep control of runtime, secrets, contracts, and deployment.
 
 For many small-to-medium automation workloads, this can run on Cloudflare free-tier resources with no VPS and no always-on servers.
 
+---
+
+## Quick Links
+
+| Link | Purpose |
+| --- | --- |
+| [Cloudflare Runtime Guide](cloudflare/README.md) | Runtime components and deploy commands |
+| [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md) | End-to-end platform setup |
+| [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md) | Agent-first bootstrap/deploy flow |
+| [Agent Operating Guide](AGENTS.md) | Repository working agreement for coding agents |
+| [Community Connector Catalog](docs/CONNECTOR_CATALOG.md) | Connector scaffold model and extension path |
+| [Security Model](docs/SECURITY_MODEL.md) | Ingress auth, secret handling, RBAC |
+
 ## Why WorkerFlow
 
-- avoid recurring per-task/per-seat automation SaaS pricing for core internal workflows
+- avoid per-seat/per-task recurring automation SaaS pricing for internal workflows
 - run on Cloudflare primitives instead of managing VM infrastructure
-- keep execution logic, secrets, and deployment in your own repository
-- expose a clear contract for routes/schedules so agents and contributors can reason about the system
+- keep execution logic, secrets, and deploy process in your own repository
+- expose explicit route/schedule contracts so agents and contributors can safely extend the platform
 
-## Current Scope (`0.2.0`)
+## At A Glance (`0.2.0`)
 
-- 5-worker Cloudflare runtime (`api`, `workflow`, `queue-consumer`, `scheduler`, `ops-dashboard`)
-- starter catalog with `12` HTTP routes and `6` schedules
-- D1 idempotency + run ledger + dead-letter model
-- queue-backed async execution with replay/retry surfaces
-- ingress hardening (token auth, HMAC, rate-limit options)
-- community connector catalog with `30` scaffolded connector definitions
-- Cloudflare Pages dashboard for operational visibility
+| Area | Included |
+| --- | --- |
+| Runtime | 5-worker architecture (`api`, `workflow`, `queue-consumer`, `scheduler`, `ops-dashboard`) |
+| Catalog | 12 HTTP routes + 6 schedules |
+| Data model | D1 idempotency, run ledger, dead letters, replay metadata |
+| Execution | queue-backed async + direct sync route execution |
+| Security | token auth, HMAC signing, rate-limit options, dashboard RBAC |
+| Connectors | 30 community connector scaffolds |
+| UI | Cloudflare Pages operations dashboard |
 
 ## Cost Profile
 
@@ -70,9 +85,9 @@ npm run release:check
 WorkerFlow is documented so coding agents can bootstrap and deploy it end-to-end.
 
 - [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md)
-- [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md)
 - [Environment and Secrets](cloudflare/docs/ENVIRONMENT.md)
 - [Entrypoints Contract](docs/ENTRYPOINTS.md)
+- [Brand Standard](docs/BRAND_STANDARD.md)
 
 ## Connectors
 
@@ -86,12 +101,14 @@ Catalog and contributor guidance:
 
 ## Repository Map
 
-- `cloudflare/`: deployable runtime, workers, shared contracts, scripts
-- `pages-dashboard/`: Cloudflare Pages dashboard app
-- `docs/`: architecture, setup, security, release, roadmap
-- `packages/`: modular extraction targets (`core-runtime`, `handler-sdk`, recipes)
+| Path | Description |
+| --- | --- |
+| `cloudflare/` | Deployable runtime, workers, shared contracts, scripts |
+| `pages-dashboard/` | Cloudflare Pages dashboard frontend |
+| `docs/` | Setup, architecture, security, release, roadmap, contribution docs |
+| `packages/` | Extraction targets (`core-runtime`, `handler-sdk`, recipes) |
 
-## Documentation Index
+## Full Documentation Index
 
 - [Cloudflare Runtime Guide](cloudflare/README.md)
 - [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md)
