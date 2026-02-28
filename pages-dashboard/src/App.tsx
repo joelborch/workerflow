@@ -279,6 +279,9 @@ function App() {
       .slice(0, 10);
   }, [catalog]);
 
+  const routeCatalogRows = useMemo(() => catalog?.routes ?? [], [catalog]);
+  const scheduleCatalogRows = useMemo(() => catalog?.schedules ?? [], [catalog]);
+
   const filteredRuns = useMemo(() => {
     const needle = filters.search.trim().toLowerCase();
     const searched = needle
@@ -351,6 +354,14 @@ function App() {
       return;
     }
     updateFilters({ routePath });
+  }
+
+  function applyRouteFilter(routePath: string) {
+    updateFilters({ routePath, scheduleId: "" });
+  }
+
+  function applyScheduleFilter(scheduleId: string) {
+    updateFilters({ scheduleId, routePath: "" });
   }
 
   function onTimelineBucketClick(state: unknown) {
@@ -550,6 +561,80 @@ function App() {
             </ResponsiveContainer>
           </div>
           <p className="muted">Click a route bar to apply it as a run filter.</p>
+        </section>
+
+        <section className="panel table-panel">
+          <div className="panel-head">
+            <h2>Catalog: HTTP Routes</h2>
+            <span>{routeCatalogRows.length} definitions</span>
+          </div>
+          <p className="muted">Source: route definitions plus activity in the selected time window.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Type</th>
+                <th>Flow</th>
+                <th>24h/Window Activity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {routeCatalogRows.slice(0, 20).map((route) => (
+                <tr key={route.routePath} className="clickable-row" onClick={() => applyRouteFilter(route.routePath)}>
+                  <td className="mono">{route.routePath}</td>
+                  <td>{route.requestType}</td>
+                  <td>{clampText(route.flowPath, 36)}</td>
+                  <td>
+                    {route.succeeded}/{route.failed}/{route.started} ({route.total})
+                    {route.total === 0 ? <span className="catalog-tag">defined, no activity</span> : null}
+                  </td>
+                </tr>
+              ))}
+              {routeCatalogRows.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="muted">No routes defined in runtime manifest.</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </section>
+
+        <section className="panel table-panel">
+          <div className="panel-head">
+            <h2>Catalog: Cron Schedules</h2>
+            <span>{scheduleCatalogRows.length} definitions</span>
+          </div>
+          <p className="muted">Source: schedule definitions plus activity in the selected time window.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Schedule</th>
+                <th>Cron</th>
+                <th>Target</th>
+                <th>Enabled</th>
+                <th>24h/Window Activity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {scheduleCatalogRows.slice(0, 20).map((schedule) => (
+                <tr key={schedule.id} className="clickable-row" onClick={() => applyScheduleFilter(schedule.id)}>
+                  <td className="mono">{schedule.id}</td>
+                  <td>{schedule.cron}</td>
+                  <td>{clampText(schedule.target, 30)}</td>
+                  <td>{schedule.enabled ? "yes" : "no"}</td>
+                  <td>
+                    {schedule.succeeded}/{schedule.failed}/{schedule.started} ({schedule.total})
+                    {schedule.total === 0 ? <span className="catalog-tag">defined, no activity</span> : null}
+                  </td>
+                </tr>
+              ))}
+              {scheduleCatalogRows.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="muted">No schedules defined in runtime manifest.</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
         </section>
 
         <section className="panel table-panel">
