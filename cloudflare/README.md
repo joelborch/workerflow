@@ -1,88 +1,81 @@
-# Cloudflare Migration Scaffold
+# WorkerFlow Cloudflare Runtime
 
-This folder is the starting point for WorkerFlow automations on Cloudflare Workers.
+This directory contains the Cloudflare-native runtime that powers WorkerFlow.
 
-## Layout
+## Runtime Model
 
-- `workers/api`: HTTP ingress (webhook routes, sync/async split)
-- `workers/ops-dashboard`: lightweight ops dashboard + retry API on top of D1/Queue
-- `workers/scheduler`: cron triggers that enqueue or invoke jobs
-- `workers/queue-consumer`: async queue processor
-- `workers/workflow`: orchestration endpoints and flow runner stubs
-- `shared`: cross-worker helpers and route manifest
-- `migrations/d1`: D1 schema migrations
+- `workers/api`: ingress, auth, route lookup, idempotency, sync/async branching.
+- `workers/queue-consumer`: asynchronous queue execution loop.
+- `workers/workflow`: task dispatch and handler execution.
+- `workers/scheduler`: cron trigger producer.
+- `workers/ops-dashboard`: ops APIs + dashboard UI.
+- `shared/`: cross-worker contracts and helpers.
+- `migrations/d1/`: persistent schema evolution.
 
-## Prereqs
+## What You Get Out Of The Box
 
-- Node.js 20+
-- npm 10+
-- Cloudflare account + Wrangler auth
+- API ingress with deterministic route contracts.
+- Queue and scheduler orchestration.
+- Dead-letter and replay support.
+- Route/schedule compatibility contracts.
+- Manifest mode (`legacy` or `config`) with JSON schemas.
+- Bootstrap planning/apply scripts for infra setup.
 
-## Install
+## Install And Validate
 
 ```bash
 cd cloudflare
 npm install
+npm run preflight
+npm run typecheck
 ```
 
-## Local Commands
+## Validation Suite
 
 ```bash
-npm run typecheck
-npm run preflight
-npm run smoke:ops
-npm run dev:api
-npm run dev:ops
-npm run dev:scheduler
-npm run dev:queue
-npm run dev:workflow
+npm run test:compat-contract
+npm run test:manifest-mode
+npm run test:schedule-fixtures
+npm run test:runtime-config
+npm run test:route-fixtures
+npm run test:handler-fixtures
 ```
 
-Bootstrap plan (machine-readable):
+## Local Development
+
+```bash
+npm run dev:workflow
+npm run dev:queue
+npm run dev:api
+npm run dev:scheduler
+npm run dev:ops
+```
+
+## Infra Bootstrap
 
 ```bash
 npm run bootstrap
+npm run bootstrap:apply
 ```
 
-## Deploy Commands
+`bootstrap` prints a machine-readable plan from `../infra/cloudflare.resources.json`.
+
+## Deployment
 
 ```bash
 npm run preflight:strict
-npm run deploy:api
-npm run deploy:ops
-npm run deploy:scheduler
-npm run deploy:queue
 npm run deploy:workflow
+npm run deploy:queue
+npm run deploy:api
+npm run deploy:scheduler
+npm run deploy:ops
 ```
 
-## What Is Included
+## Key References
 
-- Starter bindings and env typing
-- Route manifest generated from current runtime endpoints
-- D1 schema for:
-  - idempotency keys
-  - run ledger
-  - cursor state (`wmill.getVariable/setVariable` replacement)
-  - dead letter records
-- Example async ingress -> queue pattern
-- Example cron -> queue pattern
-- Ops dashboard APIs for run/dead-letter visibility + dead-letter retry enqueue
-
-## What Still Needs Real Values
-
-- Cloudflare account id and resource ids
-- Required workflow secret: `GOOGLEAI_API_KEY` (set with `npx wrangler secret put <NAME> --config workers/workflow/wrangler.jsonc`)
-- Recommended Google delegated auth secrets: `GCP_SERVICE_ACCOUNT_EMAIL`, `GCP_PRIVATE_KEY_PART1`, `GCP_PRIVATE_KEY_PART2`, `GOOGLE_ADMIN_USER`
-- External service credentials (Google, ClickUp, Mailchimp, Zyte, Telegram)
-- Optional custom domains and DNS cutover
-- Optional dashboard access token (`OPS_DASHBOARD_TOKEN`) for `workers/ops-dashboard`
-
-See env details: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
-
-Ops dashboard API details: [docs/OPS_DASHBOARD_API.md](docs/OPS_DASHBOARD_API.md)
-
-Schemas:
-
-- `schemas/routes.config.schema.json`
-- `schemas/schedules.config.schema.json`
-- `../infra/cloudflare.resources.schema.json`
+- Setup checklist: [docs/SETUP.md](docs/SETUP.md)
+- Secrets/env: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
+- Ops API: [docs/OPS_DASHBOARD_API.md](docs/OPS_DASHBOARD_API.md)
+- OpenAPI: [openapi.json](openapi.json)
+- Route schema: [schemas/routes.config.schema.json](schemas/routes.config.schema.json)
+- Schedule schema: [schemas/schedules.config.schema.json](schemas/schedules.config.schema.json)

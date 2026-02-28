@@ -1,43 +1,45 @@
 # WorkerFlow
 
-WorkerFlow is an automation runtime for Cloudflare that gives you Zapier/Windmill/Activepieces-style orchestration with first-class control over infrastructure, secrets, and reliability.
+WorkerFlow is an open-source automation control plane built for Cloudflare Workers.
 
-## What WorkerFlow Gives You
+If you like the flexibility of Zapier/Activepieces/Windmill but want your own runtime, your own data boundaries, and your own deployment pipeline, this project is built for that model.
 
-- Edge-safe webhook ingress with sync and async execution modes.
-- Queue-backed orchestration for durable background jobs.
-- D1-backed idempotency, run ledgering, dead letters, and replay workflows.
-- Cron scheduling with explicit enqueue semantics.
-- Ops dashboard APIs for visibility and incident operations.
-- Config-driven route/schedule manifests for modular deployments.
+## Why WorkerFlow
 
-## Architecture
+- Own the runtime: deploy on your Cloudflare account, not someone else's control plane.
+- Own reliability: explicit queue execution, dead letters, replay paths, and idempotency.
+- Own contracts: route/schedule manifests and compatibility tests are first-class.
+- Own extensibility: plug in handlers, connectors, and recipe packs.
+
+## Core Capabilities
+
+- HTTP route ingress with sync and async modes.
+- Queue-backed task processing.
+- Scheduled execution via cron.
+- D1 state for runs, idempotency, cursors, and dead letters.
+- Ops dashboard APIs for observability and retry operations.
+- Config-driven manifest mode for modular deployments.
+
+## System Architecture
 
 ```text
-Callers/Webhooks
-      |
-      v
- workers/api  ---> workers/workflow (/run-sync)
-      |
-      v
+Callers / Webhooks
+       |
+       v
+  workers/api --------------> workers/workflow (/run-sync)
+       |
+       v
 Cloudflare Queue
-      |
-      v
-workers/queue-consumer ---> workers/workflow
-      |
-      v
-      D1
+       |
+       v
+workers/queue-consumer -----> workers/workflow
+       |
+       v
+        D1
 
-workers/scheduler -> scheduled enqueue
-workers/ops-dashboard -> ops APIs + UI
+workers/scheduler -----------> Queue
+workers/ops-dashboard -------> D1 + Queue APIs
 ```
-
-## Repository Layout
-
-- `cloudflare/`: worker runtime, migrations, scripts, contracts, schemas.
-- `packages/`: modular package scaffolding (`handler-sdk`, recipes, core runtime).
-- `docs/`: setup runbooks, entrypoints, and operator docs.
-- `infra/`: machine-readable Cloudflare resource specs and schema.
 
 ## Quick Start
 
@@ -48,7 +50,7 @@ npm run preflight
 npm run bootstrap
 ```
 
-Run validation suite:
+Run core checks:
 
 ```bash
 npm run test:compat-contract
@@ -60,7 +62,7 @@ npm run test:handler-fixtures
 npm run typecheck
 ```
 
-## Local Development
+Run local workers:
 
 ```bash
 npm run dev:workflow
@@ -70,14 +72,22 @@ npm run dev:scheduler
 npm run dev:ops
 ```
 
-## Docs
+## Repository Map
+
+- `cloudflare/`: deployable runtime (workers, shared logic, scripts, contracts).
+- `docs/`: setup runbooks and platform docs.
+- `infra/`: Cloudflare resource spec/schema.
+- `packages/`: modular extraction targets (`core-runtime`, `handler-sdk`, recipes).
+
+## Documentation
 
 - [Cloudflare Runtime Guide](cloudflare/README.md)
 - [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md)
+- [Architecture Notes](docs/ARCHITECTURE.md)
 - [Entrypoints](docs/ENTRYPOINTS.md)
 - [LLM Quickstart](docs/llms.txt)
 - [Public Export Checklist](docs/PUBLIC_EXPORT_CHECKLIST.md)
 
-## Status
+## Project Stage
 
-This repository is currently kept private while final cleanup and review complete.
+WorkerFlow is in active foundation stage: runtime primitives are stable, while package extraction and broader connector/recipe ecosystem are still being expanded.
