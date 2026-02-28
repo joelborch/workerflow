@@ -1,0 +1,56 @@
+name: Release Tag Automation
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  cloudflare-release-check:
+    name: cloudflare-release-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: cloudflare/package-lock.json
+      - run: npm ci
+      - run: npm run release:check
+
+  pages-dashboard-release-check:
+    name: pages-dashboard-release-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pages-dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: pages-dashboard/package-lock.json
+      - run: npm ci
+      - run: npm run release:check
+
+  draft-release:
+    name: draft-release
+    needs:
+      - cloudflare-release-check
+      - pages-dashboard-release-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create draft release notes
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true

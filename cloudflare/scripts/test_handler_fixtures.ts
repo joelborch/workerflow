@@ -4,11 +4,17 @@ import type { Env } from "../shared/types";
 import { handle as chatNotify } from "../workers/workflow/src/handlers/http/chat_notify";
 import { handle as githubIssueCreate } from "../workers/workflow/src/handlers/http/github_issue_create";
 import { handle as incidentCreate } from "../workers/workflow/src/handlers/http/incident_create";
+import { handle as hubspotContactUpsert } from "../workers/workflow/src/handlers/http/hubspot_contact_upsert";
+import { handle as hubspotDealUpsert } from "../workers/workflow/src/handlers/http/hubspot_deal_upsert";
 import { handle as jsonTransform } from "../workers/workflow/src/handlers/http/json_transform";
 import { handle as leadNormalizer } from "../workers/workflow/src/handlers/http/lead_normalizer";
+import { handle as notionDatabaseItemCreate } from "../workers/workflow/src/handlers/http/notion_database_item_create";
+import { handle as notionDatabaseItemGet } from "../workers/workflow/src/handlers/http/notion_database_item_get";
 import { handle as payloadHash } from "../workers/workflow/src/handlers/http/payload_hash";
 import { handle as openAiChat } from "../workers/workflow/src/handlers/http/openai_chat";
 import { handle as slackMessage } from "../workers/workflow/src/handlers/http/slack_message";
+import { handle as stripeCustomerUpsert } from "../workers/workflow/src/handlers/http/stripe_customer_upsert";
+import { handle as stripePaymentIntentCreate } from "../workers/workflow/src/handlers/http/stripe_payment_intent_create";
 import { handle as templateRender } from "../workers/workflow/src/handlers/http/template_render";
 import { handle as textExtract } from "../workers/workflow/src/handlers/http/text_extract";
 import { handle as webhookEcho } from "../workers/workflow/src/handlers/http/webhook_echo";
@@ -27,6 +33,9 @@ function makeEnv(overrides: Record<string, unknown> = {}) {
     FANOUT_SHARED_WEBHOOK_URL: "https://hooks.example/default",
     OPENAI_API_KEY: "fixture-openai",
     GITHUB_TOKEN: "fixture-github-token",
+    STRIPE_API_KEY: "fixture-stripe",
+    NOTION_TOKEN: "fixture-notion",
+    HUBSPOT_ACCESS_TOKEN: "fixture-hubspot",
     GITHUB_REPO: "workerflow/example",
     GOOGLEAI_API_KEY: "fixture-google-ai",
     ...overrides
@@ -84,6 +93,143 @@ function mockFetch(chatMessages: ChatMessage[]) {
           headers: { "content-type": "application/json" }
         }
       );
+    }
+
+    if (url.hostname === "api.stripe.com") {
+      if (url.pathname === "/v1/payment_intents") {
+        return new Response(
+          JSON.stringify({
+            id: "pi_fixture_123",
+            status: "requires_confirmation",
+            client_secret: "pi_fixture_123_secret",
+            amount: 9900,
+            currency: "usd"
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
+
+      if (url.pathname === "/v1/customers" && url.searchParams.has("email")) {
+        return new Response(JSON.stringify({ data: [] }), {
+          status: 200,
+          headers: { "content-type": "application/json" }
+        });
+      }
+
+      if (url.pathname === "/v1/customers" && init?.method === "POST") {
+        return new Response(
+          JSON.stringify({
+            id: "cus_fixture_123",
+            email: "fixture@example.com",
+            name: "Fixture User"
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
+    }
+
+    if (url.hostname === "api.notion.com") {
+      if (url.pathname === "/v1/pages" && init?.method === "POST") {
+        return new Response(
+          JSON.stringify({
+            object: "page",
+            id: "notion-page-1",
+            url: "https://notion.so/notion-page-1",
+            archived: false,
+            created_time: "2026-02-28T00:00:00.000Z",
+            last_edited_time: "2026-02-28T00:00:00.000Z",
+            properties: {
+              Name: {
+                id: "title",
+                type: "title"
+              }
+            }
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
+
+      if (url.pathname === "/v1/pages/notion-page-1" && init?.method === "GET") {
+        return new Response(
+          JSON.stringify({
+            object: "page",
+            id: "notion-page-1",
+            url: "https://notion.so/notion-page-1",
+            archived: false,
+            created_time: "2026-02-28T00:00:00.000Z",
+            last_edited_time: "2026-02-28T01:00:00.000Z",
+            properties: {
+              Name: {
+                id: "title",
+                type: "title"
+              },
+              Status: {
+                id: "status",
+                type: "status"
+              }
+            }
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
+    }
+
+    if (url.hostname === "api.hubapi.com") {
+      if (url.pathname === "/crm/v3/objects/contacts/search" && init?.method === "POST") {
+        return new Response(JSON.stringify({ results: [] }), {
+          status: 200,
+          headers: { "content-type": "application/json" }
+        });
+      }
+
+      if (url.pathname === "/crm/v3/objects/contacts" && init?.method === "POST") {
+        return new Response(
+          JSON.stringify({
+            id: "hubspot-contact-1",
+            properties: {
+              email: "ava@example.com"
+            }
+          }),
+          {
+            status: 201,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
+
+      if (url.pathname === "/crm/v3/objects/deals/search" && init?.method === "POST") {
+        return new Response(JSON.stringify({ results: [] }), {
+          status: 200,
+          headers: { "content-type": "application/json" }
+        });
+      }
+
+      if (url.pathname === "/crm/v3/objects/deals" && init?.method === "POST") {
+        return new Response(
+          JSON.stringify({
+            id: "hubspot-deal-1",
+            properties: {
+              workerflow_external_id: "deal-123"
+            }
+          }),
+          {
+            status: 201,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
@@ -223,6 +369,99 @@ async function run() {
     );
     assert.equal(openAiResult.route, "openai_chat");
     assert.equal(openAiResult.output, "Fixture completion output");
+
+    const stripeIntentResult = await stripePaymentIntentCreate(
+      {
+        body: {
+          amount: 9900,
+          currency: "usd",
+          description: "Fixture order"
+        }
+      },
+      "fixture-stripe-intent",
+      context
+    );
+    assert.equal(stripeIntentResult.route, "stripe_payment_intent_create");
+    assert.equal(stripeIntentResult.paymentIntentId, "pi_fixture_123");
+    assert.equal(stripeIntentResult.currency, "usd");
+
+    const stripeCustomerResult = await stripeCustomerUpsert(
+      {
+        body: {
+          email: "fixture@example.com",
+          name: "Fixture User"
+        }
+      },
+      "fixture-stripe-customer",
+      context
+    );
+    assert.equal(stripeCustomerResult.route, "stripe_customer_upsert");
+    assert.equal(stripeCustomerResult.customerId, "cus_fixture_123");
+    assert.equal(stripeCustomerResult.created, true);
+
+    const notionCreateResult = await notionDatabaseItemCreate(
+      {
+        body: {
+          databaseId: "db_fixture",
+          properties: {
+            Name: {
+              title: [{ text: { content: "Fixture row" } }]
+            }
+          }
+        }
+      },
+      "fixture-notion-create",
+      context
+    );
+    assert.equal(notionCreateResult.route, "notion_database_item_create");
+    assert.equal(notionCreateResult.pageId, "notion-page-1");
+
+    const notionGetResult = await notionDatabaseItemGet(
+      {
+        body: {
+          pageId: "notion-page-1"
+        }
+      },
+      "fixture-notion-get",
+      context
+    );
+    assert.equal(notionGetResult.route, "notion_database_item_get");
+    assert.equal(notionGetResult.propertyCount, 2);
+
+    const hubspotContactResult = await hubspotContactUpsert(
+      {
+        body: {
+          email: "ava@example.com",
+          properties: {
+            firstname: "Ava",
+            lastname: "Ng"
+          }
+        }
+      },
+      "fixture-hubspot-contact",
+      context
+    );
+    assert.equal(hubspotContactResult.route, "hubspot_contact_upsert");
+    assert.equal(hubspotContactResult.id, "hubspot-contact-1");
+    assert.equal(hubspotContactResult.created, true);
+
+    const hubspotDealResult = await hubspotDealUpsert(
+      {
+        body: {
+          idProperty: "workerflow_external_id",
+          idValue: "deal-123",
+          properties: {
+            dealname: "Fixture Deal",
+            amount: "5000"
+          }
+        }
+      },
+      "fixture-hubspot-deal",
+      context
+    );
+    assert.equal(hubspotDealResult.route, "hubspot_deal_upsert");
+    assert.equal(hubspotDealResult.id, "hubspot-deal-1");
+    assert.equal(hubspotDealResult.created, true);
 
     const incidentResult = await incidentCreate(
       {

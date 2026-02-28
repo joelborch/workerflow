@@ -1,3 +1,5 @@
+import { fetchWithRetry } from "./http_retry";
+
 type CreateGithubIssueArgs = {
   token: string;
   repo: string;
@@ -18,7 +20,7 @@ function normalizeRepo(repo: string) {
 export async function createGithubIssue(args: CreateGithubIssueArgs) {
   const repo = normalizeRepo(args.repo);
   const url = `https://api.github.com/repos/${repo}/issues`;
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     method: "POST",
     headers: {
       authorization: `Bearer ${args.token}`,

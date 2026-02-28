@@ -1,3 +1,5 @@
+import { fetchWithRetry } from "./http_retry";
+
 type OpenAiChatCompletionArgs = {
   apiKey: string;
   model: string;
@@ -36,7 +38,7 @@ function normalizeCompletionText(content: unknown): string {
 }
 
 export async function createOpenAiChatCompletion(args: OpenAiChatCompletionArgs) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetchWithRetry("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       authorization: `Bearer ${args.apiKey}`,

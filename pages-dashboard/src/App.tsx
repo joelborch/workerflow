@@ -37,6 +37,7 @@ import {
 import { clampText, compactNumber, fmtTs, pct } from "./lib/format";
 
 const OPS_TOKEN_KEY = "workerflow.ops.token";
+const FILTERS_STORAGE_KEY = "workerflow.ops.filters.v1";
 const RUNS_PAGE_SIZE = 14;
 
 type TimeRangePreset = "1h" | "6h" | "24h" | "7d";
@@ -100,6 +101,73 @@ function readFiltersFromUrl(): Filters {
   };
 }
 
+function readFiltersFromStorage(): Filters | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const raw = window.localStorage.getItem(FILTERS_STORAGE_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return null;
+  }
+
+  const candidate = parsed as Partial<Filters>;
+  const range = candidate.range;
+  const bucket = candidate.bucket;
+  const limit = Number(candidate.limit);
+  const refreshSeconds = Number(candidate.refreshSeconds);
+
+  return {
+    range: range === "1h" || range === "6h" || range === "24h" || range === "7d" ? range : DEFAULT_FILTERS.range,
+    bucket: bucket === "minute" ? "minute" : "hour",
+    status: typeof candidate.status === "string" ? candidate.status : DEFAULT_FILTERS.status,
+    kind: typeof candidate.kind === "string" ? candidate.kind : DEFAULT_FILTERS.kind,
+    routePath: typeof candidate.routePath === "string" ? candidate.routePath : DEFAULT_FILTERS.routePath,
+    scheduleId: typeof candidate.scheduleId === "string" ? candidate.scheduleId : DEFAULT_FILTERS.scheduleId,
+    search: typeof candidate.search === "string" ? candidate.search : DEFAULT_FILTERS.search,
+    limit: Number.isFinite(limit) && limit > 0 ? Math.min(limit, 250) : DEFAULT_FILTERS.limit,
+    refreshSeconds:
+      Number.isFinite(refreshSeconds) && refreshSeconds > 0 ? Math.min(refreshSeconds, 300) : DEFAULT_FILTERS.refreshSeconds
+  };
+}
+
+function writeFiltersToStorage(filters: Filters) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(filters));
+}
+
+function hasUrlFilterOverrides() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  const params = new URLSearchParams(window.location.search);
+  return ["range", "bucket", "status", "kind", "routePath", "scheduleId", "search", "limit", "refresh"].some((key) =>
+    params.has(key)
+  );
+}
+
+function readInitialFilters(): Filters {
+  const urlFilters = readFiltersFromUrl();
+  const saved = readFiltersFromStorage();
+  if (hasUrlFilterOverrides()) {
+    return urlFilters;
+  }
+  return saved ?? urlFilters;
+}
+
 function writeFiltersToUrl(filters: Filters, paused: boolean) {
   if (typeof window === "undefined") {
     return;
@@ -153,13 +221,75 @@ type ChartClickState = {
   }>;
 };
 
+type ComparisonSlot = "A" | "B";
+
+function normalizeErrorCluster(error: string | null) {
+  if (!error || !error.trim()) {
+    return "none";
+  }
+
+  return error
+    .toLowerCase()
+    .replace(/https?:\/\/\S+/g, "{url}")
+    .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi, "{uuid}")
+    .replace(/\b\d{3,}\b/g, "{n}")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+function inferPayloadShape(rawPayload: string | null) {
+  if (!rawPayload) {
+    return "none";
+  }
+
+  let parsed: unknown = rawPayload;
+  if (typeof parsed === "string") {
+    const trimmed = parsed.trim();
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      parsed = trimmed;
+    }
+  }
+
+  if (Array.isArray(parsed)) {
+    return `array(len=${parsed.length})`;
+  }
+
+  if (parsed && typeof parsed === "object") {
+    const keys = Object.keys(parsed as Record<string, unknown>).sort();
+    if (keys.length === 0) {
+      return "object{}";
+    }
+    const preview = keys.slice(0, 6).join(", ");
+    return keys.length > 6 ? `object{${preview}, ...}` : `object{${preview}}`;
+  }
+
+  return typeof parsed;
+}
+
+function latencyMs(startedAt: string, finishedAt: string | null) {
+  if (!finishedAt) {
+    return null;
+  }
+  const started = Date.parse(startedAt);
+  const finished = Date.parse(finishedAt);
+  if (!Number.isFinite(started) || !Number.isFinite(finished)) {
+    return null;
+  }
+  return Math.max(0, finished - started);
+}
+
 function App() {
   const [tokenInput, setTokenInput] = useState(initialToken);
   const [opsToken, setOpsToken] = useState(initialToken);
-  const [filters, setFilters] = useState<Filters>(readFiltersFromUrl);
+  const [filters, setFilters] = useState<Filters>(readInitialFilters);
   const [paused, setPaused] = useState(readPausedFromUrl);
   const [selectedTimelineBucket, setSelectedTimelineBucket] = useState("");
   const [selectedTraceId, setSelectedTraceId] = useState("");
+  const [compareTraceA, setCompareTraceA] = useState("");
+  const [compareTraceB, setCompareTraceB] = useState("");
   const [runsSortKey, setRunsSortKey] = useState<RunsSortKey>("startedAt");
   const [runsSortDir, setRunsSortDir] = useState<RunsSortDir>("desc");
   const [runsPage, setRunsPage] = useState(1);
@@ -169,6 +299,7 @@ function App() {
 
   useEffect(() => {
     writeFiltersToUrl(filters, paused);
+    writeFiltersToStorage(filters);
   }, [filters, paused]);
 
   const summaryQuery = useQuery({
@@ -215,6 +346,20 @@ function App() {
     queryKey: ["ops", opsToken, "run-detail", selectedTraceId],
     queryFn: () => loadRunDetail(opsToken, selectedTraceId),
     enabled: selectedTraceId.length > 0,
+    refetchInterval
+  });
+
+  const compareRunAQuery = useQuery({
+    queryKey: ["ops", opsToken, "run-compare", "a", compareTraceA],
+    queryFn: () => loadRunDetail(opsToken, compareTraceA),
+    enabled: compareTraceA.length > 0,
+    refetchInterval
+  });
+
+  const compareRunBQuery = useQuery({
+    queryKey: ["ops", opsToken, "run-compare", "b", compareTraceB],
+    queryFn: () => loadRunDetail(opsToken, compareTraceB),
+    enabled: compareTraceB.length > 0,
     refetchInterval
   });
 
@@ -315,6 +460,35 @@ function App() {
   const safeRunsPage = Math.min(runsPage, totalRunPages);
   const paginatedRuns = filteredRuns.slice((safeRunsPage - 1) * RUNS_PAGE_SIZE, safeRunsPage * RUNS_PAGE_SIZE);
 
+  const compareStats = useMemo(() => {
+    const left = compareRunAQuery.data;
+    const right = compareRunBQuery.data;
+
+    const leftRun = left?.run ?? null;
+    const rightRun = right?.run ?? null;
+
+    return {
+      left: leftRun
+        ? {
+            traceId: leftRun.traceId,
+            status: leftRun.status,
+            latencyMs: latencyMs(leftRun.startedAt, leftRun.finishedAt),
+            errorCluster: normalizeErrorCluster(leftRun.error),
+            payloadShape: inferPayloadShape(left?.deadLetter?.payloadJson ?? leftRun.output)
+          }
+        : null,
+      right: rightRun
+        ? {
+            traceId: rightRun.traceId,
+            status: rightRun.status,
+            latencyMs: latencyMs(rightRun.startedAt, rightRun.finishedAt),
+            errorCluster: normalizeErrorCluster(rightRun.error),
+            payloadShape: inferPayloadShape(right?.deadLetter?.payloadJson ?? rightRun.output)
+          }
+        : null
+    };
+  }, [compareRunAQuery.data, compareRunBQuery.data]);
+
   function updateFilters(next: Partial<Filters>) {
     setFilters((prev) => ({ ...prev, ...next }));
     setRunsPage(1);
@@ -322,6 +496,15 @@ function App() {
 
   function clearFilters() {
     setFilters(DEFAULT_FILTERS);
+    setRunsPage(1);
+  }
+
+  function restoreSavedFilters() {
+    const saved = readFiltersFromStorage();
+    if (!saved) {
+      return;
+    }
+    setFilters(saved);
     setRunsPage(1);
   }
 
@@ -362,6 +545,14 @@ function App() {
 
   function applyScheduleFilter(scheduleId: string) {
     updateFilters({ scheduleId, routePath: "" });
+  }
+
+  function assignRunToComparison(slot: ComparisonSlot, traceId: string) {
+    if (slot === "A") {
+      setCompareTraceA(traceId);
+      return;
+    }
+    setCompareTraceB(traceId);
   }
 
   function onTimelineBucketClick(state: unknown) {
@@ -492,8 +683,12 @@ function App() {
           <button type="button" className="refresh-btn ghost" onClick={clearFilters}>
             Clear Filters
           </button>
+          <button type="button" className="refresh-btn ghost" onClick={restoreSavedFilters}>
+            Restore Saved
+          </button>
           <span className="muted">
-            URL-synced filters are shareable. Window since: <span className="mono">{clampText(since, 24)}</span>
+            URL-synced filters are shareable and auto-saved locally. Window since:{" "}
+            <span className="mono">{clampText(since, 24)}</span>
           </span>
         </div>
       </section>
@@ -713,6 +908,7 @@ function App() {
                 <th>Kind</th>
                 <th>Started</th>
                 <th>Duration</th>
+                <th>Compare</th>
               </tr>
             </thead>
             <tbody>
@@ -730,11 +926,37 @@ function App() {
                   <td>{run.kind}</td>
                   <td>{fmtTs(run.startedAt)}</td>
                   <td>{run.duration ?? "-"}</td>
+                  <td>
+                    <div className="compare-actions">
+                      <button
+                        type="button"
+                        className="compare-slot-btn"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          assignRunToComparison("A", run.traceId);
+                        }}
+                        aria-label={`Set comparison A ${run.traceId}`}
+                      >
+                        Set A
+                      </button>
+                      <button
+                        type="button"
+                        className="compare-slot-btn"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          assignRunToComparison("B", run.traceId);
+                        }}
+                        aria-label={`Set comparison B ${run.traceId}`}
+                      >
+                        Set B
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
               {paginatedRuns.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="muted">
+                  <td colSpan={7} className="muted">
                     No matching runs.
                   </td>
                 </tr>
@@ -768,6 +990,62 @@ function App() {
           ) : (
             <p className="muted">Click a run row to inspect payload/error lineage.</p>
           )}
+        </section>
+
+        <section className="panel table-panel wide">
+          <div className="panel-head">
+            <h2>Run Comparison</h2>
+            <span>
+              {compareTraceA ? clampText(compareTraceA, 12) : "A unset"} vs {compareTraceB ? clampText(compareTraceB, 12) : "B unset"}
+            </span>
+          </div>
+          <p className="muted">
+            Compare status, latency, normalized error cluster, and payload shape. Use <strong>Set A</strong>/<strong>Set B</strong> in Runs
+            Explorer.
+          </p>
+          <div className="compare-grid">
+            <article className="compare-card">
+              <h3>Slot A</h3>
+              <p className="mono">{compareTraceA || "No run selected"}</p>
+              <p className="muted">{compareRunAQuery.isLoading ? "Loading..." : compareStats.left?.status ?? "-"}</p>
+            </article>
+            <article className="compare-card">
+              <h3>Slot B</h3>
+              <p className="mono">{compareTraceB || "No run selected"}</p>
+              <p className="muted">{compareRunBQuery.isLoading ? "Loading..." : compareStats.right?.status ?? "-"}</p>
+            </article>
+          </div>
+          <table className="compare-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Run A</th>
+                <th>Run B</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Status</td>
+                <td>{compareStats.left?.status ?? "-"}</td>
+                <td>{compareStats.right?.status ?? "-"}</td>
+              </tr>
+              <tr>
+                <td>Latency (ms)</td>
+                <td>{compareStats.left?.latencyMs ?? "-"}</td>
+                <td>{compareStats.right?.latencyMs ?? "-"}</td>
+              </tr>
+              <tr>
+                <td>Error Cluster</td>
+                <td>{compareStats.left?.errorCluster ?? "-"}</td>
+                <td>{compareStats.right?.errorCluster ?? "-"}</td>
+              </tr>
+              <tr>
+                <td>Payload Shape</td>
+                <td>{compareStats.left?.payloadShape ?? "-"}</td>
+                <td>{compareStats.right?.payloadShape ?? "-"}</td>
+              </tr>
+            </tbody>
+          </table>
         </section>
 
         <section className="panel table-panel">

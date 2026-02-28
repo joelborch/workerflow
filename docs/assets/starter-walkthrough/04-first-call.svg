@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#f5eee5" />
+  <rect x="70" y="60" width="1060" height="580" rx="18" fill="#161d24" />
+  <text x="100" y="115" fill="#9fd7ff" font-family="monospace" font-size="28">first route invocation</text>
+  <text x="100" y="170" fill="#f5f8ff" font-family="monospace" font-size="20">$ curl -X POST "$API_BASE_URL/api/webhook_echo" \</text>
+  <text x="100" y="205" fill="#f5f8ff" font-family="monospace" font-size="20">  -H "Authorization: Bearer $API_INGRESS_TOKEN" \</text>
+  <text x="100" y="240" fill="#f5f8ff" font-family="monospace" font-size="20">  -H "Content-Type: application/json" \</text>
+  <text x="100" y="275" fill="#f5f8ff" font-family="monospace" font-size="20">  -d '{"hello":"workerflow"}'</text>
+  <text x="100" y="350" fill="#8ee2ac" font-family="monospace" font-size="22">{</text>
+  <text x="130" y="385" fill="#8ee2ac" font-family="monospace" font-size="22">"accepted": true,</text>
+  <text x="130" y="420" fill="#8ee2ac" font-family="monospace" font-size="22">"traceId": "trace_..."</text>
+  <text x="100" y="455" fill="#8ee2ac" font-family="monospace" font-size="22">}</text>
+  <text x="100" y="525" fill="#9bb6d1" font-family="monospace" font-size="20">Step 4: first workflow call verified</text>
+</svg>

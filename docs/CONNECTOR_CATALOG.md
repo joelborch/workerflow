@@ -10,11 +10,17 @@ These are metadata-first scaffolds designed for rapid progression into productio
 
 ## Implemented Connector Routes (Production-Ready Baseline)
 
-WorkerFlow currently ships three executable connector-backed routes in the public runtime:
+WorkerFlow currently ships nine executable connector-backed routes in the public runtime:
 
 - `slack_message`
 - `github_issue_create`
 - `openai_chat`
+- `stripe_payment_intent_create`
+- `stripe_customer_upsert`
+- `notion_database_item_create`
+- `notion_database_item_get`
+- `hubspot_contact_upsert`
+- `hubspot_deal_upsert`
 
 ## Current Seed Connectors (30)
 
@@ -65,6 +71,7 @@ Connector quality checks run via:
 ```bash
 cd cloudflare
 npm run test:connector-catalog
+npm run test:connector-harness
 ```
 
 This is included in `npm run release:check`.
