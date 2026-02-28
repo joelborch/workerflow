@@ -20,6 +20,7 @@ export type QueueTaskKind = "http_route" | "scheduled_job";
 export type QueueTask = {
   kind: QueueTaskKind;
   traceId: string;
+  workspaceId?: string;
   routePath?: string;
   scheduleId?: string;
   payload?: unknown;
@@ -40,6 +41,8 @@ export interface Env {
   API_HMAC_SECRET?: string;
   API_HMAC_MAX_SKEW_SECONDS?: string;
   API_RATE_LIMIT_PER_MINUTE?: string;
+  API_ROUTE_LIMITS_JSON?: string;
+  DEFAULT_WORKSPACE_ID?: string;
   LEGACY_ALERT_WEBHOOK_URL?: string;
   CHAT_WEBHOOK_URL?: string;
   FANOUT_SHARED_WEBHOOK_URL?: string;

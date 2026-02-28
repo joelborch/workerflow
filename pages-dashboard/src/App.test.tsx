@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
@@ -15,7 +15,11 @@ vi.mock("./lib/api", async () => {
     loadDeadLetters: vi.fn(),
     loadErrorClusters: vi.fn(),
     loadTimelineDetail: vi.fn(),
-    loadRunDetail: vi.fn()
+    loadRunDetail: vi.fn(),
+    loadSecretsHealth: vi.fn(),
+    loadTemplates: vi.fn(),
+    loadAuditEvents: vi.fn(),
+    replayRun: vi.fn()
   };
 });
 
@@ -89,6 +93,7 @@ describe("App dashboard", () => {
       runs: [
         {
           traceId: "trace-123",
+          workspaceId: "default",
           kind: "http_route",
           routePath: "/hooks/leads",
           scheduleId: null,
@@ -101,6 +106,7 @@ describe("App dashboard", () => {
         },
         {
           traceId: "trace-456",
+          workspaceId: "default",
           kind: "http_route",
           routePath: "/hooks/orders",
           scheduleId: null,
@@ -132,12 +138,58 @@ describe("App dashboard", () => {
       topScopes: [],
       runs: []
     });
+    mockedApi.loadSecretsHealth.mockResolvedValue({
+      available: true,
+      ok: true,
+      connectors: [
+        {
+          id: "slack",
+          status: "ready",
+          requiredSecrets: ["SLACK_WEBHOOK_URL"],
+          missingSecrets: [],
+          presentSecrets: ["SLACK_WEBHOOK_URL"],
+          routes: ["slack_message"]
+        },
+        {
+          id: "github",
+          status: "missing",
+          requiredSecrets: ["GITHUB_TOKEN"],
+          missingSecrets: ["GITHUB_TOKEN"],
+          presentSecrets: [],
+          routes: ["github_issue_create"]
+        }
+      ]
+    });
+    mockedApi.loadTemplates.mockResolvedValue({
+      templates: [
+        {
+          id: "tmpl-1",
+          name: "Incident To Slack",
+          category: "Ops",
+          description: "Alert flow",
+          routes: ["incident_create", "slack_message"],
+          schedules: []
+        }
+      ]
+    });
+    mockedApi.loadAuditEvents.mockResolvedValue({
+      limit: 20,
+      workspaceId: "default",
+      events: []
+    });
+    mockedApi.replayRun.mockResolvedValue({
+      accepted: true,
+      retriedFromTraceId: "trace-456",
+      newTraceId: "trace-789",
+      retryCount: 1
+    });
     mockedApi.loadRunDetail.mockImplementation(async (_token, traceId) => {
       if (traceId === "trace-456") {
         return {
           traceId: "trace-456",
           run: {
             traceId: "trace-456",
+            workspaceId: "default",
             kind: "http_route",
             routePath: "/hooks/orders",
             scheduleId: null,
@@ -160,6 +212,7 @@ describe("App dashboard", () => {
         traceId: "trace-123",
         run: {
           traceId: "trace-123",
+          workspaceId: "default",
           kind: "http_route",
           routePath: "/hooks/leads",
           scheduleId: null,
@@ -184,6 +237,8 @@ describe("App dashboard", () => {
 
     expect(await screen.findByText("Automation Mission Control")).toBeInTheDocument();
     expect(await screen.findByText("Operational Snapshot")).toBeInTheDocument();
+    expect(await screen.findByText("Connector Secrets")).toBeInTheDocument();
+    expect(await screen.findByText("Template Gallery")).toBeInTheDocument();
     expect(await screen.findByText("Runs Explorer")).toBeInTheDocument();
     expect(await screen.findByText("Flow Reliability Board")).toBeInTheDocument();
     expect(await screen.findByText("flows/leads/enrich.ts")).toBeInTheDocument();
@@ -209,6 +264,7 @@ describe("App dashboard", () => {
         bucket: "minute",
         status: "",
         kind: "",
+        workspaceId: "default",
         routePath: "/hooks/saved",
         scheduleId: "",
         search: "",
@@ -244,5 +300,32 @@ describe("App dashboard", () => {
     expect(await screen.findByText("object{error}")).toBeInTheDocument();
     expect(await screen.findByText("2000")).toBeInTheDocument();
     expect(await screen.findByText("5000")).toBeInTheDocument();
+  });
+
+  it("replays a failed run from run detail", async () => {
+    renderApp();
+    expect(await screen.findByText("Runs Explorer")).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByText("trace-456"));
+    expect(await screen.findByText("status: failed")).toBeInTheDocument();
+    const replayButton = screen.getByRole("button", { name: "Replay Failed Run" });
+    fireEvent.click(replayButton);
+
+    await waitFor(() => {
+      expect(mockedApi.replayRun).toHaveBeenCalledWith(expect.any(String), "trace-456");
+    });
+  });
+
+  it("filters connector secret status", async () => {
+    renderApp();
+    expect(await screen.findByText("Connector Secrets")).toBeInTheDocument();
+    expect(await screen.findByText("slack")).toBeInTheDocument();
+    expect(await screen.findByText("github")).toBeInTheDocument();
+
+    const statusSelect = screen.getByLabelText("Secret Status");
+    fireEvent.change(statusSelect, { target: { value: "missing" } });
+
+    expect(await screen.findByText("github")).toBeInTheDocument();
+    expect(screen.queryByText("slack")).not.toBeInTheDocument();
   });
 });

@@ -84,6 +84,17 @@ function getFixtureBody(routePath: string) {
   switch (routePath) {
     case "chat_notify":
       return { text: "Fixture message" };
+    case "slack_message":
+      return { text: "Fixture Slack message" };
+    case "github_issue_create":
+      return {
+        title: "Fixture issue",
+        body: "Created by route fixture test"
+      };
+    case "openai_chat":
+      return {
+        prompt: "Summarize this fixture payload in one sentence."
+      };
     case "lead_normalizer":
       return {
         firstName: "Ava",
@@ -91,6 +102,46 @@ function getFixtureBody(routePath: string) {
         email: "ava@example.com",
         phone: "555-111-2222",
         source: "fixtures"
+      };
+    case "stripe_payment_intent_create":
+      return {
+        amount: 1299,
+        currency: "usd",
+        description: "fixture payment"
+      };
+    case "stripe_customer_upsert":
+      return {
+        email: "fixture@example.com",
+        name: "Fixture User"
+      };
+    case "notion_database_item_create":
+      return {
+        databaseId: "db_fixture",
+        properties: {
+          Name: {
+            title: [{ text: { content: "Fixture row" } }]
+          }
+        }
+      };
+    case "notion_database_item_get":
+      return {
+        pageId: "notion-page-1"
+      };
+    case "hubspot_contact_upsert":
+      return {
+        email: "hubspot@example.com",
+        properties: {
+          firstname: "Hub",
+          lastname: "Spot"
+        }
+      };
+    case "hubspot_deal_upsert":
+      return {
+        idProperty: "workerflow_external_id",
+        idValue: "deal-fixture-1",
+        properties: {
+          dealname: "Fixture deal"
+        }
       };
     default:
       return base;

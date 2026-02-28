@@ -1,8 +1,11 @@
 import { isDuplicateDelivery, markIdempotent } from "../../../shared/db";
 import { json, readTraceId } from "../../../shared/http";
+import { runtimeLog } from "../../../shared/logger";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { validateRoutePayload } from "../../../shared/route_validation";
 import { isSyncHttpPassthrough } from "../../../shared/types";
 import type { Env, QueueTask } from "../../../shared/types";
+import { readWorkspaceId } from "../../../shared/workspace";
 
 const CORS_ALLOWED_METHODS = "POST, OPTIONS";
 const CORS_ALLOWED_HEADERS =
@@ -11,6 +14,11 @@ const LEGACY_ALERT_MAX_BODY_CHARS = 4000;
 const DEFAULT_HMAC_MAX_SKEW_SECONDS = 300;
 
 const rateLimitWindow = new Map<string, { windowStartMs: number; count: number }>();
+
+type RouteRateLimitSetting = {
+  rpm: number;
+  burst: number;
+};
 
 type SecretsStoreBinding = {
   get: () => Promise<string>;
@@ -144,6 +152,41 @@ function envInt(env: Env, key: keyof Env) {
   return parsed;
 }
 
+function parseRouteRateLimits(env: Env) {
+  const raw = env.API_ROUTE_LIMITS_JSON?.trim();
+  if (!raw) {
+    return {} as Record<string, RouteRateLimitSetting>;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return {} as Record<string, RouteRateLimitSetting>;
+  }
+
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return {} as Record<string, RouteRateLimitSetting>;
+  }
+
+  const output: Record<string, RouteRateLimitSetting> = {};
+  for (const [routePath, value] of Object.entries(parsed as Record<string, unknown>)) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      continue;
+    }
+    const candidate = value as Record<string, unknown>;
+    const rpm = typeof candidate.rpm === "number" ? Math.floor(candidate.rpm) : 0;
+    const burst = typeof candidate.burst === "number" ? Math.floor(candidate.burst) : 0;
+    if (rpm > 0) {
+      output[routePath] = {
+        rpm,
+        burst: Math.max(0, burst)
+      };
+    }
+  }
+  return output;
+}
+
 function readClientKey(request: Request) {
   const forwarded = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for");
   if (forwarded && forwarded.trim().length > 0) {
@@ -152,28 +195,35 @@ function readClientKey(request: Request) {
   return "unknown";
 }
 
-function checkRateLimit(request: Request, env: Env) {
-  const limitPerMinute = envInt(env, "API_RATE_LIMIT_PER_MINUTE");
+function checkRateLimit(request: Request, env: Env, routePath?: string) {
+  const routeLimits = parseRouteRateLimits(env);
+  const routeSetting = routePath ? routeLimits[routePath] : undefined;
+  const limitPerMinute = routeSetting?.rpm ?? envInt(env, "API_RATE_LIMIT_PER_MINUTE");
+  const burst = routeSetting?.burst ?? 0;
+
   if (limitPerMinute === 0) {
     return { allowed: true as const };
   }
 
   const clientKey = readClientKey(request);
+  const scopeKey = routePath || "global";
   const now = Date.now();
   const windowMs = 60_000;
-  const bucket = rateLimitWindow.get(clientKey);
+  const bucketKey = `${scopeKey}:${clientKey}`;
+  const bucket = rateLimitWindow.get(bucketKey);
+  const allowedInWindow = limitPerMinute + burst;
   if (!bucket || now - bucket.windowStartMs >= windowMs) {
-    rateLimitWindow.set(clientKey, { windowStartMs: now, count: 1 });
+    rateLimitWindow.set(bucketKey, { windowStartMs: now, count: 1 });
     return { allowed: true as const };
   }
 
-  if (bucket.count >= limitPerMinute) {
+  if (bucket.count >= allowedInWindow) {
     const retryAfterMs = Math.max(1_000, windowMs - (now - bucket.windowStartMs));
     return { allowed: false as const, retryAfterSeconds: Math.ceil(retryAfterMs / 1_000) };
   }
 
   bucket.count += 1;
-  rateLimitWindow.set(clientKey, bucket);
+  rateLimitWindow.set(bucketKey, bucket);
   return { allowed: true as const };
 }
 
@@ -413,6 +463,7 @@ async function enqueueManualScheduleTask(request: Request, env: Env, scheduleId:
   }
 
   const traceId = readTraceId(request);
+  const workspaceId = readWorkspaceId(request, env.DEFAULT_WORKSPACE_ID?.trim() || "default");
   const now = new Date().toISOString();
 
   if (await isDuplicateDelivery(env.DB, traceId)) {
@@ -422,6 +473,7 @@ async function enqueueManualScheduleTask(request: Request, env: Env, scheduleId:
   const task: QueueTask = {
     kind: "scheduled_job",
     traceId,
+    workspaceId,
     scheduleId: schedule.id,
     payload: {
       target: schedule.target,
@@ -440,6 +492,7 @@ async function enqueueManualScheduleTask(request: Request, env: Env, scheduleId:
     {
       accepted: true,
       traceId,
+      workspaceId,
       scheduleId: schedule.id,
       enqueuedAt: now,
       trigger: "manual_api"
@@ -465,6 +518,13 @@ export default {
 
     if (legacyRoutePath || url.pathname.startsWith("/api/r/")) {
       const traceId = readTraceId(request);
+      runtimeLog({
+        level: "warn",
+        event: "api.legacy_endpoint_hit",
+        traceId,
+        routePath: legacyRoutePath || undefined,
+        status: "blocked"
+      });
       await alertLegacyEndpointHit(request, url, env, traceId, legacyRoutePath);
       return respond(
         json(
@@ -482,12 +542,31 @@ export default {
       return respond(json({ error: "method not allowed" }, { status: 405 }));
     }
 
+    const devScheduleId = devCronScheduleIdFromUrl(url);
+    const routePath = routeFromUrl(url);
+    const targetRoutePath = routePath || undefined;
+
     if (!isIngressAuthorized(request, env)) {
+      runtimeLog({
+        level: "warn",
+        event: "api.ingress_unauthorized",
+        routePath: targetRoutePath,
+        status: "denied"
+      });
       return respond(json({ error: "unauthorized" }, { status: 401 }));
     }
 
-    const rateLimit = checkRateLimit(request, env);
+    const rateLimit = checkRateLimit(request, env, targetRoutePath);
     if (!rateLimit.allowed) {
+      runtimeLog({
+        level: "warn",
+        event: "api.rate_limit_exceeded",
+        routePath: targetRoutePath,
+        status: "blocked",
+        details: {
+          retryAfterSeconds: rateLimit.retryAfterSeconds
+        }
+      });
       return respond(
         json(
           {
@@ -506,6 +585,15 @@ export default {
 
     const signatureValidation = await validateIngressSignature(request, env);
     if (!signatureValidation.valid) {
+      runtimeLog({
+        level: "warn",
+        event: "api.signature_invalid",
+        routePath: targetRoutePath,
+        status: "denied",
+        details: {
+          reason: signatureValidation.reason
+        }
+      });
       return respond(
         json(
           {
@@ -517,12 +605,10 @@ export default {
       );
     }
 
-    const devScheduleId = devCronScheduleIdFromUrl(url);
     if (devScheduleId) {
       return respond(await enqueueManualScheduleTask(request, env, devScheduleId));
     }
 
-    const routePath = routeFromUrl(url);
     if (!routePath) {
       return respond(json({ error: "unknown route", hint: "Use POST /api/{route}" }, { status: 404 }));
     }
@@ -536,22 +622,58 @@ export default {
     }
 
     const traceId = readTraceId(request);
+    const workspaceId = readWorkspaceId(request, env.DEFAULT_WORKSPACE_ID?.trim() || "default");
     if (await isDuplicateDelivery(env.DB, traceId)) {
-      return respond(json({ accepted: true, duplicate: true, traceId }, { status: 202 }));
+      return respond(json({ accepted: true, duplicate: true, traceId, workspaceId }, { status: 202 }));
     }
 
     const rawPayload = await parseBody(request);
     const payload = route.wrapBody ? { body: rawPayload } : rawPayload;
+    const validation = validateRoutePayload(routePath, payload);
+    if (!validation.ok) {
+      runtimeLog({
+        level: "warn",
+        event: "api.route_payload_invalid",
+        traceId,
+        routePath,
+        workspaceId,
+        status: "rejected",
+        details: {
+          errors: validation.errors
+        }
+      });
+      return respond(
+        json(
+          {
+            error: "invalid payload",
+            routePath,
+            traceId,
+            workspaceId,
+            details: validation.errors
+          },
+          { status: 400 }
+        )
+      );
+    }
 
     const task: QueueTask = {
       kind: "http_route",
       traceId,
+      workspaceId,
       routePath: route.routePath,
       payload,
       enqueuedAt: new Date().toISOString()
     };
 
     await markIdempotent(env.DB, traceId);
+    runtimeLog({
+      level: "info",
+      event: "api.route_accepted",
+      traceId,
+      routePath: route.routePath,
+      workspaceId,
+      status: route.requestType === "async" ? "queued" : "sync"
+    });
 
     if (route.requestType === "async") {
       return respond(await enqueueAsyncTask(env, task));
