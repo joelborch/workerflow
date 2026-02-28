@@ -1,0 +1,6 @@
+node_modules
+.wrangler
+dist
+*.log
+error-query-results.json
+error-analysis-report.md

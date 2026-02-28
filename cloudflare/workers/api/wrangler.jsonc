@@ -1,0 +1,52 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "workerflow-runtime-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-02-26",
+  "account_id": "REPLACE_WITH_CLOUDFLARE_ACCOUNT_ID",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "ENV_NAME": "dev"
+  },
+  "secrets_store_secrets": [
+    {
+      "binding": "LEGACY_ALERT_WEBHOOK_URL",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "GCHAT_ALERTS_WEBHOOK_URL"
+    },
+    {
+      "binding": "GCHAT_ALERTS_WEBHOOK",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "GCHAT_ALERTS_WEBHOOK"
+    },
+    {
+      "binding": "GCHAT_ALERTS_WEBHOOK_URL",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "GCHAT_ALERTS_WEBHOOK_URL"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "workerflow-runtime",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "../../migrations/d1"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "AUTOMATION_QUEUE",
+        "queue": "workerflow-automation-queue"
+      }
+    ]
+  },
+  "services": [
+    {
+      "binding": "WORKFLOW_SERVICE",
+      "service": "workerflow-runtime-workflow"
+    }
+  ]
+}

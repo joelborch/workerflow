@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "workerflow-runtime-queue-consumer",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-02-26",
+  "account_id": "REPLACE_WITH_CLOUDFLARE_ACCOUNT_ID",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "ENV_NAME": "dev"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "workerflow-runtime",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "../../migrations/d1"
+    }
+  ],
+  "queues": {
+    "consumers": [
+      {
+        "queue": "workerflow-automation-queue",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 8
+      }
+    ]
+  },
+  "services": [
+    {
+      "binding": "WORKFLOW_SERVICE",
+      "service": "workerflow-runtime-workflow"
+    }
+  ]
+}

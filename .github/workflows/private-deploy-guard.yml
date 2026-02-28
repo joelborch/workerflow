@@ -1,0 +1,30 @@
+name: Private Deploy Guard
+
+on:
+  push:
+    paths:
+      - "cloudflare/**"
+      - "infra/**"
+      - ".github/workflows/private-deploy-guard.yml"
+  pull_request:
+    paths:
+      - "cloudflare/**"
+      - "infra/**"
+      - ".github/workflows/private-deploy-guard.yml"
+
+jobs:
+  guard:
+    if: ${{ vars.PRIVATE_DEPLOY_GUARD == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: cloudflare/package-lock.json
+      - run: npm ci
+      - run: npm run deploy:guard:strict

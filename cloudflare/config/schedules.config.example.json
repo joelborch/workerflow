@@ -1,0 +1,9 @@
+[
+  {
+    "id": "example_daily",
+    "cron": "0 0 * * *",
+    "enabled": true,
+    "target": "f/example/daily",
+    "timeZone": "UTC"
+  }
+]

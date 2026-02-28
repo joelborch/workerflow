@@ -1,0 +1,20 @@
+[
+  {
+    "routePath": "webhook_echo",
+    "requestType": "async",
+    "flowPath": "f/examples/webhook_echo",
+    "wrapBody": false
+  },
+  {
+    "routePath": "chat_notify",
+    "requestType": "async",
+    "flowPath": "f/examples/chat_notify",
+    "wrapBody": true
+  },
+  {
+    "routePath": "lead_normalizer",
+    "requestType": "sync",
+    "flowPath": "f/examples/lead_normalizer",
+    "wrapBody": true
+  }
+]

@@ -1,0 +1,35 @@
+WorkerFlow Cloudflare Runtime - LLM Quickstart
+
+Repository layout:
+- Cloudflare runtime code: `cloudflare/`
+- Infrastructure spec: `infra/cloudflare.resources.json`
+- Infra schema: `infra/cloudflare.resources.schema.json`
+- Route schema: `cloudflare/schemas/routes.config.schema.json`
+- Schedule schema: `cloudflare/schemas/schedules.config.schema.json`
+- Ops API docs: `cloudflare/docs/OPS_DASHBOARD_API.md`
+- OpenAPI: `cloudflare/openapi.json`
+
+Primary commands:
+- `cd cloudflare && npm install`
+- `cd cloudflare && npm run preflight`
+- `cd cloudflare && npm run bootstrap`
+- `cd cloudflare && npm run deploy:guard`
+- `cd cloudflare && npm run deploy:guard:strict`
+- `cd cloudflare && npm run test:compat-contract`
+- `cd cloudflare && npm run test:manifest-mode`
+- `cd cloudflare && npm run test:schedule-fixtures`
+- `cd cloudflare && npm run test:runtime-config`
+- `cd cloudflare && npm run test:route-fixtures`
+- `cd cloudflare && npm run test:handler-fixtures`
+
+Manifest mode:
+- Default: `legacy` (uses `shared/routes.ts` and `shared/schedules.ts`)
+- Config mode:
+  - `MANIFEST_MODE=config`
+  - `ROUTES_CONFIG_JSON=<json>`
+  - `SCHEDULES_CONFIG_JSON=<json>`
+
+Security:
+- Set `OPS_DASHBOARD_TOKEN` to protect dashboard APIs.
+- Set `API_INGRESS_TOKEN` to require API ingress auth.
+- For private production repos, enable deploy guard workflow via repo variable `PRIVATE_DEPLOY_GUARD=true`.

@@ -1,0 +1,41 @@
+{
+  "name": "workerflow-cloudflare-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Cloudflare Workers scaffold for building WorkerFlow automations",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "preflight": "node scripts/preflight.mjs",
+    "preflight:strict": "node scripts/preflight.mjs --strict",
+    "bootstrap": "node scripts/bootstrap_cloudflare.mjs --print-plan",
+    "bootstrap:apply": "node scripts/bootstrap_cloudflare.mjs --apply",
+    "deploy:guard": "node scripts/deploy_guard.mjs",
+    "deploy:guard:strict": "node scripts/deploy_guard.mjs --strict",
+    "test:compat-contract": "npx tsx scripts/test_contract_compat.ts",
+    "test:manifest-mode": "npx tsx scripts/test_manifest_mode.ts",
+    "test:schedule-fixtures": "npx tsx scripts/test_schedule_fixtures.ts",
+    "errors:query": "node scripts/error-query.js",
+    "errors:analyze": "node scripts/error-analyzer.js",
+    "errors:report": "npm run errors:query && npm run errors:analyze",
+    "test:runtime-config": "npx tsx scripts/test_runtime_config.ts",
+    "test:route-fixtures": "npx tsx scripts/test_route_fixtures.ts",
+    "test:handler-fixtures": "npx tsx scripts/test_handler_fixtures.ts",
+    "smoke:handlers": "npx tsx scripts/smoke_workflow_handlers.ts",
+    "smoke:ops": "bash scripts/smoke_ops_dashboard.sh",
+    "dev:api": "wrangler dev --config workers/api/wrangler.jsonc",
+    "dev:ops": "wrangler dev --config workers/ops-dashboard/wrangler.jsonc",
+    "dev:scheduler": "wrangler dev --config workers/scheduler/wrangler.jsonc",
+    "dev:queue": "wrangler dev --config workers/queue-consumer/wrangler.jsonc",
+    "dev:workflow": "wrangler dev --config workers/workflow/wrangler.jsonc",
+    "deploy:api": "wrangler deploy --config workers/api/wrangler.jsonc",
+    "deploy:ops": "wrangler deploy --config workers/ops-dashboard/wrangler.jsonc",
+    "deploy:scheduler": "wrangler deploy --config workers/scheduler/wrangler.jsonc",
+    "deploy:queue": "wrangler deploy --config workers/queue-consumer/wrangler.jsonc",
+    "deploy:workflow": "wrangler deploy --config workers/workflow/wrangler.jsonc"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260214.0",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.33.1"
+  }
+}
