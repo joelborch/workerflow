@@ -1,10 +1,10 @@
 # Packages
 
-This directory contains modular package scaffolding for the Cloudflare automation platform.
+This directory contains modular extraction targets for WorkerFlow.
 
-- `core-runtime`: shared runtime design and extraction target.
-- `handler-sdk`: stable handler contracts and registry helpers.
-- `recipes-example`: sanitized example handlers and manifests.
-- `recipes-joel`: placeholder for private/business-specific recipes.
+- `core-runtime`: target home for reusable runtime primitives.
+- `handler-sdk`: stable contracts and registries for route/schedule handlers.
+- `recipes-example`: public example routes/schedules.
+- `recipes-joel`: placeholder package used as an example of private overlay recipes.
 
-Existing production runtime remains under `cloudflare/` for compatibility during migration.
+Current production-compatible runtime remains in `cloudflare/` while package extraction progresses.

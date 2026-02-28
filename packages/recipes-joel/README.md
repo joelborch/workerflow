@@ -1,5 +1,5 @@
-# recipes-joel (Private Placeholder)
+# recipes-joel (Private Overlay Example)
 
-This directory is the migration target for private/business-specific recipes.
+This package is a placeholder showing where private recipe bundles can live outside the public core runtime.
 
-It is intentionally documentation-only in this public scaffolding pass.
+For public distributions, ship recipes in generic packages (for example `recipes-example`) and keep business-specific recipes in private overlays.
