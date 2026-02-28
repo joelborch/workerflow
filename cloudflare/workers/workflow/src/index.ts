@@ -1,10 +1,12 @@
 import { json } from "../../../shared/http";
+import { runtimeLog } from "../../../shared/logger";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { validateRoutePayload } from "../../../shared/route_validation";
 import type { Env, QueueTask, SyncHttpPassthrough } from "../../../shared/types";
 import { validateEnabledManifestConfig, validateTaskConfig } from "./config_validation";
 import { CRON_SCHEDULE_HANDLERS } from "./handlers/cron";
 import { HTTP_ROUTE_HANDLERS } from "./handlers/http";
-import { errorContract } from "./lib/errors";
+import { WorkflowHandlerError, errorContract } from "./lib/errors";
 import { resolveWorkflowSecretsStore } from "./secrets_store";
 
 type HttpHandlerContext = {
@@ -33,9 +35,26 @@ async function runHttpRoute(task: QueueTask, env: Env): Promise<unknown | SyncHt
     throw new Error(`No HTTP handler registered for route "${routePath}"`);
   }
 
-  return await (handler as HttpHandlerWithContext)(task.payload, task.traceId, {
+  const validation = validateRoutePayload(routePath, task.payload);
+  if (!validation.ok) {
+    throw new WorkflowHandlerError("invalid route payload", {
+      code: "invalid_payload",
+      status: 400,
+      details: validation.errors
+    });
+  }
+
+  const output = await (handler as HttpHandlerWithContext)(task.payload, task.traceId, {
     env
   });
+  const isObjectOutput = output !== null && typeof output === "object";
+  if (!isObjectOutput) {
+    throw new WorkflowHandlerError(`invalid handler output for route "${routePath}"`, {
+      code: "invalid_handler_output",
+      status: 500
+    });
+  }
+  return output;
 }
 
 async function runScheduledJob(task: QueueTask, env: Env) {
@@ -103,6 +122,15 @@ export default {
     }
 
     const task = (await request.json()) as QueueTask;
+    runtimeLog({
+      level: "info",
+      event: "workflow.task_received",
+      traceId: task.traceId,
+      workspaceId: task.workspaceId,
+      routePath: task.routePath,
+      scheduleId: task.scheduleId,
+      status: task.kind
+    });
     const configErrors = validateTaskConfig(task, resolvedEnv);
     if (configErrors.length > 0) {
       return json(
@@ -117,8 +145,29 @@ export default {
 
     try {
       const result = await executeTask(task, resolvedEnv);
+      runtimeLog({
+        level: "info",
+        event: "workflow.task_succeeded",
+        traceId: task.traceId,
+        workspaceId: task.workspaceId,
+        routePath: task.routePath,
+        scheduleId: task.scheduleId,
+        status: "succeeded"
+      });
       return json(result);
     } catch (error) {
+      runtimeLog({
+        level: "error",
+        event: "workflow.task_failed",
+        traceId: task.traceId,
+        workspaceId: task.workspaceId,
+        routePath: task.routePath,
+        scheduleId: task.scheduleId,
+        status: "failed",
+        details: {
+          error: error instanceof Error ? error.message : String(error)
+        }
+      });
       const contract = errorContract(error);
       return json(
         {

@@ -1,7 +1,15 @@
+import { recordAuditEvent } from "../../../shared/db";
 import { json } from "../../../shared/http";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import {
+  listOAuthTokens,
+  oauthTokenNeedsRefresh,
+  redactToken,
+  upsertOAuthToken
+} from "../../../shared/oauth_tokens";
 import { checkTaskReplayEnablement } from "../../../shared/task_enablement";
 import type { QueueTask, RouteDefinition, ScheduleDefinition } from "../../../shared/types";
+import { readWorkspaceId, workspaceFilterValue } from "../../../shared/workspace";
 
 type Env = {
   DB: D1Database;
@@ -17,6 +25,9 @@ type Env = {
   SCHEDULES_CONFIG_JSON?: string;
   ENABLED_HTTP_ROUTES?: string;
   DISABLED_HTTP_ROUTES?: string;
+  API_RATE_LIMIT_PER_MINUTE?: string;
+  API_ROUTE_LIMITS_JSON?: string;
+  DEFAULT_WORKSPACE_ID?: string;
 };
 
 type SummaryStatusRow = {
@@ -47,6 +58,7 @@ type CatalogScheduleCountRow = {
 
 type RunRow = {
   traceId: string;
+  workspaceId: string | null;
   kind: string;
   routePath: string | null;
   scheduleId: string | null;
@@ -60,6 +72,7 @@ type RunRow = {
 type DeadLetterRow = {
   id: number;
   traceId: string;
+  workspaceId: string | null;
   payloadJson: string;
   error: string;
   createdAt: string;
@@ -95,6 +108,7 @@ type TimelineDetailStatusRow = {
 
 type TimelineDetailRunRow = {
   traceId: string;
+  workspaceId: string | null;
   kind: string;
   routePath: string | null;
   scheduleId: string | null;
@@ -107,8 +121,18 @@ type TimelineDetailRunRow = {
 type FailureErrorRow = {
   routePath: string | null;
   scheduleId: string | null;
+  workspaceId: string | null;
   error: string;
   startedAt: string;
+};
+
+type WorkflowTemplate = {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  routes: string[];
+  schedules: string[];
 };
 
 type DashboardExtension = {
@@ -124,6 +148,106 @@ const MAX_TIME_WINDOW_MS = 31 * 24 * 60 * 60 * 1000;
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 250;
 const MAX_FILTER_LEN = 120;
+const DEFAULT_WORKSPACE = "default";
+const CONNECTOR_SECRETS: Array<{ id: string; requiredSecrets: string[]; routes: string[] }> = [
+  {
+    id: "slack",
+    requiredSecrets: ["SLACK_WEBHOOK_URL"],
+    routes: ["slack_message"]
+  },
+  {
+    id: "github",
+    requiredSecrets: ["GITHUB_TOKEN"],
+    routes: ["github_issue_create"]
+  },
+  {
+    id: "openai",
+    requiredSecrets: ["OPENAI_API_KEY"],
+    routes: ["openai_chat"]
+  },
+  {
+    id: "stripe",
+    requiredSecrets: ["STRIPE_API_KEY"],
+    routes: ["stripe_payment_intent_create", "stripe_customer_upsert"]
+  },
+  {
+    id: "notion",
+    requiredSecrets: ["NOTION_TOKEN"],
+    routes: ["notion_database_item_create", "notion_database_item_get"]
+  },
+  {
+    id: "hubspot",
+    requiredSecrets: ["HUBSPOT_ACCESS_TOKEN"],
+    routes: ["hubspot_contact_upsert", "hubspot_deal_upsert"]
+  }
+];
+
+const WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
+  {
+    id: "lead-capture-normalize",
+    name: "Lead Capture + Normalize",
+    category: "Sales",
+    description: "Capture inbound webhook leads and normalize payload shape.",
+    routes: ["webhook_echo", "lead_normalizer"],
+    schedules: []
+  },
+  {
+    id: "incident-to-slack",
+    name: "Incident To Slack",
+    category: "Ops",
+    description: "Create incident payload and push chat/slack alerts.",
+    routes: ["incident_create", "chat_notify", "slack_message"],
+    schedules: []
+  },
+  {
+    id: "github-ticket-on-failure",
+    name: "GitHub Ticket On Failure",
+    category: "Engineering",
+    description: "Create GitHub issue for failed automation traces.",
+    routes: ["github_issue_create"],
+    schedules: ["retry_dead_letters_hourly"]
+  },
+  {
+    id: "openai-summary-to-chat",
+    name: "OpenAI Summary To Chat",
+    category: "AI",
+    description: "Generate summary via OpenAI and send to chat channel.",
+    routes: ["openai_chat", "chat_notify"],
+    schedules: []
+  },
+  {
+    id: "stripe-customer-sync",
+    name: "Stripe Customer Sync",
+    category: "Finance",
+    description: "Upsert Stripe customer records from inbound events.",
+    routes: ["stripe_customer_upsert"],
+    schedules: []
+  },
+  {
+    id: "stripe-intent-create",
+    name: "Stripe Intent Create",
+    category: "Finance",
+    description: "Create payment intents from internal order payloads.",
+    routes: ["stripe_payment_intent_create"],
+    schedules: []
+  },
+  {
+    id: "notion-database-ingest",
+    name: "Notion Database Ingest",
+    category: "Knowledge",
+    description: "Write automation outcomes into Notion database rows.",
+    routes: ["notion_database_item_create"],
+    schedules: []
+  },
+  {
+    id: "hubspot-contact-enrichment",
+    name: "HubSpot Contact Enrichment",
+    category: "Sales",
+    description: "Upsert HubSpot contacts and deals from normalized leads.",
+    routes: ["hubspot_contact_upsert", "hubspot_deal_upsert"],
+    schedules: []
+  }
+];
 const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
@@ -161,6 +285,94 @@ function sanitizeFilterValue(value: string | null) {
   }
 
   return trimmed.slice(0, MAX_FILTER_LEN);
+}
+
+function readWorkspaceFilter(url: URL) {
+  return workspaceFilterValue(url.searchParams.get("workspace"), null);
+}
+
+function withWorkspaceClause(
+  baseClauses: string[],
+  bindings: unknown[],
+  workspaceId: string | null,
+  column = "workspace_id"
+) {
+  if (!workspaceId) {
+    return;
+  }
+  baseClauses.push(`${column} = ?${bindings.length + 1}`);
+  bindings.push(workspaceId);
+}
+
+function parseRouteRateLimitConfig(env: Env) {
+  const raw = env.API_ROUTE_LIMITS_JSON?.trim();
+  if (!raw) {
+    return {} as Record<string, { rpm: number; burst: number }>;
+  }
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return {} as Record<string, { rpm: number; burst: number }>;
+    }
+    const output: Record<string, { rpm: number; burst: number }> = {};
+    for (const [routePath, value] of Object.entries(parsed)) {
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        continue;
+      }
+      const candidate = value as Record<string, unknown>;
+      const rpm = typeof candidate.rpm === "number" ? Math.floor(candidate.rpm) : 0;
+      const burst = typeof candidate.burst === "number" ? Math.floor(candidate.burst) : 0;
+      if (rpm > 0) {
+        output[routePath] = { rpm, burst: Math.max(0, burst) };
+      }
+    }
+    return output;
+  } catch {
+    return {} as Record<string, { rpm: number; burst: number }>;
+  }
+}
+
+async function parseJsonBody(request: Request) {
+  try {
+    return (await request.json()) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+function actorFromRequest(request: Request) {
+  const authHeader = request.headers.get("authorization") || request.headers.get("x-dashboard-token") || "";
+  if (!authHeader) {
+    return "dashboard:anonymous";
+  }
+  const trimmed = authHeader.trim();
+  const short = trimmed.length > 12 ? `${trimmed.slice(0, 8)}...` : trimmed;
+  return `dashboard:${short}`;
+}
+
+async function safeAuditEvent(
+  env: Env,
+  request: Request,
+  input: {
+    workspaceId?: string;
+    action: string;
+    resourceType: string;
+    resourceId?: string | null;
+    details?: Record<string, unknown>;
+  }
+) {
+  try {
+    await recordAuditEvent(env.DB, {
+      workspaceId: input.workspaceId,
+      actor: actorFromRequest(request),
+      action: input.action,
+      resourceType: input.resourceType,
+      resourceId: input.resourceId,
+      details: input.details
+    });
+  } catch {
+    // audit logging is best-effort and should not block control-plane actions
+  }
 }
 
 function parseIsoTimestamp(value: string | null) {
@@ -415,6 +627,15 @@ function routePath(url: URL) {
 
 function retryTraceIdFromPath(pathname: string) {
   const match = pathname.match(/^\/api\/retry\/([^/]+)$/);
+  if (!match?.[1]) {
+    return undefined;
+  }
+
+  return decodeURIComponent(match[1]);
+}
+
+function replayTraceIdFromPath(pathname: string) {
+  const match = pathname.match(/^\/api\/replay\/([^/]+)$/);
   if (!match?.[1]) {
     return undefined;
   }
@@ -3190,41 +3411,45 @@ function extractInlineDashboardScript(html: string) {
 
 async function getSummary(url: URL, env: Env) {
   const range = resolveTimeRange(url);
+  const workspaceId = readWorkspaceFilter(url);
+  const runClauses = ["started_at >= ?1", "started_at <= ?2"];
+  const runBindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(runClauses, runBindings, workspaceId);
+  const deadLetterClauses = ["created_at >= ?1", "created_at <= ?2"];
+  const deadLetterBindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(deadLetterClauses, deadLetterBindings, workspaceId);
 
   const statusRows = await env.DB
     .prepare(
        `SELECT status, COUNT(*) AS count
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
+       WHERE ${runClauses.join(" AND ")}
        GROUP BY status`
     )
-    .bind(range.since, range.until)
+    .bind(...runBindings)
     .all<SummaryStatusRow>();
 
   const topRoutesRows = await env.DB
     .prepare(
       `SELECT route_path AS routePath, COUNT(*) AS count
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
+       WHERE ${runClauses.join(" AND ")}
          AND route_path IS NOT NULL
          AND route_path != ''
        GROUP BY route_path
        ORDER BY count DESC, route_path ASC
        LIMIT 8`
     )
-    .bind(range.since, range.until)
+    .bind(...runBindings)
     .all<SummaryTopRouteRow>();
 
   const deadLetterRow = await env.DB
     .prepare(
       `SELECT COUNT(*) AS count
        FROM dead_letters
-       WHERE created_at >= ?1
-         AND created_at <= ?2`
+       WHERE ${deadLetterClauses.join(" AND ")}`
     )
-    .bind(range.since, range.until)
+    .bind(...deadLetterBindings)
     .first<{ count: number | string }>();
 
   const countsByStatus = new Map<string, number>();
@@ -3238,6 +3463,7 @@ async function getSummary(url: URL, env: Env) {
     windowHours: range.windowHours,
     since: range.since,
     until: range.until,
+    workspaceId,
     totalRuns,
     succeededRuns: countsByStatus.get("succeeded") ?? 0,
     failedRuns: countsByStatus.get("failed") ?? 0,
@@ -3252,6 +3478,10 @@ async function getSummary(url: URL, env: Env) {
 
 async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[], schedulesManifest: ScheduleDefinition[]) {
   const range = resolveTimeRange(url);
+  const workspaceId = readWorkspaceFilter(url);
+  const runClauses = ["started_at >= ?1", "started_at <= ?2"];
+  const runBindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(runClauses, runBindings, workspaceId);
 
   const routeRows = await env.DB
     .prepare(
@@ -3262,13 +3492,12 @@ async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[],
          SUM(CASE WHEN status IN ('started', 'running') THEN 1 ELSE 0 END) AS started,
          COUNT(*) AS total
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
+       WHERE ${runClauses.join(" AND ")}
          AND route_path IS NOT NULL
          AND route_path != ''
        GROUP BY route_path`
     )
-    .bind(range.since, range.until)
+    .bind(...runBindings)
     .all<CatalogRouteCountRow>();
 
   const scheduleRows = await env.DB
@@ -3280,13 +3509,12 @@ async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[],
          SUM(CASE WHEN status IN ('started', 'running') THEN 1 ELSE 0 END) AS started,
          COUNT(*) AS total
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
+       WHERE ${runClauses.join(" AND ")}
          AND schedule_id IS NOT NULL
          AND schedule_id != ''
        GROUP BY schedule_id`
     )
-    .bind(range.since, range.until)
+    .bind(...runBindings)
     .all<CatalogScheduleCountRow>();
 
   const routeCounts = new Map(
@@ -3392,6 +3620,7 @@ async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[],
   return json({
     since: range.since,
     until: range.until,
+    workspaceId,
     windowHours: range.windowHours,
     routes,
     schedules,
@@ -3404,6 +3633,7 @@ async function getRuns(url: URL, env: Env) {
   const routePathFilter = sanitizeFilterValue(url.searchParams.get("routePath"));
   const scheduleIdFilter = sanitizeFilterValue(url.searchParams.get("scheduleId"));
   const kindFilter = sanitizeFilterValue(url.searchParams.get("kind"));
+  const workspaceId = readWorkspaceFilter(url);
   const limit = parseLimit(url.searchParams.get("limit"));
 
   const clauses: string[] = [];
@@ -3429,9 +3659,12 @@ async function getRuns(url: URL, env: Env) {
     bindings.push(kindFilter);
   }
 
+  withWorkspaceClause(clauses, bindings, workspaceId);
+
   let query = `
     SELECT
       trace_id AS traceId,
+      workspace_id AS workspaceId,
       kind,
       route_path AS routePath,
       schedule_id AS scheduleId,
@@ -3457,10 +3690,12 @@ async function getRuns(url: URL, env: Env) {
       status: status ?? null,
       routePath: routePathFilter ?? null,
       scheduleId: scheduleIdFilter ?? null,
-      kind: kindFilter ?? null
+      kind: kindFilter ?? null,
+      workspaceId
     },
     runs: rows.results.map((row) => ({
       traceId: row.traceId,
+      workspaceId: row.workspaceId,
       kind: row.kind,
       routePath: row.routePath,
       scheduleId: row.scheduleId,
@@ -3479,6 +3714,7 @@ async function getRunDetail(traceId: string, env: Env) {
     .prepare(
       `SELECT
          trace_id AS traceId,
+         workspace_id AS workspaceId,
          kind,
          route_path AS routePath,
          schedule_id AS scheduleId,
@@ -3502,6 +3738,7 @@ async function getRunDetail(traceId: string, env: Env) {
     .prepare(
       `SELECT
          id,
+         workspace_id AS workspaceId,
          payload_json AS payloadJson,
          error,
          created_at AS createdAt
@@ -3511,7 +3748,7 @@ async function getRunDetail(traceId: string, env: Env) {
        LIMIT 1`
     )
     .bind(traceId)
-    .first<{ id: number; payloadJson: string; error: string; createdAt: string }>();
+    .first<{ id: number; workspaceId: string | null; payloadJson: string; error: string; createdAt: string }>();
 
   const retryChainRows = await env.DB
     .prepare(
@@ -3549,6 +3786,7 @@ async function getRunDetail(traceId: string, env: Env) {
     traceId,
     run: {
       traceId: run.traceId,
+      workspaceId: run.workspaceId,
       kind: run.kind,
       routePath: run.routePath,
       scheduleId: run.scheduleId,
@@ -3562,6 +3800,7 @@ async function getRunDetail(traceId: string, env: Env) {
     deadLetter: deadLetter
       ? {
           id: deadLetter.id,
+          workspaceId: deadLetter.workspaceId,
           payloadJson: deadLetter.payloadJson,
           error: deadLetter.error,
           createdAt: deadLetter.createdAt
@@ -3575,28 +3814,35 @@ async function getRunDetail(traceId: string, env: Env) {
 }
 
 async function getDeadLetters(url: URL, env: Env) {
+  const workspaceId = readWorkspaceFilter(url);
   const limit = parseLimit(url.searchParams.get("limit"));
+  const clauses: string[] = [];
+  const bindings: unknown[] = [];
+  withWorkspaceClause(clauses, bindings, workspaceId);
 
-  const rows = await env.DB
-    .prepare(
-      `SELECT
-         id,
-         trace_id AS traceId,
-         payload_json AS payloadJson,
-         error,
-         created_at AS createdAt
-       FROM dead_letters
-       ORDER BY created_at DESC
-       LIMIT ?1`
-    )
-    .bind(limit)
-    .all<DeadLetterRow>();
+  let query = `SELECT
+    id,
+    trace_id AS traceId,
+    workspace_id AS workspaceId,
+    payload_json AS payloadJson,
+    error,
+    created_at AS createdAt
+   FROM dead_letters`;
+  if (clauses.length > 0) {
+    query += ` WHERE ${clauses.join(" AND ")}`;
+  }
+  query += ` ORDER BY created_at DESC LIMIT ?${bindings.length + 1}`;
+  bindings.push(limit);
+
+  const rows = await env.DB.prepare(query).bind(...bindings).all<DeadLetterRow>();
 
   return json({
     limit,
+    workspaceId,
     deadLetters: rows.results.map((item) => ({
       id: item.id,
       traceId: item.traceId,
+      workspaceId: item.workspaceId,
       createdAt: item.createdAt,
       error: item.error
     }))
@@ -3638,21 +3884,17 @@ async function recordReplayLineage(
   return retryCount;
 }
 
-async function retryDeadLetter(
-  requestPath: string,
+async function replayTaskFromDeadLetter(
   env: Env,
+  traceId: string,
   routesManifest: RouteDefinition[],
   schedulesManifest: ScheduleDefinition[]
 ) {
-  const traceId = retryTraceIdFromPath(requestPath);
-  if (!traceId) {
-    return json({ error: "invalid retry path" }, { status: 404 });
-  }
-
   const deadLetter = await env.DB
     .prepare(
       `SELECT
          id,
+         workspace_id AS workspaceId,
          payload_json AS payloadJson,
          created_at AS createdAt
        FROM dead_letters
@@ -3661,21 +3903,33 @@ async function retryDeadLetter(
        LIMIT 1`
     )
     .bind(traceId)
-    .first<{ id: number; payloadJson: string; createdAt: string }>();
+    .first<{ id: number; workspaceId: string | null; payloadJson: string; createdAt: string }>();
 
   if (!deadLetter) {
-    return json({ error: "dead letter not found", traceId }, { status: 404 });
+    return {
+      ok: false as const,
+      status: 404,
+      body: { error: "dead letter not found", traceId }
+    };
   }
 
   let payload: unknown;
   try {
     payload = JSON.parse(deadLetter.payloadJson);
   } catch {
-    return json({ error: "dead letter payload is invalid JSON", traceId }, { status: 422 });
+    return {
+      ok: false as const,
+      status: 422,
+      body: { error: "dead letter payload is invalid JSON", traceId }
+    };
   }
 
   if (!isQueueTask(payload)) {
-    return json({ error: "dead letter payload is not a queue task", traceId }, { status: 422 });
+    return {
+      ok: false as const,
+      status: 422,
+      body: { error: "dead letter payload is not a queue task", traceId }
+    };
   }
 
   const replayCheck = checkTaskReplayEnablement(payload, env, {
@@ -3683,14 +3937,15 @@ async function retryDeadLetter(
     schedules: schedulesManifest
   });
   if (!replayCheck.enabled) {
-    return json(
-      {
+    return {
+      ok: false as const,
+      status: 409,
+      body: {
         error: "retry blocked",
         traceId,
         reason: replayCheck.reason
-      },
-      { status: 409 }
-    );
+      }
+    };
   }
 
   const retriedTask: QueueTask = {
@@ -3709,17 +3964,98 @@ async function retryDeadLetter(
     retryCount = null;
   }
 
-  return json(
-    {
+  return {
+    ok: true as const,
+    status: 202,
+    body: {
       accepted: true,
       retriedFromTraceId: traceId,
+      workspaceId: deadLetter.workspaceId,
       deadLetterId: deadLetter.id,
       originalCreatedAt: deadLetter.createdAt,
       newTraceId: retriedTask.traceId,
       retryCount
-    },
-    { status: 202 }
-  );
+    }
+  };
+}
+
+async function retryDeadLetter(
+  request: Request,
+  requestPath: string,
+  env: Env,
+  routesManifest: RouteDefinition[],
+  schedulesManifest: ScheduleDefinition[]
+) {
+  const traceId = retryTraceIdFromPath(requestPath);
+  if (!traceId) {
+    return json({ error: "invalid retry path" }, { status: 404 });
+  }
+
+  const replay = await replayTaskFromDeadLetter(env, traceId, routesManifest, schedulesManifest);
+  if (!replay.ok) {
+    return json(replay.body, { status: replay.status });
+  }
+
+  await safeAuditEvent(env, request, {
+    workspaceId: replay.body.workspaceId ?? undefined,
+    action: "retry_dead_letter",
+    resourceType: "trace",
+    resourceId: traceId,
+    details: {
+      newTraceId: replay.body.newTraceId,
+      retryCount: replay.body.retryCount
+    }
+  });
+
+  return json(replay.body, { status: replay.status });
+}
+
+async function replayFailedRun(
+  request: Request,
+  requestPath: string,
+  env: Env,
+  routesManifest: RouteDefinition[],
+  schedulesManifest: ScheduleDefinition[]
+) {
+  const traceId = replayTraceIdFromPath(requestPath);
+  if (!traceId) {
+    return json({ error: "invalid replay path" }, { status: 404 });
+  }
+
+  const run = await env.DB
+    .prepare(
+      `SELECT status
+       FROM runs
+       WHERE trace_id = ?1
+       LIMIT 1`
+    )
+    .bind(traceId)
+    .first<{ status: string }>();
+
+  if (!run) {
+    return json({ error: "run not found", traceId }, { status: 404 });
+  }
+
+  if (run.status !== "failed") {
+    return json({ error: "replay requires failed run", traceId, status: run.status }, { status: 409 });
+  }
+
+  const replay = await replayTaskFromDeadLetter(env, traceId, routesManifest, schedulesManifest);
+  if (!replay.ok) {
+    return json(replay.body, { status: replay.status });
+  }
+
+  await safeAuditEvent(env, request, {
+    workspaceId: replay.body.workspaceId ?? undefined,
+    action: "replay_failed_run",
+    resourceType: "trace",
+    resourceId: traceId,
+    details: {
+      newTraceId: replay.body.newTraceId
+    }
+  });
+
+  return json(replay.body, { status: replay.status });
 }
 
 async function getReplays(url: URL, env: Env) {
@@ -3932,7 +4268,12 @@ async function getCronDetail(scheduleId: string, env: Env, schedulesManifest: Sc
   });
 }
 
-async function enqueueManualScheduleRun(scheduleId: string, env: Env, schedulesManifest: ScheduleDefinition[]) {
+async function enqueueManualScheduleRun(
+  request: Request,
+  scheduleId: string,
+  env: Env,
+  schedulesManifest: ScheduleDefinition[]
+) {
   const schedule = schedulesManifest.find((item) => item.id === scheduleId && item.enabled);
   if (!schedule) {
     return json({ error: "unknown or disabled schedule", scheduleId }, { status: 404 });
@@ -3940,10 +4281,12 @@ async function enqueueManualScheduleRun(scheduleId: string, env: Env, schedulesM
 
   const now = new Date().toISOString();
   const traceId = crypto.randomUUID();
+  const workspaceId = readWorkspaceId(request, env.DEFAULT_WORKSPACE_ID || DEFAULT_WORKSPACE);
 
   const task: QueueTask = {
     kind: "scheduled_job",
     traceId,
+    workspaceId,
     scheduleId: schedule.id,
     payload: {
       target: schedule.target,
@@ -3956,11 +4299,21 @@ async function enqueueManualScheduleRun(scheduleId: string, env: Env, schedulesM
   };
 
   await env.AUTOMATION_QUEUE.send(task);
+  await safeAuditEvent(env, request, {
+    workspaceId,
+    action: "manual_schedule_run",
+    resourceType: "schedule",
+    resourceId: schedule.id,
+    details: {
+      traceId
+    }
+  });
 
   return json(
     {
       accepted: true,
       traceId,
+      workspaceId,
       scheduleId: schedule.id,
       enqueuedAt: now,
       trigger: "manual_ops_dashboard"
@@ -3972,22 +4325,25 @@ async function enqueueManualScheduleRun(scheduleId: string, env: Env, schedulesM
 async function getTimeline(url: URL, env: Env) {
   const bucket = parseTimelineResolution(url.searchParams.get("bucket"));
   const range = resolveTimeRange(url);
+  const workspaceId = readWorkspaceFilter(url);
+  const clauses = ["started_at >= ?1", "started_at <= ?2"];
+  const bindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(clauses, bindings, workspaceId);
 
   const bucketExpr = getTimelineBucketExpr(bucket);
 
   const rows = await env.DB
     .prepare(
-      `SELECT
+       `SELECT
          ${bucketExpr} AS bucket,
          status,
          COUNT(*) AS count
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
+       WHERE ${clauses.join(" AND ")}
        GROUP BY bucket, status
        ORDER BY bucket ASC`
     )
-    .bind(range.since, range.until)
+    .bind(...bindings)
     .all<TimelineRow>();
 
   const scopeRows = await env.DB
@@ -3997,13 +4353,12 @@ async function getTimeline(url: URL, env: Env) {
          COALESCE(NULLIF(route_path, ''), NULLIF(schedule_id, ''), 'unknown') AS scope,
          COUNT(*) AS count
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
+       WHERE ${clauses.join(" AND ")}
          AND status = 'failed'
        GROUP BY bucket, scope
        ORDER BY bucket ASC, count DESC`
     )
-    .bind(range.since, range.until)
+    .bind(...bindings)
     .all<TimelineScopeRow>();
 
   const bucketMap = new Map<string, { bucket: string; succeeded: number; failed: number; running: number; total: number }>();
@@ -4046,6 +4401,7 @@ async function getTimeline(url: URL, env: Env) {
     bucket,
     since: range.since,
     until: range.until,
+    workspaceId,
     buckets: [...bucketMap.values()].map((item) => {
       const topScope = topScopeMap.get(item.bucket);
       return {
@@ -4064,43 +4420,47 @@ async function getTimelineDetail(url: URL, env: Env) {
   }
 
   const resolution = parseTimelineResolution(url.searchParams.get("resolution"));
+  const workspaceId = readWorkspaceFilter(url);
   const limit = parseLimit(url.searchParams.get("limit"));
   const range = timelineBucketRange(bucket, resolution);
   if (!range) {
     return json({ error: "invalid bucket format", bucket }, { status: 400 });
   }
 
+  const clauses = ["started_at >= ?1", "started_at < ?2"];
+  const bindings: unknown[] = [range.startIso, range.endIso];
+  withWorkspaceClause(clauses, bindings, workspaceId);
+
   const statusRows = await env.DB
     .prepare(
       `SELECT status, COUNT(*) AS count
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at < ?2
+       WHERE ${clauses.join(" AND ")}
        GROUP BY status`
     )
-    .bind(range.startIso, range.endIso)
+    .bind(...bindings)
     .all<TimelineDetailStatusRow>();
 
   const scopeRows = await env.DB
     .prepare(
-      `SELECT
+       `SELECT
          COALESCE(NULLIF(route_path, ''), NULLIF(schedule_id, ''), 'unknown') AS scope,
          COUNT(*) AS count
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at < ?2
+       WHERE ${clauses.join(" AND ")}
          AND status = 'failed'
        GROUP BY scope
        ORDER BY count DESC, scope ASC
        LIMIT 10`
     )
-    .bind(range.startIso, range.endIso)
+    .bind(...bindings)
     .all<{ scope: string; count: number | string }>();
 
   const runRows = await env.DB
     .prepare(
       `SELECT
          trace_id AS traceId,
+         workspace_id AS workspaceId,
          kind,
          route_path AS routePath,
          schedule_id AS scheduleId,
@@ -4109,12 +4469,11 @@ async function getTimelineDetail(url: URL, env: Env) {
          finished_at AS finishedAt,
          error
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at < ?2
+       WHERE ${clauses.join(" AND ")}
        ORDER BY started_at DESC
-       LIMIT ?3`
+       LIMIT ?${bindings.length + 1}`
     )
-    .bind(range.startIso, range.endIso, limit)
+    .bind(...bindings, limit)
     .all<TimelineDetailRunRow>();
 
   const countsByStatus = new Map<string, number>();
@@ -4133,6 +4492,7 @@ async function getTimelineDetail(url: URL, env: Env) {
       start: range.startIso,
       end: range.endIso
     },
+    workspaceId,
     statusCounts: {
       succeeded,
       failed,
@@ -4145,6 +4505,7 @@ async function getTimelineDetail(url: URL, env: Env) {
     })),
     runs: runRows.results.map((run) => ({
       traceId: run.traceId,
+      workspaceId: run.workspaceId,
       kind: run.kind,
       routePath: run.routePath,
       scheduleId: run.scheduleId,
@@ -4159,24 +4520,25 @@ async function getTimelineDetail(url: URL, env: Env) {
 async function getErrorClusters(url: URL, env: Env) {
   const limit = parseLimit(url.searchParams.get("limit"));
   const range = resolveTimeRange(url);
+  const workspaceId = readWorkspaceFilter(url);
+  const clauses = ["started_at >= ?1", "started_at <= ?2", "status = 'failed'", "error IS NOT NULL", "error != ''"];
+  const bindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(clauses, bindings, workspaceId);
 
   const rows = await env.DB
     .prepare(
       `SELECT
          route_path AS routePath,
          schedule_id AS scheduleId,
+         workspace_id AS workspaceId,
          error,
          started_at AS startedAt
        FROM runs
-       WHERE started_at >= ?1
-         AND started_at <= ?2
-         AND status = 'failed'
-         AND error IS NOT NULL
-         AND error != ''
+       WHERE ${clauses.join(" AND ")}
        ORDER BY started_at DESC
        LIMIT 1000`
     )
-    .bind(range.since, range.until)
+    .bind(...bindings)
     .all<FailureErrorRow>();
 
   const clusterMap = new Map<string, {
@@ -4233,6 +4595,7 @@ async function getErrorClusters(url: URL, env: Env) {
   return json({
     since: range.since,
     until: range.until,
+    workspaceId,
     clusters
   });
 }
@@ -4265,12 +4628,54 @@ async function getSecretsHealth(env: Env) {
       worker?: string;
     };
 
+    const errors = payload.errors ?? [];
+    const routeSecretMap = new Map<string, string[]>();
+    for (const line of errors) {
+      const match = line.match(/route "([^"]+)": .*Checked:\s*(.+)$/i);
+      if (!match?.[1] || !match[2]) {
+        continue;
+      }
+      const routePath = match[1];
+      const checked = match[2]
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      routeSecretMap.set(routePath, checked);
+    }
+
+    const connectors = CONNECTOR_SECRETS.map((connector) => {
+      const missingSecrets = new Set<string>();
+      for (const routePath of connector.routes) {
+        const checked = routeSecretMap.get(routePath);
+        if (!checked) {
+          continue;
+        }
+        for (const secretKey of checked) {
+          missingSecrets.add(secretKey);
+        }
+      }
+      const missing = [...missingSecrets];
+      const required = connector.requiredSecrets;
+      const present = required.filter((secretKey) => !missing.includes(secretKey));
+      const status = missing.length === 0 ? "ready" : present.length > 0 ? "partial" : "missing";
+
+      return {
+        id: connector.id,
+        status,
+        requiredSecrets: required,
+        missingSecrets: missing,
+        presentSecrets: present,
+        routes: connector.routes
+      };
+    });
+
     return json({
       available: true,
       ok: payload.ok,
       env: payload.env,
       worker: payload.worker,
-      errors: payload.errors ?? []
+      errors,
+      connectors
     });
   } catch (error) {
     return json({
@@ -4278,6 +4683,149 @@ async function getSecretsHealth(env: Env) {
       reason: error instanceof Error ? error.message : String(error)
     });
   }
+}
+
+async function getTemplates() {
+  return json({
+    templates: WORKFLOW_TEMPLATES
+  });
+}
+
+async function getOAuthTokens(url: URL, env: Env) {
+  const workspaceId = readWorkspaceFilter(url);
+  const tokens = await listOAuthTokens(env.DB, workspaceId ?? undefined);
+
+  return json({
+    workspaceId,
+    tokens: tokens.map((token) => ({
+      provider: token.provider,
+      accountId: token.accountId,
+      workspaceId: token.workspaceId,
+      accessToken: redactToken(token.accessToken),
+      refreshToken: redactToken(token.refreshToken),
+      expiresAt: token.expiresAt,
+      needsRefresh: oauthTokenNeedsRefresh(token.expiresAt),
+      scopes: token.scopes,
+      updatedAt: token.updatedAt,
+      createdAt: token.createdAt
+    }))
+  });
+}
+
+async function upsertOAuthTokenEndpoint(request: Request, env: Env) {
+  const body = await parseJsonBody(request);
+  if (!body) {
+    return json({ error: "invalid JSON body" }, { status: 400 });
+  }
+
+  const provider = typeof body.provider === "string" ? body.provider.trim() : "";
+  const accountId = typeof body.accountId === "string" ? body.accountId.trim() : "";
+  const accessToken = typeof body.accessToken === "string" ? body.accessToken.trim() : "";
+  const refreshToken = typeof body.refreshToken === "string" ? body.refreshToken.trim() : null;
+  const expiresAt = typeof body.expiresAt === "string" ? body.expiresAt.trim() : null;
+  const scopes = Array.isArray(body.scopes) ? body.scopes.filter((item) => typeof item === "string") : [];
+  const workspaceId =
+    typeof body.workspaceId === "string" && body.workspaceId.trim().length > 0
+      ? body.workspaceId.trim()
+      : readWorkspaceId(request, env.DEFAULT_WORKSPACE_ID || DEFAULT_WORKSPACE);
+
+  if (!provider || !accountId || !accessToken) {
+    return json({ error: "provider, accountId, and accessToken are required" }, { status: 400 });
+  }
+
+  const stored = await upsertOAuthToken(env.DB, {
+    provider,
+    accountId,
+    workspaceId,
+    accessToken,
+    refreshToken,
+    expiresAt,
+    scopes
+  });
+
+  await safeAuditEvent(env, request, {
+    workspaceId: stored.workspaceId,
+    action: "oauth_token_upsert",
+    resourceType: "oauth_token",
+    resourceId: `${stored.provider}:${stored.accountId}`,
+    details: {
+      expiresAt: stored.expiresAt,
+      scopes: stored.scopes
+    }
+  });
+
+  return json(
+    {
+      accepted: true,
+      provider: stored.provider,
+      accountId: stored.accountId,
+      workspaceId: stored.workspaceId,
+      accessToken: redactToken(stored.accessToken),
+      refreshToken: redactToken(stored.refreshToken),
+      expiresAt: stored.expiresAt,
+      needsRefresh: oauthTokenNeedsRefresh(stored.expiresAt),
+      scopes: stored.scopes
+    },
+    { status: 202 }
+  );
+}
+
+async function getAuditEvents(url: URL, env: Env) {
+  const workspaceId = readWorkspaceFilter(url);
+  const limit = parseLimit(url.searchParams.get("limit"));
+  const clauses: string[] = [];
+  const bindings: unknown[] = [];
+  withWorkspaceClause(clauses, bindings, workspaceId);
+
+  let query = `SELECT
+    id,
+    workspace_id AS workspaceId,
+    actor,
+    action,
+    resource_type AS resourceType,
+    resource_id AS resourceId,
+    details_json AS detailsJson,
+    created_at AS createdAt
+  FROM audit_events`;
+  if (clauses.length > 0) {
+    query += ` WHERE ${clauses.join(" AND ")}`;
+  }
+  query += ` ORDER BY created_at DESC LIMIT ?${bindings.length + 1}`;
+  bindings.push(limit);
+
+  const rows = await env.DB.prepare(query).bind(...bindings).all<{
+    id: number;
+    workspaceId: string;
+    actor: string;
+    action: string;
+    resourceType: string;
+    resourceId: string | null;
+    detailsJson: string;
+    createdAt: string;
+  }>();
+
+  return json({
+    limit,
+    workspaceId,
+    events: rows.results.map((row) => {
+      let details: unknown = {};
+      try {
+        details = JSON.parse(row.detailsJson || "{}");
+      } catch {
+        details = {};
+      }
+      return {
+        id: row.id,
+        workspaceId: row.workspaceId,
+        actor: row.actor,
+        action: row.action,
+        resourceType: row.resourceType,
+        resourceId: row.resourceId,
+        details,
+        createdAt: row.createdAt
+      };
+    })
+  });
 }
 
 export default {
@@ -4346,7 +4894,11 @@ export default {
         manifestMode: manifest.mode,
         routes: routesManifest.length,
         schedules: schedulesManifest.length,
-        extensions: dashboardExtensions.length
+        extensions: dashboardExtensions.length,
+        rateLimits: {
+          defaultPerMinute: Number.parseInt(env.API_RATE_LIMIT_PER_MINUTE || "0", 10) || 0,
+          byRoute: parseRouteRateLimitConfig(env)
+        }
       });
     }
 
@@ -4354,6 +4906,22 @@ export default {
       return json({
         extensions: dashboardExtensions
       });
+    }
+
+    if (request.method === "GET" && pathname === "/api/templates") {
+      return getTemplates();
+    }
+
+    if (request.method === "GET" && pathname === "/api/oauth-tokens") {
+      return getOAuthTokens(url, env);
+    }
+
+    if (request.method === "POST" && pathname === "/api/oauth-tokens/upsert") {
+      return upsertOAuthTokenEndpoint(request, env);
+    }
+
+    if (request.method === "GET" && pathname === "/api/audit-events") {
+      return getAuditEvents(url, env);
     }
 
     if (request.method === "GET" && pathname === "/api/summary") {
@@ -4381,7 +4949,11 @@ export default {
     }
 
     if (request.method === "POST" && pathname.startsWith("/api/retry/")) {
-      return retryDeadLetter(pathname, env, routesManifest, schedulesManifest);
+      return retryDeadLetter(request, pathname, env, routesManifest, schedulesManifest);
+    }
+
+    if (request.method === "POST" && pathname.startsWith("/api/replay/")) {
+      return replayFailedRun(request, pathname, env, routesManifest, schedulesManifest);
     }
 
     if (request.method === "GET" && pathname === "/api/replays") {
@@ -4409,7 +4981,7 @@ export default {
       if (!scheduleId) {
         return json({ error: "invalid cron run path" }, { status: 404 });
       }
-      return enqueueManualScheduleRun(scheduleId, env, schedulesManifest);
+      return enqueueManualScheduleRun(request, scheduleId, env, schedulesManifest);
     }
 
     if (request.method === "GET" && pathname === "/api/timeline") {

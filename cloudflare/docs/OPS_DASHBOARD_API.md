@@ -25,10 +25,16 @@ Auth headers:
 - `GET /api/run-detail/{traceId}`
 - `GET /api/dead-letters`
 - `POST /api/retry/{traceId}`
+- `POST /api/replay/{traceId}`
 - `GET /api/replays`
 - `GET /api/route-detail/{routePath}`
 - `GET /api/cron-detail/{scheduleId}`
 - `POST /api/cron-run/{scheduleId}`
+- `GET /api/templates`
+- `GET /api/secrets-health`
+- `GET /api/oauth-tokens`
+- `POST /api/oauth-tokens/upsert`
+- `GET /api/audit-events`
 
 ## Extension-Friendly Endpoints
 
@@ -36,3 +42,15 @@ Auth headers:
 - `GET /api/extensions`
 
 `/api/extensions` is driven by `OPS_DASHBOARD_EXTENSIONS_JSON`.
+
+## Workspace Filter
+
+The following read endpoints support `workspace` query filtering:
+
+- `/api/summary`
+- `/api/catalog`
+- `/api/runs`
+- `/api/dead-letters`
+- `/api/timeline`
+- `/api/timeline-detail`
+- `/api/error-clusters`
