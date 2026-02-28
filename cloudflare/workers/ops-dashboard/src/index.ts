@@ -119,6 +119,8 @@ type DashboardExtension = {
 };
 
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+const ONE_HOUR_MS = 60 * 60 * 1000;
+const MAX_TIME_WINDOW_MS = 31 * 24 * 60 * 60 * 1000;
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 250;
 const MAX_FILTER_LEN = 120;
@@ -159,6 +161,75 @@ function sanitizeFilterValue(value: string | null) {
   }
 
   return trimmed.slice(0, MAX_FILTER_LEN);
+}
+
+function parseIsoTimestamp(value: string | null) {
+  const normalized = sanitizeFilterValue(value);
+  if (!normalized) {
+    return null;
+  }
+
+  const timestamp = Date.parse(normalized);
+  if (!Number.isFinite(timestamp)) {
+    return null;
+  }
+
+  return new Date(timestamp).toISOString();
+}
+
+function parseRequestedHours(value: string | null) {
+  const normalized = sanitizeFilterValue(value);
+  if (!normalized) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(normalized, 10);
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return null;
+  }
+
+  return Math.min(parsed, Math.floor(MAX_TIME_WINDOW_MS / ONE_HOUR_MS));
+}
+
+function resolveTimeRange(url: URL, defaultWindowMs = TWENTY_FOUR_HOURS_MS) {
+  const nowMs = Date.now();
+  const requestedHours = parseRequestedHours(url.searchParams.get("hours"));
+  const requestedWindowMs = requestedHours ? requestedHours * ONE_HOUR_MS : defaultWindowMs;
+
+  const parsedSince = parseIsoTimestamp(url.searchParams.get("since"));
+  const parsedUntil = parseIsoTimestamp(url.searchParams.get("until"));
+
+  let sinceMs: number;
+  let untilMs: number;
+
+  if (parsedSince && parsedUntil) {
+    sinceMs = Date.parse(parsedSince);
+    untilMs = Date.parse(parsedUntil);
+  } else if (parsedSince) {
+    sinceMs = Date.parse(parsedSince);
+    untilMs = nowMs;
+  } else if (parsedUntil) {
+    untilMs = Date.parse(parsedUntil);
+    sinceMs = untilMs - requestedWindowMs;
+  } else {
+    untilMs = nowMs;
+    sinceMs = untilMs - requestedWindowMs;
+  }
+
+  untilMs = Math.min(untilMs, nowMs);
+  if (!Number.isFinite(sinceMs) || !Number.isFinite(untilMs) || sinceMs >= untilMs) {
+    untilMs = nowMs;
+    sinceMs = untilMs - defaultWindowMs;
+  }
+
+  const windowMs = Math.max(ONE_HOUR_MS, Math.min(MAX_TIME_WINDOW_MS, untilMs - sinceMs));
+  sinceMs = untilMs - windowMs;
+
+  return {
+    since: new Date(sinceMs).toISOString(),
+    until: new Date(untilMs).toISOString(),
+    windowHours: Number((windowMs / ONE_HOUR_MS).toFixed(1))
+  };
 }
 
 function readAuthToken(request: Request) {
@@ -3117,17 +3188,18 @@ function extractInlineDashboardScript(html: string) {
   return match?.[1] ?? "";
 }
 
-async function getSummary(env: Env) {
-  const since = new Date(Date.now() - TWENTY_FOUR_HOURS_MS).toISOString();
+async function getSummary(url: URL, env: Env) {
+  const range = resolveTimeRange(url);
 
   const statusRows = await env.DB
     .prepare(
-      `SELECT status, COUNT(*) AS count
+       `SELECT status, COUNT(*) AS count
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
        GROUP BY status`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<SummaryStatusRow>();
 
   const topRoutesRows = await env.DB
@@ -3135,22 +3207,24 @@ async function getSummary(env: Env) {
       `SELECT route_path AS routePath, COUNT(*) AS count
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
          AND route_path IS NOT NULL
          AND route_path != ''
        GROUP BY route_path
        ORDER BY count DESC, route_path ASC
        LIMIT 8`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<SummaryTopRouteRow>();
 
   const deadLetterRow = await env.DB
     .prepare(
       `SELECT COUNT(*) AS count
        FROM dead_letters
-       WHERE created_at >= ?1`
+       WHERE created_at >= ?1
+         AND created_at <= ?2`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .first<{ count: number | string }>();
 
   const countsByStatus = new Map<string, number>();
@@ -3161,8 +3235,9 @@ async function getSummary(env: Env) {
   const totalRuns = [...countsByStatus.values()].reduce((acc, value) => acc + value, 0);
 
   return json({
-    windowHours: 24,
-    since,
+    windowHours: range.windowHours,
+    since: range.since,
+    until: range.until,
     totalRuns,
     succeededRuns: countsByStatus.get("succeeded") ?? 0,
     failedRuns: countsByStatus.get("failed") ?? 0,
@@ -3175,8 +3250,8 @@ async function getSummary(env: Env) {
   });
 }
 
-async function getCatalog(env: Env, routesManifest: RouteDefinition[], schedulesManifest: ScheduleDefinition[]) {
-  const since = new Date(Date.now() - TWENTY_FOUR_HOURS_MS).toISOString();
+async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[], schedulesManifest: ScheduleDefinition[]) {
+  const range = resolveTimeRange(url);
 
   const routeRows = await env.DB
     .prepare(
@@ -3188,11 +3263,12 @@ async function getCatalog(env: Env, routesManifest: RouteDefinition[], schedules
          COUNT(*) AS total
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
          AND route_path IS NOT NULL
          AND route_path != ''
        GROUP BY route_path`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<CatalogRouteCountRow>();
 
   const scheduleRows = await env.DB
@@ -3205,11 +3281,12 @@ async function getCatalog(env: Env, routesManifest: RouteDefinition[], schedules
          COUNT(*) AS total
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
          AND schedule_id IS NOT NULL
          AND schedule_id != ''
        GROUP BY schedule_id`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<CatalogScheduleCountRow>();
 
   const routeCounts = new Map(
@@ -3313,8 +3390,9 @@ async function getCatalog(env: Env, routesManifest: RouteDefinition[], schedules
   const flows = [...flowMap.values()].sort((a, b) => b.failed - a.failed || b.total - a.total);
 
   return json({
-    since,
-    windowHours: 24,
+    since: range.since,
+    until: range.until,
+    windowHours: range.windowHours,
     routes,
     schedules,
     flows
@@ -3893,7 +3971,7 @@ async function enqueueManualScheduleRun(scheduleId: string, env: Env, schedulesM
 
 async function getTimeline(url: URL, env: Env) {
   const bucket = parseTimelineResolution(url.searchParams.get("bucket"));
-  const since = new Date(Date.now() - TWENTY_FOUR_HOURS_MS).toISOString();
+  const range = resolveTimeRange(url);
 
   const bucketExpr = getTimelineBucketExpr(bucket);
 
@@ -3905,10 +3983,11 @@ async function getTimeline(url: URL, env: Env) {
          COUNT(*) AS count
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
        GROUP BY bucket, status
        ORDER BY bucket ASC`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<TimelineRow>();
 
   const scopeRows = await env.DB
@@ -3919,11 +3998,12 @@ async function getTimeline(url: URL, env: Env) {
          COUNT(*) AS count
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
          AND status = 'failed'
        GROUP BY bucket, scope
        ORDER BY bucket ASC, count DESC`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<TimelineScopeRow>();
 
   const bucketMap = new Map<string, { bucket: string; succeeded: number; failed: number; running: number; total: number }>();
@@ -3964,7 +4044,8 @@ async function getTimeline(url: URL, env: Env) {
 
   return json({
     bucket,
-    since,
+    since: range.since,
+    until: range.until,
     buckets: [...bucketMap.values()].map((item) => {
       const topScope = topScopeMap.get(item.bucket);
       return {
@@ -4077,7 +4158,7 @@ async function getTimelineDetail(url: URL, env: Env) {
 
 async function getErrorClusters(url: URL, env: Env) {
   const limit = parseLimit(url.searchParams.get("limit"));
-  const since = new Date(Date.now() - TWENTY_FOUR_HOURS_MS).toISOString();
+  const range = resolveTimeRange(url);
 
   const rows = await env.DB
     .prepare(
@@ -4088,13 +4169,14 @@ async function getErrorClusters(url: URL, env: Env) {
          started_at AS startedAt
        FROM runs
        WHERE started_at >= ?1
+         AND started_at <= ?2
          AND status = 'failed'
          AND error IS NOT NULL
          AND error != ''
        ORDER BY started_at DESC
        LIMIT 1000`
     )
-    .bind(since)
+    .bind(range.since, range.until)
     .all<FailureErrorRow>();
 
   const clusterMap = new Map<string, {
@@ -4149,7 +4231,8 @@ async function getErrorClusters(url: URL, env: Env) {
     .slice(0, limit);
 
   return json({
-    since,
+    since: range.since,
+    until: range.until,
     clusters
   });
 }
@@ -4274,11 +4357,11 @@ export default {
     }
 
     if (request.method === "GET" && pathname === "/api/summary") {
-      return getSummary(env);
+      return getSummary(url, env);
     }
 
     if (request.method === "GET" && pathname === "/api/catalog") {
-      return getCatalog(env, routesManifest, schedulesManifest);
+      return getCatalog(url, env, routesManifest, schedulesManifest);
     }
 
     if (request.method === "GET" && pathname === "/api/runs") {
