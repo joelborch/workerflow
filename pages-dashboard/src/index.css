@@ -487,6 +487,16 @@ th {
   background: rgba(159, 52, 22, 0.09);
 }
 
+.catalog-tag {
+  margin-left: 8px;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .muted {
   color: var(--muted);
 }
