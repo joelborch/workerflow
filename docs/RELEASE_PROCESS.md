@@ -26,6 +26,18 @@ git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
 
+## Automated Release Workflow
+
+Tag pushes matching `v*` trigger:
+
+- Cloudflare runtime `release:check`
+- Pages dashboard `release:check`
+- Draft GitHub Release with generated release notes
+
+Workflow file:
+
+- `.github/workflows/release-tag.yml`
+
 ## Post-Release
 
 - announce route/schedule contract changes explicitly

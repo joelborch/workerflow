@@ -33,6 +33,9 @@ Use `wrangler secret put` for all sensitive values.
 - `GITHUB_REPO` (default repository for `github_issue_create`)
 - `OPENAI_API_KEY` (for `openai_chat`)
 - `OPENAI_MODEL` (optional default model override for `openai_chat`)
+- `STRIPE_API_KEY` (for `stripe_payment_intent_create` and `stripe_customer_upsert`)
+- `NOTION_TOKEN` (for `notion_database_item_create` and `notion_database_item_get`)
+- `HUBSPOT_ACCESS_TOKEN` (for `hubspot_contact_upsert` and `hubspot_deal_upsert`)
 
 Compatibility aliases:
 

@@ -364,6 +364,24 @@ th {
   color: var(--muted);
 }
 
+.compare-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.compare-slot-btn {
+  border-radius: 999px;
+  border: 1px solid var(--edge);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  padding: 4px 8px;
+  font-size: 0.72rem;
+}
+
+.compare-slot-btn:hover {
+  border-color: rgba(159, 52, 22, 0.46);
+}
+
 .mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -477,6 +495,33 @@ th {
   padding: 4px 8px;
   font-size: 0.78rem;
   background: rgba(255, 255, 255, 0.72);
+}
+
+.compare-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin: 10px 0 12px;
+}
+
+.compare-card {
+  border: 1px solid rgba(145, 118, 86, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.64);
+  padding: 10px;
+}
+
+.compare-card h3 {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+}
+
+.compare-card p {
+  margin: 2px 0;
+}
+
+.compare-table td:first-child {
+  font-weight: 600;
 }
 
 .clickable-row {

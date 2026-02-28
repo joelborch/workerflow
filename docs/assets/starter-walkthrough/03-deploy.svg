@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#efe6dc" />
+  <rect x="65" y="55" width="1070" height="590" rx="18" fill="#18140f" />
+  <text x="95" y="110" fill="#f8d0a3" font-family="monospace" font-size="28">worker deployment</text>
+  <text x="95" y="165" fill="#f6f6f6" font-family="monospace" font-size="22">$ npm run deploy:workflow</text>
+  <text x="95" y="200" fill="#f6f6f6" font-family="monospace" font-size="22">$ npm run deploy:queue</text>
+  <text x="95" y="235" fill="#f6f6f6" font-family="monospace" font-size="22">$ npm run deploy:api</text>
+  <text x="95" y="270" fill="#f6f6f6" font-family="monospace" font-size="22">$ npm run deploy:scheduler</text>
+  <text x="95" y="305" fill="#f6f6f6" font-family="monospace" font-size="22">$ npm run deploy:ops</text>
+  <text x="95" y="380" fill="#92e6a7" font-family="monospace" font-size="20">✓ workflow published</text>
+  <text x="95" y="415" fill="#92e6a7" font-family="monospace" font-size="20">✓ queue-consumer published</text>
+  <text x="95" y="450" fill="#92e6a7" font-family="monospace" font-size="20">✓ api + scheduler + ops published</text>
+  <text x="95" y="525" fill="#d0b089" font-family="monospace" font-size="20">Step 3: runtime live on Cloudflare</text>
+</svg>

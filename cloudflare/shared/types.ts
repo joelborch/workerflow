@@ -53,6 +53,9 @@ export interface Env {
   SLACK_WEBHOOK_URL?: string;
   GITHUB_TOKEN?: string;
   GITHUB_REPO?: string;
+  STRIPE_API_KEY?: string;
+  NOTION_TOKEN?: string;
+  HUBSPOT_ACCESS_TOKEN?: string;
 }
 
 export type SyncHttpPassthrough = {

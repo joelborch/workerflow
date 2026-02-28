@@ -9,6 +9,12 @@ This document defines canonical route and schedule IDs for the default WorkerFlo
 - `slack_message`
 - `github_issue_create`
 - `openai_chat`
+- `stripe_payment_intent_create`
+- `stripe_customer_upsert`
+- `notion_database_item_create`
+- `notion_database_item_get`
+- `hubspot_contact_upsert`
+- `hubspot_deal_upsert`
 - `lead_normalizer`
 - `json_transform`
 - `text_extract`

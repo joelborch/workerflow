@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#f4ece2" />
+  <rect x="50" y="50" width="1100" height="600" rx="18" fill="#141a22" />
+  <text x="85" y="105" fill="#9dd4ff" font-family="monospace" font-size="28">bootstrap_cloudflare plan</text>
+  <text x="85" y="160" fill="#f4f8ff" font-family="monospace" font-size="22">$ npm run bootstrap</text>
+  <text x="85" y="210" fill="#d6e9ff" font-family="monospace" font-size="20">- create D1 database: workerflow-db</text>
+  <text x="85" y="245" fill="#d6e9ff" font-family="monospace" font-size="20">- create Queue: automation-queue</text>
+  <text x="85" y="280" fill="#d6e9ff" font-family="monospace" font-size="20">- apply migrations: 001..005</text>
+  <text x="85" y="315" fill="#d6e9ff" font-family="monospace" font-size="20">- configure bindings in wrangler.jsonc</text>
+  <text x="85" y="390" fill="#f4f8ff" font-family="monospace" font-size="22">$ npm run bootstrap:apply</text>
+  <text x="85" y="445" fill="#8de2b2" font-family="monospace" font-size="20">resources created and attached</text>
+  <text x="85" y="520" fill="#9bb6d1" font-family="monospace" font-size="20">Step 2: Cloudflare resources bootstrapped</text>
+</svg>
