@@ -17,7 +17,9 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | [Starter Walkthrough](docs/STARTER_WALKTHROUGH.md) | First deploy + first workflow call with screenshots |
 | [OpenAPI SDK Example](docs/OPENAPI_SDK_EXAMPLE.md) | Generate and use minimal TypeScript client from runtime OpenAPI |
 | [Workflow Templates](docs/WORKFLOW_TEMPLATES.md) | Starter automation template gallery and usage |
+| [Benchmarking Guide](docs/BENCHMARKING.md) | Generate route throughput + cost profile reports |
 | [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md) | Agent-first bootstrap/deploy flow |
+| [Contributor Quickstart](docs/CONTRIBUTOR_QUICKSTART.md) | First OSS task workflow + label filters |
 | [Agent Operating Guide](AGENTS.md) | Repository working agreement for coding agents |
 | [Community Connector Catalog](docs/CONNECTOR_CATALOG.md) | Connector scaffold model and extension path |
 | [Starter Examples](examples/README.md) | Copy/paste automation starters |
@@ -121,7 +123,10 @@ Catalog and contributor guidance:
 - [Starter Walkthrough](docs/STARTER_WALKTHROUGH.md)
 - [OpenAPI SDK Example](docs/OPENAPI_SDK_EXAMPLE.md)
 - [Workflow Templates](docs/WORKFLOW_TEMPLATES.md)
+- [Benchmarking Guide](docs/BENCHMARKING.md)
+- [Latest Benchmark Cost Profile](docs/BENCHMARK_COST_PROFILE.md)
 - [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md)
+- [Contributor Quickstart](docs/CONTRIBUTOR_QUICKSTART.md)
 - [Architecture Notes](docs/ARCHITECTURE.md)
 - [Entrypoints](docs/ENTRYPOINTS.md)
 - [Security Model](docs/SECURITY_MODEL.md)
@@ -132,5 +137,7 @@ Catalog and contributor guidance:
 - [Roadmap](docs/ROADMAP.md)
 - [Next 10 OSS Issues](docs/NEXT_10_ISSUES.md)
 - [Release Process](docs/RELEASE_PROCESS.md)
+- [Canary Deploy Runbook](docs/CANARY_DEPLOY_RUNBOOK.md)
+- [Migration Rollback Runbook](docs/MIGRATION_ROLLBACK_RUNBOOK.md)
 - [Upgrade Guide](docs/UPGRADE_GUIDE.md)
 - [Changelog](CHANGELOG.md)

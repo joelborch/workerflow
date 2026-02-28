@@ -1,6 +1,6 @@
 # OpenAPI SDK Example (TypeScript)
 
-This directory demonstrates a minimal TypeScript client generated from `cloudflare/openapi.json`.
+This directory demonstrates a typed TypeScript client generated from `cloudflare/openapi.json`.
 
 ## Generate
 
@@ -23,8 +23,11 @@ const client = new WorkerFlowClient({
   token: process.env.API_INGRESS_TOKEN
 });
 
-await client.getApiHealth();
-await client.postApiRoutePath("webhook_echo", { hello: "workerflow" });
+const health = await client.getApiHealth();
+const summary = await client.getApiOpsSummary({ hours: 24 });
+const routeResult = await client.postApiRoutePath("webhook_echo", { hello: "workerflow" });
+
+console.log(health.worker, summary.totalRuns, routeResult);
 ```
 
 Run the included sample:

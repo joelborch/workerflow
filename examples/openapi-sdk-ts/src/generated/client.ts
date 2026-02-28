@@ -2,7 +2,7 @@
 /**
  * GENERATED FILE - DO NOT EDIT DIRECTLY
  * Source: cloudflare/openapi.json
- * Generated: 2026-02-28T19:58:46.609Z
+ * Generated: 2026-02-28T20:37:22.280Z
  */
 
 export type WorkerFlowClientOptions = {
@@ -11,10 +11,118 @@ export type WorkerFlowClientOptions = {
   fetchImpl?: typeof fetch;
 };
 
-export type GetApiHealthResponse = unknown;
-export type PostApiRoutePathResponse = unknown;
-export type GetApiSummaryResponse = unknown;
-export type GetApiExtensionsResponse = unknown;
+export type HealthResponse = {
+  worker: string;
+  time: string;
+};
+
+export type ErrorResponse = {
+  error: string;
+  details?: Array<string>;
+  traceId?: string;
+  routePath?: string;
+};
+
+export type RouteInvokeRequest = {
+  [key: string]: unknown;
+};
+
+export type RouteAcceptedResponse = {
+  accepted: boolean;
+  traceId: string;
+  routePath: string;
+  requestType: "sync" | "async";
+  workspaceId: string;
+};
+
+export type RouteSyncResponse = {
+  traceId: string;
+  result: {
+    [key: string]: unknown;
+  };
+};
+
+export type TopRoute = {
+  routePath: string;
+  count: number;
+};
+
+export type SummaryResponse = {
+  windowHours: number;
+  since: string;
+  until: string;
+  totalRuns: number;
+  succeededRuns: number;
+  failedRuns: number;
+  startedRuns: number;
+  deadLetters: number;
+  topRoutes: Array<TopRoute>;
+};
+
+export type RunListItem = {
+  traceId: string;
+  workspaceId: string;
+  kind: string;
+  routePath: string | null;
+  scheduleId: string | null;
+  status: string;
+  startedAt: string;
+  finishedAt: string | null;
+  duration: string | null;
+  output: string | null;
+  error: string | null;
+};
+
+export type RunsResponse = {
+  limit: number;
+  runs: Array<RunListItem>;
+};
+
+export type DeadLetterRecord = {
+  id: number;
+  traceId: string;
+  workspaceId: string | null;
+  error: string;
+  createdAt: string;
+  payloadJson: string;
+};
+
+export type DeadLettersResponse = {
+  limit: number;
+  deadLetters: Array<DeadLetterRecord>;
+};
+
+export type ReplayResponse = {
+  accepted: boolean;
+  retriedFromTraceId: string;
+  newTraceId: string;
+  retryCount: number | null;
+};
+
+export type GetApiHealthResponse = HealthResponse;
+export type PostApiRoutePathResponse = RouteSyncResponse | RouteAcceptedResponse | ErrorResponse;
+export type GetApiOpsSummaryResponse = SummaryResponse | ErrorResponse;
+export type GetApiOpsRunsResponse = RunsResponse | ErrorResponse;
+export type GetApiOpsDeadLettersResponse = DeadLettersResponse | ErrorResponse;
+export type PostApiOpsReplayTraceIdResponse = ReplayResponse | ErrorResponse;
+
+export type PostApiRoutePathRequest = RouteInvokeRequest;
+export type GetApiOpsSummaryQuery = {
+  since?: string;
+  until?: string;
+  hours?: number;
+};
+export type GetApiOpsRunsQuery = {
+  status?: string;
+  routePath?: string;
+  scheduleId?: string;
+  kind?: string;
+  workspace?: string;
+  limit?: number;
+};
+export type GetApiOpsDeadLettersQuery = {
+  limit?: number;
+};
 
 export class WorkerFlowClient {
   private baseUrl: string;
@@ -25,6 +133,18 @@ export class WorkerFlowClient {
     this.baseUrl = options.baseUrl.replace(/\/+$/, "");
     this.token = options.token?.trim() || "";
     this.fetchImpl = options.fetchImpl || fetch;
+  }
+
+  private toQueryString(query: Record<string, string | number | boolean | null | undefined>) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value === undefined || value === null || value === "") {
+        continue;
+      }
+      params.set(key, String(value));
+    }
+    const encoded = params.toString();
+    return encoded ? `?${encoded}` : "";
   }
 
   private async request<T>(method: "GET" | "POST", path: string, body?: unknown): Promise<T> {
@@ -58,15 +178,23 @@ export class WorkerFlowClient {
     return this.request<GetApiHealthResponse>("GET", `/api/health`);
   }
 
-  async postApiRoutePath(routePath: string, body: unknown): Promise<PostApiRoutePathResponse> {
+  async postApiRoutePath(routePath: string, body: PostApiRoutePathRequest): Promise<PostApiRoutePathResponse> {
     return this.request<PostApiRoutePathResponse>("POST", `/api/${encodeURIComponent(routePath)}`, body);
   }
 
-  async getApiSummary(): Promise<GetApiSummaryResponse> {
-    return this.request<GetApiSummaryResponse>("GET", `/api/summary`);
+  async getApiOpsSummary(query: GetApiOpsSummaryQuery = {}): Promise<GetApiOpsSummaryResponse> {
+    return this.request<GetApiOpsSummaryResponse>("GET", `/api/ops/summary${this.toQueryString(query)}`);
   }
 
-  async getApiExtensions(): Promise<GetApiExtensionsResponse> {
-    return this.request<GetApiExtensionsResponse>("GET", `/api/extensions`);
+  async getApiOpsRuns(query: GetApiOpsRunsQuery = {}): Promise<GetApiOpsRunsResponse> {
+    return this.request<GetApiOpsRunsResponse>("GET", `/api/ops/runs${this.toQueryString(query)}`);
+  }
+
+  async getApiOpsDeadLetters(query: GetApiOpsDeadLettersQuery = {}): Promise<GetApiOpsDeadLettersResponse> {
+    return this.request<GetApiOpsDeadLettersResponse>("GET", `/api/ops/dead-letters${this.toQueryString(query)}`);
+  }
+
+  async postApiOpsReplayTraceId(traceId: string): Promise<PostApiOpsReplayTraceIdResponse> {
+    return this.request<PostApiOpsReplayTraceIdResponse>("POST", `/api/ops/replay/${encodeURIComponent(traceId)}`);
   }
 }

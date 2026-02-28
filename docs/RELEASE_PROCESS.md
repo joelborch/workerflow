@@ -38,6 +38,17 @@ Workflow file:
 
 - `.github/workflows/release-tag.yml`
 
+## Canary-First Rollout
+
+For manual staged deployment with a canary gate, use:
+
+- `.github/workflows/canary-deploy.yml`
+
+Operator guidance:
+
+- [CANARY_DEPLOY_RUNBOOK.md](./CANARY_DEPLOY_RUNBOOK.md)
+- [MIGRATION_ROLLBACK_RUNBOOK.md](./MIGRATION_ROLLBACK_RUNBOOK.md)
+
 ## Post-Release
 
 - announce route/schedule contract changes explicitly

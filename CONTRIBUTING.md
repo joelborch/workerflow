@@ -2,6 +2,10 @@
 
 Thanks for contributing to WorkerFlow, a Cloudflare-native automation runtime.
 
+For first-time contributors, start with:
+
+- `docs/CONTRIBUTOR_QUICKSTART.md`
+
 ## Development Setup
 
 1. install runtime dependencies:
@@ -32,6 +36,8 @@ npm run release:check
 - keep changes scoped and focused
 - avoid unrelated refactors in the same PR
 - add or update tests for behavior changes
+- link the related issue in PR description (`Closes #...`)
+- run `npm run migrations:guard:strict` in `cloudflare/` for migration safety changes
 - document new environment variables in `cloudflare/docs/ENVIRONMENT.md`
 - align new docs language with `docs/BRAND_STANDARD.md`
 

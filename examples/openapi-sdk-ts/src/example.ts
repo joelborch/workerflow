@@ -9,6 +9,9 @@ async function run() {
   const health = await client.getApiHealth();
   console.log("health", health);
 
+  const summary = await client.getApiOpsSummary({ hours: 24 });
+  console.log("summary", summary);
+
   const routeResult = await client.postApiRoutePath("webhook_echo", {
     hello: "from generated sdk"
   });

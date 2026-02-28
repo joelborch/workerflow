@@ -12,9 +12,12 @@ Describe what changed and why.
 
 ## Validation
 
+- [ ] Linked issue(s) in PR description (`Closes #...`)
+- [ ] `cd cloudflare && npm run migrations:guard:strict`
 - [ ] `cd cloudflare && npm run release:check`
 - [ ] `cd pages-dashboard && npm run release:check` (if dashboard changed)
 - [ ] Added/updated tests for behavior changes
+- [ ] Updated docs/runbooks for new operator workflows
 
 ## Contracts / Breaking Changes
 

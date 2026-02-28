@@ -1,0 +1,41 @@
+name: Docs improvement
+description: Propose improvements to setup guides, runbooks, API docs, or contributor docs.
+title: "[Docs] "
+labels:
+  - documentation
+body:
+  - type: dropdown
+    id: docs_area
+    attributes:
+      label: Docs area
+      options:
+        - setup-runbooks
+        - runtime-api
+        - dashboard
+        - connectors
+        - contributor-onboarding
+        - security
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: Current gap
+      description: What is confusing, missing, or inaccurate?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What should be added or updated?
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Link files/sections affected.
+      placeholder: |
+        - docs/...
+        - cloudflare/docs/...
