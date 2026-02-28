@@ -6,12 +6,22 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- three production-ready connector routes:
+  - `slack_message`
+  - `github_issue_create`
+  - `openai_chat`
+- connector clients and fixture coverage for Slack, GitHub, and OpenAI
+- issue templates, PR template, CODEOWNERS, and Dependabot config
+- production-readiness checklist and API/contract versioning policy docs
+- starter examples for Slack alerts, GitHub issue creation, and AI summary-to-Slack
+- milestone-backed public contributor queue (`Next 10 OSS Issues`)
 - stronger top-level positioning and cost-profile documentation
 - brand language standard for docs (`docs/BRAND_STANDARD.md`)
 - expanded docs coverage for agent setup and connector catalog usage
 
 ### Changed
 
+- starter route catalog increased to 15 HTTP routes
 - rewritten `README.md` to emphasize Cloudflare-native, free-tier-friendly self-hosting
 - standardized wording/style across runtime and platform markdown docs
 - improved contributing guidance and quality-gate instructions

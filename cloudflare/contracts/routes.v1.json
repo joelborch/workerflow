@@ -12,6 +12,24 @@
     "wrapBody": true
   },
   {
+    "routePath": "slack_message",
+    "requestType": "async",
+    "flowPath": "f/examples/slack_message",
+    "wrapBody": true
+  },
+  {
+    "routePath": "github_issue_create",
+    "requestType": "async",
+    "flowPath": "f/examples/github_issue_create",
+    "wrapBody": true
+  },
+  {
+    "routePath": "openai_chat",
+    "requestType": "sync",
+    "flowPath": "f/examples/openai_chat",
+    "wrapBody": true
+  },
+  {
     "routePath": "lead_normalizer",
     "requestType": "sync",
     "flowPath": "f/examples/lead_normalizer",

@@ -40,6 +40,15 @@ npx wrangler secret put OPS_DASHBOARD_READ_TOKEN --config workers/ops-dashboard/
 npx wrangler secret put OPS_DASHBOARD_WRITE_TOKEN --config workers/ops-dashboard/wrangler.jsonc
 ```
 
+Optional connector secrets:
+
+```bash
+npx wrangler secret put SLACK_WEBHOOK_URL --config workers/workflow/wrangler.jsonc
+npx wrangler secret put GITHUB_TOKEN --config workers/workflow/wrangler.jsonc
+npx wrangler secret put GITHUB_REPO --config workers/workflow/wrangler.jsonc
+npx wrangler secret put OPENAI_API_KEY --config workers/workflow/wrangler.jsonc
+```
+
 ## 5. Deploy
 
 ```bash

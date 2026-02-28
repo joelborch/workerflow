@@ -8,6 +8,14 @@ Definitions live in:
 
 These are metadata-first scaffolds designed for rapid progression into production trigger/action implementations.
 
+## Implemented Connector Routes (Production-Ready Baseline)
+
+WorkerFlow currently ships three executable connector-backed routes in the public runtime:
+
+- `slack_message`
+- `github_issue_create`
+- `openai_chat`
+
 ## Current Seed Connectors (30)
 
 - `slack`

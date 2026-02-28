@@ -26,14 +26,34 @@ function makeDefaultEnv(): Env & Record<string, unknown> {
     } as unknown as Fetcher,
     ENV_NAME: "smoke",
     GOOGLEAI_API_KEY: "smoke-google-ai",
+    OPENAI_API_KEY: "smoke-openai",
+    GITHUB_TOKEN: "smoke-github-token",
+    GITHUB_REPO: "workerflow/example",
     CHAT_WEBHOOK_URL: "https://chat.example/incoming",
+    SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/T000/B000/smoke",
     FANOUT_SHARED_WEBHOOK_URL: "https://hooks.example/default",
     CLEANUP_SIGNING_SECRET: "smoke-cleanup-secret"
   } as Env & Record<string, unknown>;
 }
 
 function buildMockFetch() {
-  return async (_input: RequestInfo | URL, _init?: RequestInit) => {
+  return async (input: RequestInfo | URL, _init?: RequestInit) => {
+    const requestUrl = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
+    const url = new URL(requestUrl);
+
+    if (url.hostname === "api.openai.com" && url.pathname === "/v1/chat/completions") {
+      return jsonResponse({
+        choices: [{ message: { content: "smoke-openai-completion" } }]
+      });
+    }
+
+    if (url.hostname === "api.github.com" && url.pathname.endsWith("/issues")) {
+      return jsonResponse({
+        number: 101,
+        html_url: "https://github.com/workerflow/example/issues/101"
+      }, 201);
+    }
+
     return jsonResponse({ ok: true, accepted: true });
   };
 }
@@ -41,6 +61,15 @@ function buildMockFetch() {
 const routePayloads: Record<string, unknown> = {
   webhook_echo: { source: "smoke", sample: true },
   chat_notify: { body: { text: "Smoke notification" } },
+  slack_message: { body: { text: "Smoke Slack notification" } },
+  github_issue_create: {
+    body: {
+      title: "Smoke issue title",
+      body: "Smoke issue body",
+      labels: ["smoke", "automation"]
+    }
+  },
+  openai_chat: { body: { prompt: "Say hello from smoke test.", model: "gpt-4o-mini" } },
   lead_normalizer: {
     body: {
       firstName: "Smoke",

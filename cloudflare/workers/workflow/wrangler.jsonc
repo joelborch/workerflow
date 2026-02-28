@@ -37,6 +37,26 @@
       "secret_name": "GOOGLEAI_API_KEY"
     },
     {
+      "binding": "OPENAI_API_KEY",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "OPENAI_API_KEY"
+    },
+    {
+      "binding": "SLACK_WEBHOOK_URL",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "SLACK_WEBHOOK_URL"
+    },
+    {
+      "binding": "GITHUB_TOKEN",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "GITHUB_TOKEN"
+    },
+    {
+      "binding": "GITHUB_REPO",
+      "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
+      "secret_name": "GITHUB_REPO"
+    },
+    {
       "binding": "LEAD_NORMALIZER_API_KEY",
       "store_id": "REPLACE_WITH_SECRETS_STORE_ID",
       "secret_name": "LEAD_NORMALIZER_API_KEY"

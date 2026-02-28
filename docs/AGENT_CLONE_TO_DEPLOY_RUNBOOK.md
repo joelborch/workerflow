@@ -71,7 +71,10 @@ npx wrangler secret put GOOGLEAI_API_KEY --config workers/workflow/wrangler.json
 
 Common optional secrets:
 
-- connector tokens (see `cloudflare/workers/workflow/src/connectors/community/`)
+- `SLACK_WEBHOOK_URL`
+- `GITHUB_TOKEN`
+- `GITHUB_REPO`
+- `OPENAI_API_KEY`
 - chat webhook URLs
 - private overlay integration keys
 

@@ -28,6 +28,11 @@ Use `wrangler secret put` for all sensitive values.
 - `FANOUT_SHARED_WEBHOOK_URL` (used when `webhook_fanout` has no explicit webhook list)
 - `LEAD_NORMALIZER_API_KEY` (fallback alias)
 - `LEGACY_ALERT_WEBHOOK_URL` (legacy endpoint alerting)
+- `SLACK_WEBHOOK_URL` (for `slack_message`)
+- `GITHUB_TOKEN` (for `github_issue_create`)
+- `GITHUB_REPO` (default repository for `github_issue_create`)
+- `OPENAI_API_KEY` (for `openai_chat`)
+- `OPENAI_MODEL` (optional default model override for `openai_chat`)
 
 Compatibility aliases:
 

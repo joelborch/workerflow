@@ -44,11 +44,26 @@ function run() {
   const incidentErrors = validateTaskConfig(httpTask("incident_create"), minimalEnv as any);
   expectIncludes(incidentErrors, "chat webhook URL");
 
+  const slackErrors = validateTaskConfig(httpTask("slack_message"), minimalEnv as any);
+  expectIncludes(slackErrors, "Slack webhook URL");
+
+  const githubErrors = validateTaskConfig(httpTask("github_issue_create"), minimalEnv as any);
+  expectIncludes(githubErrors, "GitHub token");
+
+  const openAiErrors = validateTaskConfig(httpTask("openai_chat"), minimalEnv as any);
+  expectIncludes(openAiErrors, "OpenAI API key");
+
   const chatOkEnv = makeEnv({
-    CHAT_WEBHOOK_URL: "https://chat.example/incoming"
+    CHAT_WEBHOOK_URL: "https://chat.example/incoming",
+    SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/T000/B000/fixture",
+    GITHUB_TOKEN: "fixture-github-token",
+    OPENAI_API_KEY: "fixture-openai"
   });
   assert.equal(validateTaskConfig(httpTask("chat_notify"), chatOkEnv as any).length, 0);
   assert.equal(validateTaskConfig(httpTask("incident_create"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("slack_message"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("github_issue_create"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("openai_chat"), chatOkEnv as any).length, 0);
 
   const normalizerErrors = validateTaskConfig(httpTask("lead_normalizer"), minimalEnv as any);
   expectIncludes(normalizerErrors, "Google AI key");

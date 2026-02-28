@@ -26,3 +26,7 @@ WorkerFlow roadmap focuses on an open, Cloudflare-native automation platform tha
 - stronger multi-tenant reference architecture
 - route-level policy plugins (auth/validation/rate limits)
 - broader ecosystem around community recipes/connectors
+
+## Active Contributor Queue
+
+See [NEXT_10_ISSUES.md](./NEXT_10_ISSUES.md) for the current milestone-backed issue list.
