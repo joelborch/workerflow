@@ -6,7 +6,12 @@ WorkerFlow security focuses on ingress protection, secret hygiene, and replay-sa
 
 Do not open public issues for security-sensitive findings.
 
-Report vulnerabilities privately to project maintainers and include:
+Preferred reporting channel (private):
+
+- GitHub Private Vulnerability Reporting form:
+  - https://github.com/joelborch/workerflow/security/advisories/new
+
+Include:
 
 - affected area and impact
 - reproduction steps
