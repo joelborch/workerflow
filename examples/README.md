@@ -7,6 +7,7 @@ Copy/paste starter examples for common automation patterns.
 - `slack-alert/`: send an alert message to Slack via `slack_message`
 - `github-issue-from-webhook/`: create GitHub issue via `github_issue_create`
 - `ai-summary-to-slack/`: summarize text with `openai_chat` then send to Slack
+- `openapi-sdk-ts/`: generated TypeScript client from `cloudflare/openapi.json`
 
 ## Usage Pattern
 

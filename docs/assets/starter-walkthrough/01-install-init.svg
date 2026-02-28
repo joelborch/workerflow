@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff6eb" />
+      <stop offset="100%" stop-color="#f4e4d0" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)" />
+  <rect x="60" y="60" width="1080" height="580" rx="18" fill="#1f1a14" />
+  <text x="90" y="110" fill="#f4d9b8" font-family="monospace" font-size="30">workerflow starter walkthrough</text>
+  <text x="90" y="170" fill="#f6f6f6" font-family="monospace" font-size="24">$ cd cloudflare</text>
+  <text x="90" y="210" fill="#f6f6f6" font-family="monospace" font-size="24">$ npm install</text>
+  <text x="90" y="250" fill="#f6f6f6" font-family="monospace" font-size="24">$ npm run init</text>
+  <text x="90" y="290" fill="#f6f6f6" font-family="monospace" font-size="24">$ npm run preflight</text>
+  <text x="90" y="360" fill="#92e6a7" font-family="monospace" font-size="22">preflight checks passed</text>
+  <text x="90" y="400" fill="#92e6a7" font-family="monospace" font-size="22">wrangler config detected</text>
+  <text x="90" y="440" fill="#92e6a7" font-family="monospace" font-size="22">d1 migrations ready</text>
+  <text x="90" y="520" fill="#d8b68e" font-family="monospace" font-size="20">Step 1: local runtime initialized</text>
+</svg>

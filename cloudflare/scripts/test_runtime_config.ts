@@ -53,17 +53,44 @@ function run() {
   const openAiErrors = validateTaskConfig(httpTask("openai_chat"), minimalEnv as any);
   expectIncludes(openAiErrors, "OpenAI API key");
 
+  const stripeIntentErrors = validateTaskConfig(httpTask("stripe_payment_intent_create"), minimalEnv as any);
+  expectIncludes(stripeIntentErrors, "Stripe API key");
+
+  const stripeCustomerErrors = validateTaskConfig(httpTask("stripe_customer_upsert"), minimalEnv as any);
+  expectIncludes(stripeCustomerErrors, "Stripe API key");
+
+  const notionCreateErrors = validateTaskConfig(httpTask("notion_database_item_create"), minimalEnv as any);
+  expectIncludes(notionCreateErrors, "Notion token");
+
+  const notionGetErrors = validateTaskConfig(httpTask("notion_database_item_get"), minimalEnv as any);
+  expectIncludes(notionGetErrors, "Notion token");
+
+  const hubspotContactErrors = validateTaskConfig(httpTask("hubspot_contact_upsert"), minimalEnv as any);
+  expectIncludes(hubspotContactErrors, "HubSpot access token");
+
+  const hubspotDealErrors = validateTaskConfig(httpTask("hubspot_deal_upsert"), minimalEnv as any);
+  expectIncludes(hubspotDealErrors, "HubSpot access token");
+
   const chatOkEnv = makeEnv({
     CHAT_WEBHOOK_URL: "https://chat.example/incoming",
     SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/T000/B000/fixture",
     GITHUB_TOKEN: "fixture-github-token",
-    OPENAI_API_KEY: "fixture-openai"
+    OPENAI_API_KEY: "fixture-openai",
+    STRIPE_API_KEY: "fixture-stripe",
+    NOTION_TOKEN: "fixture-notion",
+    HUBSPOT_ACCESS_TOKEN: "fixture-hubspot"
   });
   assert.equal(validateTaskConfig(httpTask("chat_notify"), chatOkEnv as any).length, 0);
   assert.equal(validateTaskConfig(httpTask("incident_create"), chatOkEnv as any).length, 0);
   assert.equal(validateTaskConfig(httpTask("slack_message"), chatOkEnv as any).length, 0);
   assert.equal(validateTaskConfig(httpTask("github_issue_create"), chatOkEnv as any).length, 0);
   assert.equal(validateTaskConfig(httpTask("openai_chat"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("stripe_payment_intent_create"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("stripe_customer_upsert"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("notion_database_item_create"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("notion_database_item_get"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("hubspot_contact_upsert"), chatOkEnv as any).length, 0);
+  assert.equal(validateTaskConfig(httpTask("hubspot_deal_upsert"), chatOkEnv as any).length, 0);
 
   const normalizerErrors = validateTaskConfig(httpTask("lead_normalizer"), minimalEnv as any);
   expectIncludes(normalizerErrors, "Google AI key");

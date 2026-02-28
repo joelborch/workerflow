@@ -28,6 +28,9 @@ function makeDefaultEnv(): Env & Record<string, unknown> {
     GOOGLEAI_API_KEY: "smoke-google-ai",
     OPENAI_API_KEY: "smoke-openai",
     GITHUB_TOKEN: "smoke-github-token",
+    STRIPE_API_KEY: "smoke-stripe",
+    NOTION_TOKEN: "smoke-notion",
+    HUBSPOT_ACCESS_TOKEN: "smoke-hubspot",
     GITHUB_REPO: "workerflow/example",
     CHAT_WEBHOOK_URL: "https://chat.example/incoming",
     SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/T000/B000/smoke",
@@ -54,6 +57,88 @@ function buildMockFetch() {
       }, 201);
     }
 
+    if (url.hostname === "api.stripe.com") {
+      if (url.pathname === "/v1/payment_intents") {
+        return jsonResponse({
+          id: "pi_smoke_1",
+          status: "requires_confirmation",
+          client_secret: "pi_smoke_1_secret",
+          amount: 1000,
+          currency: "usd"
+        });
+      }
+      if (url.pathname === "/v1/customers" && url.searchParams.has("email")) {
+        return jsonResponse({ data: [] });
+      }
+      if (url.pathname === "/v1/customers" && _init?.method === "POST") {
+        return jsonResponse({
+          id: "cus_smoke_1",
+          email: "smoke@example.com",
+          name: "Smoke User"
+        });
+      }
+    }
+
+    if (url.hostname === "api.notion.com") {
+      if (url.pathname === "/v1/pages" && _init?.method === "POST") {
+        return jsonResponse({
+          object: "page",
+          id: "notion-smoke-page",
+          url: "https://notion.so/notion-smoke-page",
+          archived: false,
+          created_time: "2026-02-28T00:00:00.000Z",
+          last_edited_time: "2026-02-28T00:30:00.000Z",
+          properties: {
+            Name: {
+              id: "title",
+              type: "title"
+            }
+          }
+        });
+      }
+      if (url.pathname === "/v1/pages/notion-smoke-page" && _init?.method === "GET") {
+        return jsonResponse({
+          object: "page",
+          id: "notion-smoke-page",
+          url: "https://notion.so/notion-smoke-page",
+          archived: false,
+          created_time: "2026-02-28T00:00:00.000Z",
+          last_edited_time: "2026-02-28T00:30:00.000Z",
+          properties: {
+            Name: {
+              id: "title",
+              type: "title"
+            }
+          }
+        });
+      }
+    }
+
+    if (url.hostname === "api.hubapi.com") {
+      if (url.pathname === "/crm/v3/objects/contacts/search" && _init?.method === "POST") {
+        return jsonResponse({ results: [] });
+      }
+      if (url.pathname === "/crm/v3/objects/contacts" && _init?.method === "POST") {
+        return jsonResponse({
+          id: "contact-smoke-1",
+          properties: {
+            email: "smoke@example.com"
+          }
+        }, 201);
+      }
+      if (url.pathname === "/crm/v3/objects/deals/search" && _init?.method === "POST") {
+        return jsonResponse({ results: [] });
+      }
+      if (url.pathname === "/crm/v3/objects/deals" && _init?.method === "POST") {
+        return jsonResponse({
+          id: "deal-smoke-1",
+          properties: {
+            workerflow_external_id: "deal-smoke-123"
+          }
+        }, 201);
+      }
+    }
+
     return jsonResponse({ ok: true, accepted: true });
   };
 }
@@ -70,6 +155,52 @@ const routePayloads: Record<string, unknown> = {
     }
   },
   openai_chat: { body: { prompt: "Say hello from smoke test.", model: "gpt-4o-mini" } },
+  stripe_payment_intent_create: {
+    body: {
+      amount: 1000,
+      currency: "usd",
+      description: "Smoke payment intent"
+    }
+  },
+  stripe_customer_upsert: {
+    body: {
+      email: "smoke@example.com",
+      name: "Smoke User"
+    }
+  },
+  notion_database_item_create: {
+    body: {
+      databaseId: "notion-db-smoke",
+      properties: {
+        Name: {
+          title: [{ text: { content: "Smoke item" } }]
+        }
+      }
+    }
+  },
+  notion_database_item_get: {
+    body: {
+      pageId: "notion-smoke-page"
+    }
+  },
+  hubspot_contact_upsert: {
+    body: {
+      email: "smoke@example.com",
+      properties: {
+        firstname: "Smoke",
+        lastname: "User"
+      }
+    }
+  },
+  hubspot_deal_upsert: {
+    body: {
+      idProperty: "workerflow_external_id",
+      idValue: "deal-smoke-123",
+      properties: {
+        dealname: "Smoke Deal"
+      }
+    }
+  },
   lead_normalizer: {
     body: {
       firstName: "Smoke",

@@ -30,6 +30,42 @@
     "wrapBody": true
   },
   {
+    "routePath": "stripe_payment_intent_create",
+    "requestType": "sync",
+    "flowPath": "f/examples/stripe_payment_intent_create",
+    "wrapBody": true
+  },
+  {
+    "routePath": "stripe_customer_upsert",
+    "requestType": "sync",
+    "flowPath": "f/examples/stripe_customer_upsert",
+    "wrapBody": true
+  },
+  {
+    "routePath": "notion_database_item_create",
+    "requestType": "sync",
+    "flowPath": "f/examples/notion_database_item_create",
+    "wrapBody": true
+  },
+  {
+    "routePath": "notion_database_item_get",
+    "requestType": "sync",
+    "flowPath": "f/examples/notion_database_item_get",
+    "wrapBody": true
+  },
+  {
+    "routePath": "hubspot_contact_upsert",
+    "requestType": "sync",
+    "flowPath": "f/examples/hubspot_contact_upsert",
+    "wrapBody": true
+  },
+  {
+    "routePath": "hubspot_deal_upsert",
+    "requestType": "sync",
+    "flowPath": "f/examples/hubspot_deal_upsert",
+    "wrapBody": true
+  },
+  {
     "routePath": "lead_normalizer",
     "requestType": "sync",
     "flowPath": "f/examples/lead_normalizer",

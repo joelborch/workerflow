@@ -14,6 +14,8 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | --- | --- |
 | [Cloudflare Runtime Guide](cloudflare/README.md) | Runtime components and deploy commands |
 | [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md) | End-to-end platform setup |
+| [Starter Walkthrough](docs/STARTER_WALKTHROUGH.md) | First deploy + first workflow call with screenshots |
+| [OpenAPI SDK Example](docs/OPENAPI_SDK_EXAMPLE.md) | Generate and use minimal TypeScript client from runtime OpenAPI |
 | [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md) | Agent-first bootstrap/deploy flow |
 | [Agent Operating Guide](AGENTS.md) | Repository working agreement for coding agents |
 | [Community Connector Catalog](docs/CONNECTOR_CATALOG.md) | Connector scaffold model and extension path |
@@ -33,7 +35,7 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | Area | Included |
 | --- | --- |
 | Runtime | 5-worker architecture (`api`, `workflow`, `queue-consumer`, `scheduler`, `ops-dashboard`) |
-| Catalog | 15 HTTP routes + 6 schedules |
+| Catalog | 21 HTTP routes + 6 schedules |
 | Data model | D1 idempotency, run ledger, dead letters, replay metadata |
 | Execution | queue-backed async + direct sync route execution |
 | Security | token auth, HMAC signing, rate-limit options, dashboard RBAC |
@@ -115,6 +117,8 @@ Catalog and contributor guidance:
 
 - [Cloudflare Runtime Guide](cloudflare/README.md)
 - [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md)
+- [Starter Walkthrough](docs/STARTER_WALKTHROUGH.md)
+- [OpenAPI SDK Example](docs/OPENAPI_SDK_EXAMPLE.md)
 - [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md)
 - [Architecture Notes](docs/ARCHITECTURE.md)
 - [Entrypoints](docs/ENTRYPOINTS.md)

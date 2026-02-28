@@ -1,3 +1,5 @@
+import { fetchWithRetry } from "./http_retry";
+
 type PostSlackMessageArgs = {
   webhookUrl: string;
   text: string;
@@ -5,7 +7,7 @@ type PostSlackMessageArgs = {
 };
 
 export async function postSlackMessage(args: PostSlackMessageArgs) {
-  const response = await fetch(args.webhookUrl, {
+  const response = await fetchWithRetry(args.webhookUrl, {
     method: "POST",
     headers: {
       "content-type": "application/json"

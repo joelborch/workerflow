@@ -18,7 +18,7 @@ This directory contains the deployable workers, shared contracts, migration file
 
 Default manifest includes:
 
-- 15 HTTP routes
+- 21 HTTP routes
 - 6 schedules
 
 See [../docs/ENTRYPOINTS.md](../docs/ENTRYPOINTS.md).

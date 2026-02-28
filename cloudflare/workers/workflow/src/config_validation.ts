@@ -45,6 +45,18 @@ function validateHttpRoute(routePath: string, env: RuntimeEnv, errors: string[])
     case "openai_chat":
       requireAny(env, errors, context, "OpenAI API key", ["OPENAI_API_KEY"]);
       return;
+    case "stripe_payment_intent_create":
+    case "stripe_customer_upsert":
+      requireAny(env, errors, context, "Stripe API key", ["STRIPE_API_KEY"]);
+      return;
+    case "notion_database_item_create":
+    case "notion_database_item_get":
+      requireAny(env, errors, context, "Notion token", ["NOTION_TOKEN"]);
+      return;
+    case "hubspot_contact_upsert":
+    case "hubspot_deal_upsert":
+      requireAny(env, errors, context, "HubSpot access token", ["HUBSPOT_ACCESS_TOKEN"]);
+      return;
     case "lead_normalizer":
       requireAny(env, errors, context, "Google AI key", ["GOOGLEAI_API_KEY", "LEAD_NORMALIZER_API_KEY"]);
       return;
