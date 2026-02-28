@@ -1,0 +1,33 @@
+name: Cloudflare CI
+
+on:
+  push:
+    paths:
+      - "cloudflare/**"
+      - ".github/workflows/cloudflare-typecheck.yml"
+  pull_request:
+    paths:
+      - "cloudflare/**"
+      - ".github/workflows/cloudflare-typecheck.yml"
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: cloudflare/package-lock.json
+      - run: npm ci
+      - run: npm run preflight
+      - run: npm run test:compat-contract
+      - run: npm run test:manifest-mode
+      - run: npm run test:schedule-fixtures
+      - run: npm run test:runtime-config
+      - run: npm run test:route-fixtures
+      - run: npm run test:handler-fixtures

@@ -1,0 +1,62 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WorkerFlow Cloudflare Runtime API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "API worker health",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/{routePath}": {
+      "post": {
+        "summary": "Invoke a configured HTTP route",
+        "parameters": [
+          {
+            "name": "routePath",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync route response"
+          },
+          "202": {
+            "description": "Async route accepted"
+          }
+        }
+      }
+    },
+    "/api/summary": {
+      "get": {
+        "summary": "Ops dashboard summary",
+        "responses": {
+          "200": {
+            "description": "Summary data"
+          }
+        }
+      }
+    },
+    "/api/extensions": {
+      "get": {
+        "summary": "Ops dashboard extension metadata",
+        "responses": {
+          "200": {
+            "description": "Configured extension descriptors"
+          }
+        }
+      }
+    }
+  }
+}

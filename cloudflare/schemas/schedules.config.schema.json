@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/schedules.config.schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "cron", "enabled", "target", "timeZone"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "cron": { "type": "string", "minLength": 1 },
+      "enabled": { "type": "boolean" },
+      "target": { "type": "string", "minLength": 1 },
+      "timeZone": { "type": "string", "minLength": 1 }
+    },
+    "additionalProperties": false
+  }
+}

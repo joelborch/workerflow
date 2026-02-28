@@ -1,0 +1,37 @@
+{
+  "$schema": "./cloudflare.resources.schema.json",
+  "account_id": "REPLACE_WITH_CLOUDFLARE_ACCOUNT_ID",
+  "d1": {
+    "name": "workerflow-runtime",
+    "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+    "migrations_dir": "cloudflare/migrations/d1"
+  },
+  "queue": {
+    "name": "workerflow-automation-queue"
+  },
+  "secrets_store": {
+    "id": "REPLACE_WITH_SECRETS_STORE_ID"
+  },
+  "workers": [
+    {
+      "name": "workerflow-runtime-api",
+      "config_path": "cloudflare/workers/api/wrangler.jsonc"
+    },
+    {
+      "name": "workerflow-runtime-workflow",
+      "config_path": "cloudflare/workers/workflow/wrangler.jsonc"
+    },
+    {
+      "name": "workerflow-runtime-queue-consumer",
+      "config_path": "cloudflare/workers/queue-consumer/wrangler.jsonc"
+    },
+    {
+      "name": "workerflow-runtime-scheduler",
+      "config_path": "cloudflare/workers/scheduler/wrangler.jsonc"
+    },
+    {
+      "name": "workerflow-runtime-ops-dashboard",
+      "config_path": "cloudflare/workers/ops-dashboard/wrangler.jsonc"
+    }
+  ]
+}

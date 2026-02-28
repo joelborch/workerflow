@@ -1,0 +1,34 @@
+ENV_NAME=dev
+GOOGLEAI_API_KEY=replace-me
+OPS_DASHBOARD_TOKEN=replace-me
+API_INGRESS_TOKEN=replace-me
+GCP_SERVICE_ACCOUNT_EMAIL=replace-me
+GCP_PRIVATE_KEY=replace-me
+GOOGLE_ADMIN_USER=replace-me
+
+# Manifest mode (optional advanced)
+# MANIFEST_MODE=config
+# ROUTES_CONFIG_JSON=[{"routePath":"example_ping","requestType":"async","flowPath":"f/example/ping","wrapBody":false}]
+# SCHEDULES_CONFIG_JSON=[{"id":"example_daily","cron":"0 0 * * *","enabled":true,"target":"f/example/daily","timeZone":"UTC"}]
+
+# API route gating (optional; workers/api)
+# ENABLED_HTTP_ROUTES=kurated_email_forwarding,journee_new_pdfs_flow,sheets_webhook
+# DISABLED_HTTP_ROUTES=clickup_qa_webhook
+
+# Shared integrations
+GSHEETS_TOKEN=replace-me
+GDRIVE_TOKEN=replace-me
+CLICKUP_TOKEN=replace-me
+GMAIL_TOKEN=replace-me
+MAILCHIMP_API_KEY=replace-me
+MAILCHIMP_SERVER=replace-me
+TELEGRAM_BOT_TOKEN=replace-me
+TELEGRAM_TOKEN=replace-me
+ZYTE_API_KEY=replace-me
+ZYTE_API_KEY_SECRET=replace-me
+
+# Google Chat webhooks
+GCHAT_ALERTS_WEBHOOK_URL=replace-me
+GCHAT_FORMS_WEBHOOK_URL=replace-me
+GCHAT_SHAPE_WEBHOOK_URL=replace-me
+GCHAT_GMAIL_WEBHOOK_URL=replace-me

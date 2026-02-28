@@ -1,0 +1,8 @@
+[
+  {
+    "routePath": "example_ping",
+    "requestType": "async",
+    "flowPath": "f/example/ping",
+    "wrapBody": false
+  }
+]

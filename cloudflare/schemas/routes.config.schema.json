@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/routes.config.schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["routePath", "requestType", "flowPath", "wrapBody"],
+    "properties": {
+      "routePath": { "type": "string", "minLength": 1 },
+      "requestType": {
+        "type": "string",
+        "enum": ["sync", "async"]
+      },
+      "flowPath": { "type": "string", "minLength": 1 },
+      "wrapBody": { "type": "boolean" }
+    },
+    "additionalProperties": false
+  }
+}
