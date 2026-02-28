@@ -81,12 +81,17 @@ Common optional secrets:
 ## 6. Validate Before Deploy
 
 ```bash
+npm run migrations:guard:strict
 npm run release:check
 npm run smoke:handlers
 npm run smoke:ops
 ```
 
 If any command fails, stop and fix before deploy.
+
+Rollback guidance:
+
+- `docs/MIGRATION_ROLLBACK_RUNBOOK.md`
 
 ## 7. Deploy Order
 

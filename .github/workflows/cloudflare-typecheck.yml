@@ -19,4 +19,5 @@ jobs:
           cache: npm
           cache-dependency-path: cloudflare/package-lock.json
       - run: npm ci
+      - run: npm run migrations:guard:strict
       - run: npm run release:check
