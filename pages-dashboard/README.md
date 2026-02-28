@@ -1,6 +1,6 @@
 # WorkerFlow Dashboard (Cloudflare Pages)
 
-Production dashboard UI for WorkerFlow automation operations.
+Production dashboard UI for WorkerFlow operations.
 
 This app is a standalone Cloudflare Pages frontend that talks to the WorkerFlow ops API.
 
@@ -8,15 +8,16 @@ Default local API URL:
 
 - `http://127.0.0.1:8787`
 
-## What it shows
+## What It Shows
 
-- 24h operational KPI snapshot (runs, fail rate, dead letters, in-flight)
-- Run timeline chart
-- Top route volume
-- Recent run table
-- Error clusters
-- Dead letter queue view
-- Flow reliability leaderboard
+- 24h KPI snapshot (runs, fail rate, dead letters, in-flight)
+- run timeline chart
+- top route volume
+- recent run table
+- error clusters
+- dead-letter queue view
+- flow reliability leaderboard
+- route and cron catalog
 
 ## Stack
 
@@ -27,33 +28,33 @@ Default local API URL:
 - ESLint + strict TS checks for guardrails
 - Wrangler for Cloudflare Pages deployment
 
-## Local setup
+## Local Setup
 
-1. Install dependencies:
+1. install dependencies:
    - `npm install`
-2. Configure env:
+2. configure env:
    - `cp .env.example .env.local`
-   - Set `VITE_API_BASE_URL` to your ops API base URL
-3. Start dev server:
+   - set `VITE_API_BASE_URL` to your ops API base URL
+3. start dev server:
    - `npm run dev`
 
-## Quality gates
+## Quality Gates
 
-- Lint: `npm run lint`
-- Tests: `npm run test`
-- Typecheck: `npm run typecheck`
-- Full release check: `npm run release:check`
+- lint: `npm run lint`
+- tests: `npm run test`
+- typecheck: `npm run typecheck`
+- full release check: `npm run release:check`
 
 ## Deploy to Cloudflare Pages
 
-1. Build and deploy:
+1. build and deploy:
    - `npm run deploy:pages`
-2. This deploys `dist/` to Pages project:
+2. this deploys `dist/` to Pages project:
    - `workerflow-dashboard`
 
-## API contract
+## API Contract
 
-The dashboard expects these API routes on the backend:
+The dashboard expects these backend endpoints:
 
 - `GET /api/ops/summary`
 - `GET /api/ops/timeline?bucket=hour`

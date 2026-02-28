@@ -1,6 +1,8 @@
-# Environment And Secrets
+# Environment and Secrets
 
-Use `wrangler secret put` for sensitive values.
+WorkerFlow keeps secret wiring explicit so teams and coding agents can bootstrap safely and predictably.
+
+Use `wrangler secret put` for all sensitive values.
 
 ## Required Secrets (Default Manifest)
 

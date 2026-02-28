@@ -1,10 +1,12 @@
 # Community Connector Catalog
 
-WorkerFlow now ships a scaffolded community catalog of 30 high-demand connectors under:
+WorkerFlow ships a scaffolded community connector catalog so contributors can quickly expand real-world integrations.
+
+Definitions live in:
 
 - `cloudflare/workers/workflow/src/connectors/community/definitions/`
 
-These are metadata-first scaffolds intended for rapid expansion into full trigger/action implementations.
+These are metadata-first scaffolds designed for rapid progression into production trigger/action implementations.
 
 ## Current Seed Connectors (30)
 
@@ -57,20 +59,18 @@ cd cloudflare
 npm run test:connector-catalog
 ```
 
-Included in `npm run release:check`.
+This is included in `npm run release:check`.
 
-## How To Add A New Connector
+## How to Add a New Connector
 
-1. Add a new file in `cloudflare/workers/workflow/src/connectors/community/definitions/<slug>.ts`.
-2. Export it from `definitions/index.ts` and include it in `CONNECTOR_DEFINITIONS`.
-3. Use explicit secret names in `requiredSecrets` for agent-friendly provisioning.
-4. Run `npm run release:check`.
+1. add a new file in `cloudflare/workers/workflow/src/connectors/community/definitions/<slug>.ts`
+2. export it from `definitions/index.ts` and include it in `CONNECTOR_DEFINITIONS`
+3. use explicit secret names in `requiredSecrets` for agent-friendly provisioning
+4. run `npm run release:check`
 
-## Next Implementation Phase
+## Maturity Path: Scaffold -> Production
 
-To move a connector from scaffold to production-ready:
-
-1. Add a transport client with retries/timeouts and error normalization.
-2. Implement concrete trigger ingestion strategy (webhook or poll cursor).
-3. Implement actions with idempotency-safe request keys where available.
-4. Add fixture tests in `cloudflare/scripts/`.
+1. add a transport client with retries/timeouts and normalized errors
+2. implement trigger ingestion strategy (webhook or poll cursor)
+3. implement actions with idempotency-safe request keys where available
+4. add fixture tests in `cloudflare/scripts/`

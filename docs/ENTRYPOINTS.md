@@ -28,11 +28,11 @@ This document defines canonical route and schedule IDs for the default WorkerFlo
 
 ## Path Contracts
 
-- Invoke route: `POST /api/{route_id}`
-- Manual schedule enqueue: `POST /api/dev/cron/{schedule_id}`
+- invoke route: `POST /api/{route_id}`
+- manual schedule enqueue: `POST /api/dev/cron/{schedule_id}`
 - API health: `GET /api/health`
-- Workflow health: `GET /health`
-- Workflow config health: `GET /health/config`
+- workflow health: `GET /health`
+- workflow config health: `GET /health/config`
 
 ## Extension Guidance
 

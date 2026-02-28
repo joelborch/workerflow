@@ -2,7 +2,7 @@
 
 Use this runbook to provision WorkerFlow on a Cloudflare account.
 
-## 1. Install + Initialize
+## 1. Install and Initialize
 
 ```bash
 cd cloudflare
@@ -15,7 +15,7 @@ npm run preflight
 
 Edit `infra/cloudflare.resources.json` and replace all `REPLACE_WITH_*` values.
 
-## 3. Generate + Apply Plan
+## 3. Generate and Apply Plan
 
 ```bash
 cd cloudflare
@@ -35,7 +35,7 @@ npx wrangler secret put OPS_DASHBOARD_READ_TOKEN --config workers/ops-dashboard/
 npx wrangler secret put OPS_DASHBOARD_WRITE_TOKEN --config workers/ops-dashboard/wrangler.jsonc
 ```
 
-## 5. Validate + Deploy
+## 5. Validate and Deploy
 
 ```bash
 cd cloudflare

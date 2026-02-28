@@ -1,6 +1,6 @@
 # core-runtime
 
-`core-runtime` now contains extracted manifest and route/schedule enablement primitives that are consumed by the Cloudflare runtime.
+`core-runtime` contains extracted manifest and route/schedule enablement primitives consumed by the Cloudflare runtime.
 
 Current extracted modules:
 

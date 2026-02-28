@@ -1,20 +1,23 @@
 # Security Policy
 
+WorkerFlow security focuses on ingress protection, secret hygiene, and replay-safe operational controls.
+
 ## Reporting a Vulnerability
 
 Do not open public issues for security-sensitive findings.
 
-Please report vulnerabilities privately to project maintainers and include:
+Report vulnerabilities privately to project maintainers and include:
 
-- Affected area and impact.
-- Reproduction steps.
-- Suggested remediation (if available).
+- affected area and impact
+- reproduction steps
+- suggested remediation (if available)
 
 ## Scope
 
 Security reports are especially important for:
 
-- Authentication and authorization paths.
-- Secrets management and credential handling.
-- Webhook ingress validation.
-- Replay/retry and dead-letter endpoints.
+- authentication and authorization paths
+- secrets management and credential handling
+- webhook ingress validation
+- replay/retry and dead-letter endpoints
+- connector auth and secret usage patterns

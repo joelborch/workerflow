@@ -1,5 +1,7 @@
 # Ops Dashboard API
 
+Operational API surface for dashboards, runbooks, and agent-driven tooling.
+
 All `/api/*` routes are token-protected when dashboard tokens are configured.
 
 ## Auth Modes

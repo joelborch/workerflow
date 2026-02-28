@@ -10,7 +10,7 @@ Workflow file:
 
 It only runs when repository variable `PRIVATE_DEPLOY_GUARD=true`.
 
-## Enable In Private Repo
+## Enable in Private Repo
 
 1. Go to repository settings.
 2. Add Actions variable:
@@ -21,8 +21,8 @@ It only runs when repository variable `PRIVATE_DEPLOY_GUARD=true`.
 
 From `cloudflare/`:
 
-- Warn mode: `npm run deploy:guard`
-- Fail mode: `npm run deploy:guard:strict`
+- warn mode: `npm run deploy:guard`
+- fail mode: `npm run deploy:guard:strict`
 
 `deploy:guard:strict` checks:
 
