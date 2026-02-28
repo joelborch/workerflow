@@ -2,21 +2,366 @@
   "openapi": "3.1.0",
   "info": {
     "title": "WorkerFlow Cloudflare Runtime API",
-    "version": "0.1.0"
+    "version": "0.2.0"
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "worker": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "worker",
+          "time"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "routePath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "RouteInvokeRequest": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "RouteAcceptedResponse": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "routePath": {
+            "type": "string"
+          },
+          "requestType": {
+            "type": "string",
+            "enum": [
+              "sync",
+              "async"
+            ]
+          },
+          "workspaceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accepted",
+          "traceId",
+          "routePath",
+          "requestType",
+          "workspaceId"
+        ]
+      },
+      "RouteSyncResponse": {
+        "type": "object",
+        "properties": {
+          "traceId": {
+            "type": "string"
+          },
+          "result": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "traceId",
+          "result"
+        ]
+      },
+      "TopRoute": {
+        "type": "object",
+        "properties": {
+          "routePath": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "routePath",
+          "count"
+        ]
+      },
+      "SummaryResponse": {
+        "type": "object",
+        "properties": {
+          "windowHours": {
+            "type": "integer"
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "until": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalRuns": {
+            "type": "integer"
+          },
+          "succeededRuns": {
+            "type": "integer"
+          },
+          "failedRuns": {
+            "type": "integer"
+          },
+          "startedRuns": {
+            "type": "integer"
+          },
+          "deadLetters": {
+            "type": "integer"
+          },
+          "topRoutes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopRoute"
+            }
+          }
+        },
+        "required": [
+          "windowHours",
+          "since",
+          "until",
+          "totalRuns",
+          "succeededRuns",
+          "failedRuns",
+          "startedRuns",
+          "deadLetters",
+          "topRoutes"
+        ]
+      },
+      "RunListItem": {
+        "type": "object",
+        "properties": {
+          "traceId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "routePath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "scheduleId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "duration": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "traceId",
+          "workspaceId",
+          "kind",
+          "routePath",
+          "scheduleId",
+          "status",
+          "startedAt",
+          "finishedAt",
+          "duration",
+          "output",
+          "error"
+        ]
+      },
+      "RunsResponse": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunListItem"
+            }
+          }
+        },
+        "required": [
+          "limit",
+          "runs"
+        ]
+      },
+      "DeadLetterRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "error": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "payloadJson": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "traceId",
+          "workspaceId",
+          "error",
+          "createdAt",
+          "payloadJson"
+        ]
+      },
+      "DeadLettersResponse": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "deadLetters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeadLetterRecord"
+            }
+          }
+        },
+        "required": [
+          "limit",
+          "deadLetters"
+        ]
+      },
+      "ReplayResponse": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "retriedFromTraceId": {
+            "type": "string"
+          },
+          "newTraceId": {
+            "type": "string"
+          },
+          "retryCount": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "accepted",
+          "retriedFromTraceId",
+          "newTraceId",
+          "retryCount"
+        ]
+      }
+    }
   },
   "paths": {
     "/api/health": {
       "get": {
+        "operationId": "getApiHealth",
         "summary": "API worker health",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "API worker is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/{routePath}": {
       "post": {
+        "operationId": "postApiRoutePath",
         "summary": "Invoke a configured HTTP route",
         "parameters": [
           {
@@ -28,32 +373,280 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteInvokeRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Sync route response"
+            "description": "Sync route response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteSyncResponse"
+                }
+              }
+            }
           },
           "202": {
-            "description": "Async route accepted"
+            "description": "Async route accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteAcceptedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Payload validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingress auth failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/summary": {
+    "/api/ops/summary": {
       "get": {
+        "operationId": "getApiOpsSummary",
         "summary": "Ops dashboard summary",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "hours",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Summary data"
+            "description": "Summary data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/invalid ops token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/extensions": {
+    "/api/ops/runs": {
       "get": {
-        "summary": "Ops dashboard extension metadata",
+        "operationId": "getApiOpsRuns",
+        "summary": "List recent runs",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "routePath",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scheduleId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 250
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Configured extension descriptors"
+            "description": "Run list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/invalid ops token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ops/dead-letters": {
+      "get": {
+        "operationId": "getApiOpsDeadLetters",
+        "summary": "List dead-letter records",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 250
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dead-letter list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadLettersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/invalid ops token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ops/replay/{traceId}": {
+      "post": {
+        "operationId": "postApiOpsReplayTraceId",
+        "summary": "Replay a failed run by trace ID",
+        "parameters": [
+          {
+            "name": "traceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replay accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Run exists but is not failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }

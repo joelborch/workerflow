@@ -41,6 +41,7 @@ Use this checklist before running WorkerFlow in production.
 ## 6. Release And Rollback Discipline
 
 - [ ] `npm run release:check` passing in CI
+- [ ] `cd cloudflare && npm run migrations:guard:strict` passes before deploy
 - [ ] branch protection enabled on `main`
 - [ ] release tags created for deployable versions (`vX.Y.Z`)
 - [ ] rollback procedure tested to previous known-good tag
