@@ -14,6 +14,7 @@ WorkerFlow `0.2.0` includes:
 - queue-backed async execution
 - ops dashboard APIs with retry/replay support
 - ingress hardening (token auth, HMAC, rate limiting)
+- seeded community connector catalog (30 scaffolded connectors)
 
 ## Architecture
 
@@ -63,8 +64,10 @@ npm run release:check
 
 - [Cloudflare Runtime Guide](cloudflare/README.md)
 - [Cloudflare Setup Runbook](docs/CLOUDFLARE_SETUP_RUNBOOK.md)
+- [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md)
 - [Architecture Notes](docs/ARCHITECTURE.md)
 - [Security Model](docs/SECURITY_MODEL.md)
+- [Community Connector Catalog](docs/CONNECTOR_CATALOG.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Release Process](docs/RELEASE_PROCESS.md)
 - [Upgrade Guide](docs/UPGRADE_GUIDE.md)
