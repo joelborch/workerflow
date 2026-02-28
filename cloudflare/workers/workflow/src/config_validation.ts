@@ -36,6 +36,15 @@ function validateHttpRoute(routePath: string, env: RuntimeEnv, errors: string[])
         "GCHAT_ALERTS_WEBHOOK"
       ]);
       return;
+    case "slack_message":
+      requireAny(env, errors, context, "Slack webhook URL", ["SLACK_WEBHOOK_URL"]);
+      return;
+    case "github_issue_create":
+      requireAny(env, errors, context, "GitHub token", ["GITHUB_TOKEN"]);
+      return;
+    case "openai_chat":
+      requireAny(env, errors, context, "OpenAI API key", ["OPENAI_API_KEY"]);
+      return;
     case "lead_normalizer":
       requireAny(env, errors, context, "Google AI key", ["GOOGLEAI_API_KEY", "LEAD_NORMALIZER_API_KEY"]);
       return;

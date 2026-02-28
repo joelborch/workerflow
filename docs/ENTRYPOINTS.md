@@ -6,6 +6,9 @@ This document defines canonical route and schedule IDs for the default WorkerFlo
 
 - `webhook_echo`
 - `chat_notify`
+- `slack_message`
+- `github_issue_create`
+- `openai_chat`
 - `lead_normalizer`
 - `json_transform`
 - `text_extract`

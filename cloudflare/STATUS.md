@@ -19,7 +19,7 @@ WorkerFlow v1 is a practical automation runtime for teams that want cloud automa
 
 Default manifest currently ships with:
 
-- 12 HTTP routes
+- 15 HTTP routes
 - 6 cron schedules
 
 These are generic starter recipes for common patterns (transform, notify, fanout, incident, digest, cleanup, rollups).

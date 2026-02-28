@@ -1,0 +1,52 @@
+name: Bug report
+description: Report a runtime, dashboard, docs, or deployment issue.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - cloudflare-runtime
+        - pages-dashboard
+        - connectors
+        - docs
+        - ci-cd
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+      placeholder: Briefly describe the failure.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs/output
+      render: shell
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Include runtime version, local OS, and whether this is Cloudflare prod/staging/local.

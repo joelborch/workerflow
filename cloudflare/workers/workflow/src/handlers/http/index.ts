@@ -1,11 +1,14 @@
 import type { Env } from "../../../../../shared/types";
 import { handle as chatNotify } from "./chat_notify";
+import { handle as githubIssueCreate } from "./github_issue_create";
 import { handle as healthNote } from "./health_note";
 import { handle as incidentCreate } from "./incident_create";
 import { handle as jsonTransform } from "./json_transform";
 import { handle as leadNormalizer } from "./lead_normalizer";
 import { handle as noopAck } from "./noop_ack";
+import { handle as openAiChat } from "./openai_chat";
 import { handle as payloadHash } from "./payload_hash";
+import { handle as slackMessage } from "./slack_message";
 import { handle as templateRender } from "./template_render";
 import { handle as textExtract } from "./text_extract";
 import { handle as timestampEnrich } from "./timestamp_enrich";
@@ -25,6 +28,9 @@ export type HttpRouteHandler = (
 export const HTTP_ROUTE_HANDLERS: Record<string, HttpRouteHandler> = {
   webhook_echo: webhookEcho,
   chat_notify: chatNotify,
+  slack_message: slackMessage,
+  github_issue_create: githubIssueCreate,
+  openai_chat: openAiChat,
   lead_normalizer: leadNormalizer,
   json_transform: jsonTransform,
   text_extract: textExtract,

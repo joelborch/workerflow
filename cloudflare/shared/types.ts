@@ -48,6 +48,11 @@ export interface Env {
   GCHAT_ALERTS_WEBHOOK?: string;
   GCHAT_ALERTS_WEBHOOK_URL?: string;
   GOOGLEAI_API_KEY?: string;
+  OPENAI_API_KEY?: string;
+  OPENAI_MODEL?: string;
+  SLACK_WEBHOOK_URL?: string;
+  GITHUB_TOKEN?: string;
+  GITHUB_REPO?: string;
 }
 
 export type SyncHttpPassthrough = {

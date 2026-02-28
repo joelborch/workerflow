@@ -1,7 +1,11 @@
 ENV_NAME=dev
 GOOGLEAI_API_KEY=replace-me
+OPENAI_API_KEY=replace-me
 OPS_DASHBOARD_TOKEN=replace-me
 API_INGRESS_TOKEN=replace-me
+SLACK_WEBHOOK_URL=replace-me
+GITHUB_TOKEN=replace-me
+GITHUB_REPO=owner/repo
 GCP_SERVICE_ACCOUNT_EMAIL=replace-me
 GCP_PRIVATE_KEY=replace-me
 GOOGLE_ADMIN_USER=replace-me

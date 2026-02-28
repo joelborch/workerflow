@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/cloudflare"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - security
+    commit-message:
+      prefix: "chore(deps-cloudflare)"
+
+  - package-ecosystem: "npm"
+    directory: "/pages-dashboard"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - security
+    commit-message:
+      prefix: "chore(deps-dashboard)"

@@ -1,0 +1,42 @@
+name: Connector request
+description: Request a new connector or connector action/trigger.
+title: "[Connector] "
+labels:
+  - connector
+body:
+  - type: input
+    id: connector
+    attributes:
+      label: Connector name
+      placeholder: e.g. Linear
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What workflow should this unlock?
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Requested scope
+      options:
+        - label: Trigger(s)
+        - label: Action(s)
+        - label: Both
+  - type: textarea
+    id: endpoints
+    attributes:
+      label: API docs/endpoints
+      description: Link vendor docs if available.
+  - type: textarea
+    id: auth
+    attributes:
+      label: Auth model
+      description: API key, OAuth2, webhook signature, etc.
+  - type: textarea
+    id: priority
+    attributes:
+      label: Priority and impact

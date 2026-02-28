@@ -17,7 +17,9 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md) | Agent-first bootstrap/deploy flow |
 | [Agent Operating Guide](AGENTS.md) | Repository working agreement for coding agents |
 | [Community Connector Catalog](docs/CONNECTOR_CATALOG.md) | Connector scaffold model and extension path |
+| [Starter Examples](examples/README.md) | Copy/paste automation starters |
 | [Security Model](docs/SECURITY_MODEL.md) | Ingress auth, secret handling, RBAC |
+| [Production Readiness Checklist](docs/PRODUCTION_READINESS_CHECKLIST.md) | Production rollout baseline |
 
 ## Why WorkerFlow
 
@@ -31,7 +33,7 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | Area | Included |
 | --- | --- |
 | Runtime | 5-worker architecture (`api`, `workflow`, `queue-consumer`, `scheduler`, `ops-dashboard`) |
-| Catalog | 12 HTTP routes + 6 schedules |
+| Catalog | 15 HTTP routes + 6 schedules |
 | Data model | D1 idempotency, run ledger, dead letters, replay metadata |
 | Execution | queue-backed async + direct sync route execution |
 | Security | token auth, HMAC signing, rate-limit options, dashboard RBAC |
@@ -107,6 +109,7 @@ Catalog and contributor guidance:
 | `pages-dashboard/` | Cloudflare Pages dashboard frontend |
 | `docs/` | Setup, architecture, security, release, roadmap, contribution docs |
 | `packages/` | Extraction targets (`core-runtime`, `handler-sdk`, recipes) |
+| `examples/` | Copy/paste starter automation examples |
 
 ## Full Documentation Index
 
@@ -117,8 +120,11 @@ Catalog and contributor guidance:
 - [Entrypoints](docs/ENTRYPOINTS.md)
 - [Security Model](docs/SECURITY_MODEL.md)
 - [Community Connector Catalog](docs/CONNECTOR_CATALOG.md)
+- [API and Contract Versioning Policy](docs/VERSIONING_POLICY.md)
+- [Production Readiness Checklist](docs/PRODUCTION_READINESS_CHECKLIST.md)
 - [Brand Standard](docs/BRAND_STANDARD.md)
 - [Roadmap](docs/ROADMAP.md)
+- [Next 10 OSS Issues](docs/NEXT_10_ISSUES.md)
 - [Release Process](docs/RELEASE_PROCESS.md)
 - [Upgrade Guide](docs/UPGRADE_GUIDE.md)
 - [Changelog](CHANGELOG.md)
