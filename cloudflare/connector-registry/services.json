@@ -1,7 +1,7 @@
 {
   "version": 1,
   "updatedAt": "2026-03-01",
-  "notes": "Imported from external top-100 connector research CSV.",
+  "notes": "Imported from external connector research CSV.",
   "services": [
     {
       "rank": 1,
@@ -22,14 +22,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/google-sheets/integrations",
-        "https://zapier.com/apps",
         "https://developers.google.com/sheets/api"
-      ],
-      "discoveryAppSlug": "google-sheets",
-      "discoveryAppUrl": "https://zapier.com/apps/google-sheets/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 2,
@@ -50,14 +44,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/gmail/integrations",
-        "https://zapier.com/apps",
         "https://developers.google.com/gmail/api"
-      ],
-      "discoveryAppSlug": "gmail",
-      "discoveryAppUrl": "https://zapier.com/apps/gmail/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 3,
@@ -78,14 +66,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/slack/integrations",
-        "https://zapier.com/apps",
         "https://api.slack.com/"
-      ],
-      "discoveryAppSlug": "slack",
-      "discoveryAppUrl": "https://zapier.com/apps/slack/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 4,
@@ -106,14 +88,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/google-calendar/integrations",
-        "https://zapier.com/apps",
         "https://developers.google.com/calendar/api"
-      ],
-      "discoveryAppSlug": "google-calendar",
-      "discoveryAppUrl": "https://zapier.com/apps/google-calendar/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 5,
@@ -134,14 +110,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/google-drive/integrations",
-        "https://zapier.com/apps",
         "https://developers.google.com/drive/api"
-      ],
-      "discoveryAppSlug": "google-drive",
-      "discoveryAppUrl": "https://zapier.com/apps/google-drive/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 6,
@@ -162,14 +132,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/notion/integrations",
-        "https://zapier.com/apps",
         "https://developers.notion.com/reference/intro"
-      ],
-      "discoveryAppSlug": "notion",
-      "discoveryAppUrl": "https://zapier.com/apps/notion/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 7,
@@ -190,14 +154,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/hubspot/integrations",
-        "https://zapier.com/apps",
         "https://developers.hubspot.com/docs/api/overview"
-      ],
-      "discoveryAppSlug": "hubspot",
-      "discoveryAppUrl": "https://zapier.com/apps/hubspot/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 8,
@@ -218,14 +176,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/google-forms/integrations",
-        "https://zapier.com/apps",
         "https://developers.google.com/forms/api"
-      ],
-      "discoveryAppSlug": "google-forms",
-      "discoveryAppUrl": "https://zapier.com/apps/google-forms/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 9,
@@ -246,14 +198,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/facebook-lead-ads/integrations",
-        "https://zapier.com/apps",
         "https://developers.facebook.com/docs/marketing-api/"
-      ],
-      "discoveryAppSlug": "facebook-lead-ads",
-      "discoveryAppUrl": "https://zapier.com/apps/facebook-lead-ads/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 10,
@@ -274,14 +220,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/mailchimp/integrations",
-        "https://zapier.com/apps",
         "https://mailchimp.com/developer/marketing/api/"
-      ],
-      "discoveryAppSlug": "mailchimp",
-      "discoveryAppUrl": "https://zapier.com/apps/mailchimp/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 11,
@@ -302,14 +242,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/stripe/integrations",
-        "https://zapier.com/apps",
         "https://stripe.com/docs/api"
-      ],
-      "discoveryAppSlug": "stripe",
-      "discoveryAppUrl": "https://zapier.com/apps/stripe/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 12,
@@ -330,14 +264,8 @@
       "confidence": "High",
       "notes": "microsoft_graph_or_sharepoint_api",
       "sources": [
-        "https://zapier.com/apps/microsoft-outlook/integrations",
-        "https://zapier.com/apps",
         "https://learn.microsoft.com/en-us/graph/overview"
-      ],
-      "discoveryAppSlug": "microsoft-outlook",
-      "discoveryAppUrl": "https://zapier.com/apps/microsoft-outlook/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 13,
@@ -358,14 +286,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/typeform/integrations",
-        "https://zapier.com/apps",
         "https://developer.typeform.com/"
-      ],
-      "discoveryAppSlug": "typeform",
-      "discoveryAppUrl": "https://zapier.com/apps/typeform/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 14,
@@ -386,14 +308,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/airtable/integrations",
-        "https://zapier.com/apps",
         "https://airtable.com/developers/web/api/introduction"
-      ],
-      "discoveryAppSlug": "airtable",
-      "discoveryAppUrl": "https://zapier.com/apps/airtable/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 15,
@@ -414,14 +330,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/calendly/integrations",
-        "https://zapier.com/apps",
         "https://developer.calendly.com/api-docs"
-      ],
-      "discoveryAppSlug": "calendly",
-      "discoveryAppUrl": "https://zapier.com/apps/calendly/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 16,
@@ -442,14 +352,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/leadconnector/integrations",
-        "https://zapier.com/apps",
         "https://developers.gohighlevel.com/"
-      ],
-      "discoveryAppSlug": "leadconnector",
-      "discoveryAppUrl": "https://zapier.com/apps/leadconnector/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 17,
@@ -470,14 +374,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/chatgpt/integrations",
-        "https://zapier.com/apps",
         "https://platform.openai.com/docs"
-      ],
-      "discoveryAppSlug": "chatgpt",
-      "discoveryAppUrl": "https://zapier.com/apps/chatgpt/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 18,
@@ -498,14 +396,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/trello/integrations",
-        "https://zapier.com/apps",
         "https://developer.atlassian.com/cloud/trello/rest/api-group-actions/"
-      ],
-      "discoveryAppSlug": "trello",
-      "discoveryAppUrl": "https://zapier.com/apps/trello/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 19,
@@ -526,14 +418,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/google-docs/integrations",
-        "https://zapier.com/apps",
         "https://developers.google.com/docs/api"
-      ],
-      "discoveryAppSlug": "google-docs",
-      "discoveryAppUrl": "https://zapier.com/apps/google-docs/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 20,
@@ -554,14 +440,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/discord/integrations",
-        "https://zapier.com/apps",
         "https://discord.com/developers/docs/intro"
-      ],
-      "discoveryAppSlug": "discord",
-      "discoveryAppUrl": "https://zapier.com/apps/discord/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 21,
@@ -582,14 +462,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/salesforce/integrations",
-        "https://zapier.com/apps",
         "https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/"
-      ],
-      "discoveryAppSlug": "salesforce",
-      "discoveryAppUrl": "https://zapier.com/apps/salesforce/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 22,
@@ -610,14 +484,8 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://zapier.com/apps/webflow/integrations",
-        "https://zapier.com/apps",
         "https://developers.webflow.com/"
-      ],
-      "discoveryAppSlug": "webflow",
-      "discoveryAppUrl": "https://zapier.com/apps/webflow/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps",
-      "rankEvidenceType": "app_directory_most_popular"
+      ]
     },
     {
       "rank": 23,
@@ -638,14 +506,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/activecampaign/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.activecampaign.com/reference"
-      ],
-      "discoveryAppSlug": "activecampaign",
-      "discoveryAppUrl": "https://zapier.com/apps/activecampaign/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 24,
@@ -666,14 +528,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/google-ads/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.google.com/google-ads/api"
-      ],
-      "discoveryAppSlug": "google-ads",
-      "discoveryAppUrl": "https://zapier.com/apps/google-ads/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 25,
@@ -694,14 +550,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/brevo/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.brevo.com/reference/getting-started-1"
-      ],
-      "discoveryAppSlug": "brevo",
-      "discoveryAppUrl": "https://zapier.com/apps/brevo/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 26,
@@ -721,14 +571,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/flodesk/integrations",
-        "https://zapier.com/apps/categories/marketing"
-      ],
-      "discoveryAppSlug": "flodesk",
-      "discoveryAppUrl": "https://zapier.com/apps/flodesk/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 27,
@@ -749,14 +592,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/mailerlite/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.mailerlite.com/docs/"
-      ],
-      "discoveryAppSlug": "mailerlite",
-      "discoveryAppUrl": "https://zapier.com/apps/mailerlite/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 28,
@@ -777,14 +614,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/kit/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.kit.com/"
-      ],
-      "discoveryAppSlug": "kit",
-      "discoveryAppUrl": "https://zapier.com/apps/kit/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 29,
@@ -805,14 +636,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/facebook-pages/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.facebook.com/docs/graph-api/"
-      ],
-      "discoveryAppSlug": "facebook-pages",
-      "discoveryAppUrl": "https://zapier.com/apps/facebook-pages/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 30,
@@ -833,14 +658,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/klaviyo/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.klaviyo.com/en/docs"
-      ],
-      "discoveryAppSlug": "klaviyo",
-      "discoveryAppUrl": "https://zapier.com/apps/klaviyo/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 31,
@@ -861,14 +680,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/facebook-conversions/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.facebook.com/docs/marketing-api/conversions-api/"
-      ],
-      "discoveryAppSlug": "facebook-conversions",
-      "discoveryAppUrl": "https://zapier.com/apps/facebook-conversions/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 32,
@@ -889,14 +702,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/buffer/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://buffer.com/developers/api"
-      ],
-      "discoveryAppSlug": "buffer",
-      "discoveryAppUrl": "https://zapier.com/apps/buffer/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 33,
@@ -917,14 +724,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/instagram-for-business/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://developers.facebook.com/docs/instagram-api/"
-      ],
-      "discoveryAppSlug": "instagram-for-business",
-      "discoveryAppUrl": "https://zapier.com/apps/instagram-for-business/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 34,
@@ -944,14 +745,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/manychat/integrations",
-        "https://zapier.com/apps/categories/marketing"
-      ],
-      "discoveryAppSlug": "manychat",
-      "discoveryAppUrl": "https://zapier.com/apps/manychat/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 35,
@@ -972,14 +766,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/constant-contact/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://v3.developer.constantcontact.com/"
-      ],
-      "discoveryAppSlug": "constant-contact",
-      "discoveryAppUrl": "https://zapier.com/apps/constant-contact/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 36,
@@ -1000,14 +788,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/linkedin-ads/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://learn.microsoft.com/en-us/linkedin/"
-      ],
-      "discoveryAppSlug": "linkedin-ads",
-      "discoveryAppUrl": "https://zapier.com/apps/linkedin-ads/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 37,
@@ -1028,14 +810,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/eventbrite/integrations",
-        "https://zapier.com/apps/categories/marketing",
         "https://www.eventbrite.com/platform/api"
-      ],
-      "discoveryAppSlug": "eventbrite",
-      "discoveryAppUrl": "https://zapier.com/apps/eventbrite/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 38,
@@ -1056,14 +832,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/jotform/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://api.jotform.com/docs/"
-      ],
-      "discoveryAppSlug": "jotform",
-      "discoveryAppUrl": "https://zapier.com/apps/jotform/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 39,
@@ -1084,14 +854,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/gravity-forms/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://docs.gravityforms.com/rest-api-v2/"
-      ],
-      "discoveryAppSlug": "gravity-forms",
-      "discoveryAppUrl": "https://zapier.com/apps/gravity-forms/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 40,
@@ -1112,14 +876,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/pipedrive/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://developers.pipedrive.com/docs/api/v1/"
-      ],
-      "discoveryAppSlug": "pipedrive",
-      "discoveryAppUrl": "https://zapier.com/apps/pipedrive/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 41,
@@ -1139,14 +897,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/squarespace-forms/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "squarespace-forms",
-      "discoveryAppUrl": "https://zapier.com/apps/squarespace-forms/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 42,
@@ -1167,14 +918,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|google_api_family",
       "sources": [
-        "https://zapier.com/apps/google-contacts/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://developers.google.com/people"
-      ],
-      "discoveryAppSlug": "google-contacts",
-      "discoveryAppUrl": "https://zapier.com/apps/google-contacts/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 43,
@@ -1194,14 +939,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/tally/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "tally",
-      "discoveryAppUrl": "https://zapier.com/apps/tally/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 44,
@@ -1222,14 +960,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/acuity-scheduling/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://developers.acuityscheduling.com/"
-      ],
-      "discoveryAppSlug": "acuity-scheduling",
-      "discoveryAppUrl": "https://zapier.com/apps/acuity-scheduling/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 45,
@@ -1250,14 +982,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/zoho-crm/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://www.zoho.com/crm/developer/docs/api/v2/"
-      ],
-      "discoveryAppSlug": "zoho-crm",
-      "discoveryAppUrl": "https://zapier.com/apps/zoho-crm/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 46,
@@ -1278,14 +1004,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/follow-up-boss/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://docs.followupboss.com/reference/intro"
-      ],
-      "discoveryAppSlug": "follow-up-boss",
-      "discoveryAppUrl": "https://zapier.com/apps/follow-up-boss/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 47,
@@ -1305,14 +1025,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/wpforms/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "wpforms",
-      "discoveryAppUrl": "https://zapier.com/apps/wpforms/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 48,
@@ -1333,14 +1046,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/close/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://developer.close.com/"
-      ],
-      "discoveryAppSlug": "close",
-      "discoveryAppUrl": "https://zapier.com/apps/close/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 49,
@@ -1361,14 +1068,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/docusign/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://developers.docusign.com/docs/esign-rest-api/"
-      ],
-      "discoveryAppSlug": "docusign",
-      "discoveryAppUrl": "https://zapier.com/apps/docusign/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 50,
@@ -1388,14 +1089,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/dubsado/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "dubsado",
-      "discoveryAppUrl": "https://zapier.com/apps/dubsado/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 51,
@@ -1415,14 +1109,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/circle/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "circle",
-      "discoveryAppUrl": "https://zapier.com/apps/circle/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 52,
@@ -1443,14 +1130,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/cognito-forms/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://www.cognitoforms.com/support/81/developer-guide"
-      ],
-      "discoveryAppSlug": "cognito-forms",
-      "discoveryAppUrl": "https://zapier.com/apps/cognito-forms/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 53,
@@ -1471,14 +1152,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/jobber/integrations",
-        "https://zapier.com/apps/categories/sales-crm",
         "https://developer.getjobber.com/docs"
-      ],
-      "discoveryAppSlug": "jobber",
-      "discoveryAppUrl": "https://zapier.com/apps/jobber/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 54,
@@ -1498,14 +1173,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/honeybook/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "honeybook",
-      "discoveryAppUrl": "https://zapier.com/apps/honeybook/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 55,
@@ -1525,14 +1193,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/unbounce/integrations",
-        "https://zapier.com/apps/categories/sales-crm"
-      ],
-      "discoveryAppSlug": "unbounce",
-      "discoveryAppUrl": "https://zapier.com/apps/unbounce/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/sales-crm",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 56,
@@ -1553,14 +1214,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/whatsapp-notifications/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developers.facebook.com/docs/whatsapp"
-      ],
-      "discoveryAppSlug": "whatsapp-notifications",
-      "discoveryAppUrl": "https://zapier.com/apps/whatsapp-notifications/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 57,
@@ -1581,14 +1236,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/zoom/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developers.zoom.us/docs/api/"
-      ],
-      "discoveryAppSlug": "zoom",
-      "discoveryAppUrl": "https://zapier.com/apps/zoom/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 58,
@@ -1609,14 +1258,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/telegram/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://core.telegram.org/bots/api"
-      ],
-      "discoveryAppSlug": "telegram",
-      "discoveryAppUrl": "https://zapier.com/apps/telegram/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 59,
@@ -1637,14 +1280,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/twilio/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://www.twilio.com/docs/usage/api"
-      ],
-      "discoveryAppSlug": "twilio",
-      "discoveryAppUrl": "https://zapier.com/apps/twilio/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 60,
@@ -1665,14 +1302,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|microsoft_graph_or_sharepoint_api",
       "sources": [
-        "https://zapier.com/apps/microsoft-teams/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://learn.microsoft.com/en-us/graph/teams-concept-overview"
-      ],
-      "discoveryAppSlug": "microsoft-teams",
-      "discoveryAppUrl": "https://zapier.com/apps/microsoft-teams/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 61,
@@ -1692,14 +1323,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/quo/integrations",
-        "https://zapier.com/apps/categories/communication"
-      ],
-      "discoveryAppSlug": "quo",
-      "discoveryAppUrl": "https://zapier.com/apps/quo/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 62,
@@ -1720,14 +1344,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/google-chat/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developers.google.com/chat/api"
-      ],
-      "discoveryAppSlug": "google-chat",
-      "discoveryAppUrl": "https://zapier.com/apps/google-chat/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 63,
@@ -1748,14 +1366,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|maps_to_microsoft_graph",
       "sources": [
-        "https://zapier.com/apps/microsoft-office-365/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://learn.microsoft.com/en-us/graph/overview"
-      ],
-      "discoveryAppSlug": "microsoft-office-365",
-      "discoveryAppUrl": "https://zapier.com/apps/microsoft-office-365/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 64,
@@ -1776,14 +1388,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|microsoft_graph_or_sharepoint_api",
       "sources": [
-        "https://zapier.com/apps/microsoft-sharepoint/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/get-to-know-the-sharepoint-rest-service"
-      ],
-      "discoveryAppSlug": "microsoft-sharepoint",
-      "discoveryAppUrl": "https://zapier.com/apps/microsoft-sharepoint/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 65,
@@ -1804,14 +1410,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/ringcentral/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developers.ringcentral.com/api-reference"
-      ],
-      "discoveryAppSlug": "ringcentral",
-      "discoveryAppUrl": "https://zapier.com/apps/ringcentral/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 66,
@@ -1832,14 +1432,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/clicksend-sms/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developers.clicksend.com/docs/rest/v3/"
-      ],
-      "discoveryAppSlug": "clicksend-sms",
-      "discoveryAppUrl": "https://zapier.com/apps/clicksend-sms/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 67,
@@ -1860,14 +1454,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/linear/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developers.linear.app/docs/graphql/working-with-the-graphql-api"
-      ],
-      "discoveryAppSlug": "linear",
-      "discoveryAppUrl": "https://zapier.com/apps/linear/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 68,
@@ -1888,14 +1476,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/chatwork/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://developer.chatwork.com/en/"
-      ],
-      "discoveryAppSlug": "chatwork",
-      "discoveryAppUrl": "https://zapier.com/apps/chatwork/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 69,
@@ -1916,14 +1498,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/zoho-mail/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://www.zoho.com/mail/help/api/"
-      ],
-      "discoveryAppSlug": "zoho-mail",
-      "discoveryAppUrl": "https://zapier.com/apps/zoho-mail/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 70,
@@ -1944,14 +1520,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/pushover/integrations",
-        "https://zapier.com/apps/categories/communication",
         "https://pushover.net/api"
-      ],
-      "discoveryAppSlug": "pushover",
-      "discoveryAppUrl": "https://zapier.com/apps/pushover/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/communication",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 71,
@@ -1972,14 +1542,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/monday-com/integrations",
-        "https://zapier.com/apps/categories/project-management",
         "https://developer.monday.com/api-reference/docs"
-      ],
-      "discoveryAppSlug": "monday-com",
-      "discoveryAppUrl": "https://zapier.com/apps/monday-com/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/project-management",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 72,
@@ -2000,14 +1564,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/asana/integrations",
-        "https://zapier.com/apps/categories/project-management",
         "https://developers.asana.com/docs"
-      ],
-      "discoveryAppSlug": "asana",
-      "discoveryAppUrl": "https://zapier.com/apps/asana/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/project-management",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 73,
@@ -2028,14 +1586,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/clickup/integrations",
-        "https://zapier.com/apps/categories/project-management",
         "https://clickup.com/api"
-      ],
-      "discoveryAppSlug": "clickup",
-      "discoveryAppUrl": "https://zapier.com/apps/clickup/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/project-management",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 74,
@@ -2056,14 +1608,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/jira-software-cloud/integrations",
-        "https://zapier.com/apps/categories/project-management",
         "https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/"
-      ],
-      "discoveryAppSlug": "jira-software-cloud",
-      "discoveryAppUrl": "https://zapier.com/apps/jira-software-cloud/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/project-management",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 75,
@@ -2084,14 +1630,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/shopify/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://shopify.dev/docs/api"
-      ],
-      "discoveryAppSlug": "shopify",
-      "discoveryAppUrl": "https://zapier.com/apps/shopify/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 76,
@@ -2112,14 +1652,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/woocommerce/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://woocommerce.com/document/woocommerce-rest-api/"
-      ],
-      "discoveryAppSlug": "woocommerce",
-      "discoveryAppUrl": "https://zapier.com/apps/woocommerce/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 77,
@@ -2140,14 +1674,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/square/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://developer.squareup.com/reference/square"
-      ],
-      "discoveryAppSlug": "square",
-      "discoveryAppUrl": "https://zapier.com/apps/square/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 78,
@@ -2168,14 +1696,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/shipstation/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://www.shipstation.com/developer-api/"
-      ],
-      "discoveryAppSlug": "shipstation",
-      "discoveryAppUrl": "https://zapier.com/apps/shipstation/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 79,
@@ -2196,14 +1718,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/gumroad/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://gumroad.com/api"
-      ],
-      "discoveryAppSlug": "gumroad",
-      "discoveryAppUrl": "https://zapier.com/apps/gumroad/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 80,
@@ -2224,14 +1740,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/ebay/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://developer.ebay.com/api-docs"
-      ],
-      "discoveryAppSlug": "ebay",
-      "discoveryAppUrl": "https://zapier.com/apps/ebay/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 81,
@@ -2252,14 +1762,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/shippo/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://docs.goshippo.com/docs/shippoapi/introduction"
-      ],
-      "discoveryAppSlug": "shippo",
-      "discoveryAppUrl": "https://zapier.com/apps/shippo/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 82,
@@ -2280,14 +1784,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/bigcommerce/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://developer.bigcommerce.com/api-docs"
-      ],
-      "discoveryAppSlug": "bigcommerce",
-      "discoveryAppUrl": "https://zapier.com/apps/bigcommerce/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 83,
@@ -2308,14 +1806,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/amazon-seller-central/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://developer-docs.amazon.com/sp-api/"
-      ],
-      "discoveryAppSlug": "amazon-seller-central",
-      "discoveryAppUrl": "https://zapier.com/apps/amazon-seller-central/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 84,
@@ -2336,14 +1828,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/quickbooks-online/integrations",
-        "https://zapier.com/apps/categories/accounting",
         "https://developer.intuit.com/app/developer/qbo/docs/develop"
-      ],
-      "discoveryAppSlug": "quickbooks-online",
-      "discoveryAppUrl": "https://zapier.com/apps/quickbooks-online/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/accounting",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 85,
@@ -2364,14 +1850,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/xero/integrations",
-        "https://zapier.com/apps/categories/accounting",
         "https://developer.xero.com/documentation/api/accounting/overview"
-      ],
-      "discoveryAppSlug": "xero",
-      "discoveryAppUrl": "https://zapier.com/apps/xero/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/accounting",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 86,
@@ -2392,14 +1872,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/zoho-books/integrations",
-        "https://zapier.com/apps/categories/accounting",
         "https://www.zoho.com/books/api/v3/"
-      ],
-      "discoveryAppSlug": "zoho-books",
-      "discoveryAppUrl": "https://zapier.com/apps/zoho-books/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/accounting",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 87,
@@ -2420,14 +1894,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|google_api_family",
       "sources": [
-        "https://zapier.com/apps/youtube/integrations",
-        "https://zapier.com/apps/categories/content-files",
         "https://developers.google.com/youtube/v3"
-      ],
-      "discoveryAppSlug": "youtube",
-      "discoveryAppUrl": "https://zapier.com/apps/youtube/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/content-files",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 88,
@@ -2448,14 +1916,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/dropbox/integrations",
-        "https://zapier.com/apps/categories/content-files",
         "https://www.dropbox.com/developers/documentation/http/documentation"
-      ],
-      "discoveryAppSlug": "dropbox",
-      "discoveryAppUrl": "https://zapier.com/apps/dropbox/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/content-files",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 89,
@@ -2476,14 +1938,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/pandadoc/integrations",
-        "https://zapier.com/apps/categories/content-files",
         "https://developers.pandadoc.com/reference/about"
-      ],
-      "discoveryAppSlug": "pandadoc",
-      "discoveryAppUrl": "https://zapier.com/apps/pandadoc/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/content-files",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 90,
@@ -2504,14 +1960,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|google_api_family",
       "sources": [
-        "https://zapier.com/apps/google-tasks/integrations",
-        "https://zapier.com/apps/categories/todo-lists",
         "https://developers.google.com/tasks"
-      ],
-      "discoveryAppSlug": "google-tasks",
-      "discoveryAppUrl": "https://zapier.com/apps/google-tasks/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/todo-lists",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 91,
@@ -2532,14 +1982,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/todoist/integrations",
-        "https://zapier.com/apps/categories/todo-lists",
         "https://developer.todoist.com/rest/v2/"
-      ],
-      "discoveryAppSlug": "todoist",
-      "discoveryAppUrl": "https://zapier.com/apps/todoist/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/todo-lists",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 92,
@@ -2560,14 +2004,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists|microsoft_graph_or_sharepoint_api",
       "sources": [
-        "https://zapier.com/apps/microsoft-to-do/integrations",
-        "https://zapier.com/apps/categories/todo-lists",
         "https://learn.microsoft.com/en-us/graph/api/resources/todo-overview"
-      ],
-      "discoveryAppSlug": "microsoft-to-do",
-      "discoveryAppUrl": "https://zapier.com/apps/microsoft-to-do/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/todo-lists",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 93,
@@ -2588,14 +2026,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/calltrackingmetrics/integrations",
-        "https://zapier.com/apps/categories/call-tracking",
         "https://calltrackingmetrics.com/api/docs"
-      ],
-      "discoveryAppSlug": "calltrackingmetrics",
-      "discoveryAppUrl": "https://zapier.com/apps/calltrackingmetrics/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/call-tracking",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 94,
@@ -2616,14 +2048,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/zadarma/integrations",
-        "https://zapier.com/apps/categories/call-tracking",
         "https://zadarma.com/en/support/api/"
-      ],
-      "discoveryAppSlug": "zadarma",
-      "discoveryAppUrl": "https://zapier.com/apps/zadarma/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/call-tracking",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 95,
@@ -2644,14 +2070,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/facebook-messenger/integrations",
-        "https://zapier.com/apps/categories/social-marketing",
         "https://developers.facebook.com/docs/messenger-platform/"
-      ],
-      "discoveryAppSlug": "facebook-messenger",
-      "discoveryAppUrl": "https://zapier.com/apps/facebook-messenger/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/social-marketing",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 96,
@@ -2672,14 +2092,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/google-business-profile/integrations",
-        "https://zapier.com/apps/categories/cms",
         "https://developers.google.com/my-business"
-      ],
-      "discoveryAppSlug": "google-business-profile",
-      "discoveryAppUrl": "https://zapier.com/apps/google-business-profile/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/cms",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 97,
@@ -2700,14 +2114,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/wix/integrations",
-        "https://zapier.com/apps/categories/cms",
         "https://dev.wix.com/api/rest/getting-started"
-      ],
-      "discoveryAppSlug": "wix",
-      "discoveryAppUrl": "https://zapier.com/apps/wix/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/cms",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 98,
@@ -2728,14 +2136,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/wordpress/integrations",
-        "https://zapier.com/apps/categories/cms",
         "https://developer.wordpress.org/rest-api/"
-      ],
-      "discoveryAppSlug": "wordpress",
-      "discoveryAppUrl": "https://zapier.com/apps/wordpress/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/cms",
-      "rankEvidenceType": "category_most_popular"
+      ]
     },
     {
       "rank": 99,
@@ -2755,14 +2157,7 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": [
-        "https://zapier.com/apps/mighty-networks/integrations",
-        "https://zapier.com/apps/categories/cms"
-      ],
-      "discoveryAppSlug": "mighty-networks",
-      "discoveryAppUrl": "https://zapier.com/apps/mighty-networks/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/cms",
-      "rankEvidenceType": "category_most_popular"
+      "sources": []
     },
     {
       "rank": 100,
@@ -2783,14 +2178,8 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://zapier.com/apps/lemon-squeezy/integrations",
-        "https://zapier.com/apps/categories/ecommerce",
         "https://docs.lemonsqueezy.com/api"
-      ],
-      "discoveryAppSlug": "lemon-squeezy",
-      "discoveryAppUrl": "https://zapier.com/apps/lemon-squeezy/integrations",
-      "rankEvidenceUrl": "https://zapier.com/apps/categories/ecommerce",
-      "rankEvidenceType": "category_most_popular"
+      ]
     }
   ]
 }
