@@ -20,6 +20,7 @@ Maintain and extend WorkerFlow as a Cloudflare-native automation runtime that is
    - `README.md`
    - `docs/ENTRYPOINTS.md`
    - `docs/SECURITY_MODEL.md`
+   - `docs/AI_CONNECTOR_ONRAMP.md` (for connector work)
 2. Implement minimal safe change.
 3. Run relevant quality gates.
 4. Verify no public secret exposure.
@@ -41,11 +42,12 @@ cd pages-dashboard
 npm run release:check
 ```
 
-### Connector catalog changes
+### Connector registry/docs changes
 
 ```bash
 cd cloudflare
-npm run test:connector-catalog
+npm run test:connector-registry
+npm run test:service-registry
 ```
 
 ## Deploy Order (Cloudflare Runtime)

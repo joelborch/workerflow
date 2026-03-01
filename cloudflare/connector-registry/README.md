@@ -1,0 +1,19 @@
+# Connector Registry
+
+Machine-readable service registry for docs-first connector development.
+
+## Files
+
+- `services.json`: canonical service docs index used for connector planning and agent workflows
+
+## Current Dataset
+
+- Zapier top-100 connector research import
+- includes rank/evidence + official docs + best base link + source attribution
+
+## Notes
+
+- Keep links official (vendor-owned docs) wherever possible.
+- Keep one canonical `bestBaseLink` per service.
+- Use `null` for unknown fields.
+- Prefer stable docs landing pages over marketing pages.
