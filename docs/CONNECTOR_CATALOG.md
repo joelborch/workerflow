@@ -14,6 +14,7 @@ Instead of maintaining a large placeholder connector code catalog, the project k
   - `cloudflare/shared/connector_registry.ts`
 - Service docs index:
   - `docs/SERVICE_API_INDEX.md`
+  - `docs/SERVICE_API_INDEX.html`
   - `cloudflare/connector-registry/services.json`
 - Implementation contract:
   - `docs/CONNECTOR_BUILD_SPEC.md`
@@ -47,9 +48,10 @@ Both checks are included in `npm run release:check`.
 ## Contributor Flow
 
 1. add/update a service entry in `cloudflare/connector-registry/services.json`
-2. add/update runtime route secret mapping in `cloudflare/shared/connector_registry.ts` (if route behavior changes)
-3. implement connector route/primitive using `docs/CONNECTOR_BUILD_SPEC.md`
-4. run `npm run release:check`
+2. optionally scaffold files with `cd cloudflare && npm run connector:new -- --service "<name>" --route <route_id>`
+3. add/update runtime route secret mapping in `cloudflare/shared/connector_registry.ts` (if route behavior changes)
+4. implement connector route/primitive using `docs/CONNECTOR_BUILD_SPEC.md`
+5. run `npm run release:check`
 
 ## Why Docs-First
 

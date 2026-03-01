@@ -1,0 +1,50 @@
+name: CodeQL
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: analyze
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - javascript-typescript
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            cloudflare/package-lock.json
+            pages-dashboard/package-lock.json
+
+      - name: Install cloudflare dependencies
+        run: npm ci
+        working-directory: cloudflare
+
+      - name: Install dashboard dependencies
+        run: npm ci
+        working-directory: pages-dashboard
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3

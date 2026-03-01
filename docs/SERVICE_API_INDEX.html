@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WorkerFlow Service API Index</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #122033;
+      --muted: #5a6472;
+      --accent: #0c7a6a;
+      --border: #d8e0ea;
+      --hover: #eef6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top right, #e5fff2 0%, var(--bg) 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(15, 31, 51, 0.08);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, #f6fff9, #f8fbff);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+      letter-spacing: 0.01em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: #fbfdff;
+    }
+
+    input,
+    select {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      min-width: 220px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: #f3f8ff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody tr:hover {
+      background: var(--hover);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .count {
+      margin-left: auto;
+      color: var(--muted);
+      align-self: center;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 12px;
+      }
+
+      header,
+      .toolbar {
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+
+      input,
+      select {
+        min-width: 100%;
+      }
+
+      .count {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>WorkerFlow Service API Index</h1>
+      <p>Generated from <code>cloudflare/connector-registry/services.json</code>. Updated: 2026-03-01</p>
+    </header>
+    <section class="toolbar" aria-label="table controls">
+      <input id="search" type="search" placeholder="Filter by service/vendor/auth/docs URL" />
+      <select id="authFilter">
+        <option value="">All auth types</option>
+      </select>
+      <span class="count" id="count"></span>
+    </section>
+    <section class="table-wrap">
+      <table id="servicesTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Connector</th>
+            <th>Vendor</th>
+            <th>Auth</th>
+            <th>Confidence</th>
+            <th>Base Docs</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr>
+<td>1</td>
+<td>Google Sheets</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.google.com/sheets/api" target="_blank" rel="noreferrer">https://developers.google.com/sheets/api</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Gmail</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.google.com/gmail/api" target="_blank" rel="noreferrer">https://developers.google.com/gmail/api</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Slack</td>
+<td>Slack</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://api.slack.com/" target="_blank" rel="noreferrer">https://api.slack.com/</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Google Calendar</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.google.com/calendar/api" target="_blank" rel="noreferrer">https://developers.google.com/calendar/api</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Google Drive</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.google.com/drive/api" target="_blank" rel="noreferrer">https://developers.google.com/drive/api</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Notion</td>
+<td>Notion Labs</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.notion.com/reference/intro" target="_blank" rel="noreferrer">https://developers.notion.com/reference/intro</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>HubSpot</td>
+<td>HubSpot</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.hubspot.com/docs/api/overview" target="_blank" rel="noreferrer">https://developers.hubspot.com/docs/api/overview</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Google Forms</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.google.com/forms/api" target="_blank" rel="noreferrer">https://developers.google.com/forms/api</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Facebook Lead Ads</td>
+<td>Meta</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.facebook.com/docs/marketing-api/" target="_blank" rel="noreferrer">https://developers.facebook.com/docs/marketing-api/</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Mailchimp</td>
+<td>Intuit Mailchimp</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://mailchimp.com/developer/marketing/api/" target="_blank" rel="noreferrer">https://mailchimp.com/developer/marketing/api/</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Stripe</td>
+<td>Stripe</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://stripe.com/docs/api" target="_blank" rel="noreferrer">https://stripe.com/docs/api</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Microsoft Outlook</td>
+<td>Microsoft</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://learn.microsoft.com/en-us/graph/overview" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/graph/overview</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Typeform</td>
+<td>Typeform</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developer.typeform.com/" target="_blank" rel="noreferrer">https://developer.typeform.com/</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Airtable</td>
+<td>Airtable</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://airtable.com/developers/web/api/introduction" target="_blank" rel="noreferrer">https://airtable.com/developers/web/api/introduction</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Calendly</td>
+<td>Calendly</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developer.calendly.com/api-docs" target="_blank" rel="noreferrer">https://developer.calendly.com/api-docs</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>LeadConnector</td>
+<td>LeadConnector (GoHighLevel)</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.gohighlevel.com/" target="_blank" rel="noreferrer">https://developers.gohighlevel.com/</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>ChatGPT (OpenAI)</td>
+<td>OpenAI</td>
+<td>api_key</td>
+<td>High</td>
+<td><a href="https://developers.openai.com/" target="_blank" rel="noreferrer">https://developers.openai.com/</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Trello</td>
+<td>Atlassian</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developer.atlassian.com/cloud/trello/rest/api-group-actions/" target="_blank" rel="noreferrer">https://developer.atlassian.com/cloud/trello/rest/api-group-actions/</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Google Docs</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.google.com/docs/api" target="_blank" rel="noreferrer">https://developers.google.com/docs/api</a></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Discord</td>
+<td>Discord</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://discord.com/developers/docs/intro" target="_blank" rel="noreferrer">https://discord.com/developers/docs/intro</a></td>
+</tr>
+<tr>
+<td>21</td>
+<td>Salesforce</td>
+<td>Salesforce</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/" target="_blank" rel="noreferrer">https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td>Webflow</td>
+<td>Webflow</td>
+<td>oauth2</td>
+<td>High</td>
+<td><a href="https://developers.webflow.com/" target="_blank" rel="noreferrer">https://developers.webflow.com/</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>ActiveCampaign</td>
+<td>ActiveCampaign</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.activecampaign.com/reference" target="_blank" rel="noreferrer">https://developers.activecampaign.com/reference</a></td>
+</tr>
+<tr>
+<td>24</td>
+<td>Google Ads</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.google.com/google-ads/api" target="_blank" rel="noreferrer">https://developers.google.com/google-ads/api</a></td>
+</tr>
+<tr>
+<td>25</td>
+<td>Brevo</td>
+<td>Brevo</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.brevo.com/reference" target="_blank" rel="noreferrer">https://developers.brevo.com/reference</a></td>
+</tr>
+<tr>
+<td>26</td>
+<td>Flodesk</td>
+<td>Flodesk</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://developers.flodesk.com/" target="_blank" rel="noreferrer">https://developers.flodesk.com/</a></td>
+</tr>
+<tr>
+<td>27</td>
+<td>MailerLite</td>
+<td>MailerLite</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.mailerlite.com/docs/" target="_blank" rel="noreferrer">https://developers.mailerlite.com/docs/</a></td>
+</tr>
+<tr>
+<td>28</td>
+<td>Kit</td>
+<td>Kit</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.kit.com/" target="_blank" rel="noreferrer">https://developers.kit.com/</a></td>
+</tr>
+<tr>
+<td>29</td>
+<td>Facebook Pages</td>
+<td>Meta</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.facebook.com/docs/graph-api/" target="_blank" rel="noreferrer">https://developers.facebook.com/docs/graph-api/</a></td>
+</tr>
+<tr>
+<td>30</td>
+<td>Klaviyo</td>
+<td>Klaviyo</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.klaviyo.com/en/docs" target="_blank" rel="noreferrer">https://developers.klaviyo.com/en/docs</a></td>
+</tr>
+<tr>
+<td>31</td>
+<td>Facebook Conversions</td>
+<td>Meta</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.facebook.com/docs/marketing-api/conversions-api/" target="_blank" rel="noreferrer">https://developers.facebook.com/docs/marketing-api/conversions-api/</a></td>
+</tr>
+<tr>
+<td>32</td>
+<td>Buffer</td>
+<td>Buffer</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://buffer.com/developers/api" target="_blank" rel="noreferrer">https://buffer.com/developers/api</a></td>
+</tr>
+<tr>
+<td>33</td>
+<td>Instagram for Business</td>
+<td>Meta</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.facebook.com/docs/instagram-api/" target="_blank" rel="noreferrer">https://developers.facebook.com/docs/instagram-api/</a></td>
+</tr>
+<tr>
+<td>34</td>
+<td>Manychat</td>
+<td>ManyChat</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://api.manychat.com/swagger" target="_blank" rel="noreferrer">https://api.manychat.com/swagger</a></td>
+</tr>
+<tr>
+<td>35</td>
+<td>Constant Contact</td>
+<td>Constant Contact</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://v3.developer.constantcontact.com/" target="_blank" rel="noreferrer">https://v3.developer.constantcontact.com/</a></td>
+</tr>
+<tr>
+<td>36</td>
+<td>LinkedIn Ads</td>
+<td>LinkedIn</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://learn.microsoft.com/en-us/linkedin/" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/linkedin/</a></td>
+</tr>
+<tr>
+<td>37</td>
+<td>Eventbrite</td>
+<td>Eventbrite</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://www.eventbrite.com/platform/api" target="_blank" rel="noreferrer">https://www.eventbrite.com/platform/api</a></td>
+</tr>
+<tr>
+<td>38</td>
+<td>Jotform</td>
+<td>Jotform</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://api.jotform.com/docs/" target="_blank" rel="noreferrer">https://api.jotform.com/docs/</a></td>
+</tr>
+<tr>
+<td>39</td>
+<td>Gravity Forms</td>
+<td>Gravity Forms</td>
+<td>basic</td>
+<td>Medium</td>
+<td><a href="https://docs.gravityforms.com/rest-api-v2/" target="_blank" rel="noreferrer">https://docs.gravityforms.com/rest-api-v2/</a></td>
+</tr>
+<tr>
+<td>40</td>
+<td>Pipedrive</td>
+<td>Pipedrive</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.pipedrive.com/docs/api/v1/" target="_blank" rel="noreferrer">https://developers.pipedrive.com/docs/api/v1/</a></td>
+</tr>
+<tr>
+<td>41</td>
+<td>Squarespace Forms</td>
+<td>Squarespace</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://developers.squarespace.com/" target="_blank" rel="noreferrer">https://developers.squarespace.com/</a></td>
+</tr>
+<tr>
+<td>42</td>
+<td>Google Contacts</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.google.com/people" target="_blank" rel="noreferrer">https://developers.google.com/people</a></td>
+</tr>
+<tr>
+<td>43</td>
+<td>Tally</td>
+<td>Tally</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://developers.tally.so/" target="_blank" rel="noreferrer">https://developers.tally.so/</a></td>
+</tr>
+<tr>
+<td>44</td>
+<td>Acuity Scheduling</td>
+<td>Acuity Scheduling (Squarespace)</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.acuityscheduling.com/" target="_blank" rel="noreferrer">https://developers.acuityscheduling.com/</a></td>
+</tr>
+<tr>
+<td>45</td>
+<td>Zoho CRM</td>
+<td>Zoho</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://www.zoho.com/crm/developer/docs/api/v2/" target="_blank" rel="noreferrer">https://www.zoho.com/crm/developer/docs/api/v2/</a></td>
+</tr>
+<tr>
+<td>46</td>
+<td>Follow Up Boss</td>
+<td>Follow Up Boss</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://docs.followupboss.com/" target="_blank" rel="noreferrer">https://docs.followupboss.com/</a></td>
+</tr>
+<tr>
+<td>47</td>
+<td>WPForms</td>
+<td>WPForms</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://wpforms.com/developers/" target="_blank" rel="noreferrer">https://wpforms.com/developers/</a></td>
+</tr>
+<tr>
+<td>48</td>
+<td>Close</td>
+<td>Close</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developer.close.com/" target="_blank" rel="noreferrer">https://developer.close.com/</a></td>
+</tr>
+<tr>
+<td>49</td>
+<td>Docusign</td>
+<td>DocuSign</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.docusign.com/docs/esign-rest-api/" target="_blank" rel="noreferrer">https://developers.docusign.com/docs/esign-rest-api/</a></td>
+</tr>
+<tr>
+<td>50</td>
+<td>Dubsado</td>
+<td>Dubsado</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://help.dubsado.com/en/" target="_blank" rel="noreferrer">https://help.dubsado.com/en/</a></td>
+</tr>
+<tr>
+<td>51</td>
+<td>Circle</td>
+<td>Circle</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://api.circle.so/" target="_blank" rel="noreferrer">https://api.circle.so/</a></td>
+</tr>
+<tr>
+<td>52</td>
+<td>Cognito Forms</td>
+<td>Cognito Forms</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://www.cognitoforms.com/support/81/developer-guide" target="_blank" rel="noreferrer">https://www.cognitoforms.com/support/81/developer-guide</a></td>
+</tr>
+<tr>
+<td>53</td>
+<td>Jobber</td>
+<td>Jobber</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.getjobber.com/docs" target="_blank" rel="noreferrer">https://developer.getjobber.com/docs</a></td>
+</tr>
+<tr>
+<td>54</td>
+<td>HoneyBook</td>
+<td>HoneyBook</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://help.honeybook.com/en/" target="_blank" rel="noreferrer">https://help.honeybook.com/en/</a></td>
+</tr>
+<tr>
+<td>55</td>
+<td>Unbounce</td>
+<td>Unbounce</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://developer.unbounce.com/" target="_blank" rel="noreferrer">https://developer.unbounce.com/</a></td>
+</tr>
+<tr>
+<td>56</td>
+<td>WhatsApp Notifications</td>
+<td>WhatsApp</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.facebook.com/docs/whatsapp" target="_blank" rel="noreferrer">https://developers.facebook.com/docs/whatsapp</a></td>
+</tr>
+<tr>
+<td>57</td>
+<td>Zoom</td>
+<td>Zoom</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.zoom.us/docs/api/" target="_blank" rel="noreferrer">https://developers.zoom.us/docs/api/</a></td>
+</tr>
+<tr>
+<td>58</td>
+<td>Telegram</td>
+<td>Telegram</td>
+<td>token</td>
+<td>Medium</td>
+<td><a href="https://core.telegram.org/bots/api" target="_blank" rel="noreferrer">https://core.telegram.org/bots/api</a></td>
+</tr>
+<tr>
+<td>59</td>
+<td>Twilio</td>
+<td>Twilio</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://www.twilio.com/docs/usage/api" target="_blank" rel="noreferrer">https://www.twilio.com/docs/usage/api</a></td>
+</tr>
+<tr>
+<td>60</td>
+<td>Microsoft Teams</td>
+<td>Microsoft</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://learn.microsoft.com/en-us/graph/teams-concept-overview" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/graph/teams-concept-overview</a></td>
+</tr>
+<tr>
+<td>61</td>
+<td>Quo</td>
+<td>Quo</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://www.quo.com/docs/mdx/api-reference/introduction" target="_blank" rel="noreferrer">https://www.quo.com/docs/mdx/api-reference/introduction</a></td>
+</tr>
+<tr>
+<td>62</td>
+<td>Google Chat</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.google.com/chat/api" target="_blank" rel="noreferrer">https://developers.google.com/chat/api</a></td>
+</tr>
+<tr>
+<td>63</td>
+<td>Microsoft Office 365</td>
+<td>Microsoft</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://learn.microsoft.com/en-us/graph/overview" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/graph/overview</a></td>
+</tr>
+<tr>
+<td>64</td>
+<td>Microsoft SharePoint</td>
+<td>Microsoft</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/get-to-know-the-sharepoint-rest-service" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/get-to-know-the-sharepoint-rest-service</a></td>
+</tr>
+<tr>
+<td>65</td>
+<td>RingCentral</td>
+<td>RingCentral</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.ringcentral.com/api-reference" target="_blank" rel="noreferrer">https://developers.ringcentral.com/api-reference</a></td>
+</tr>
+<tr>
+<td>66</td>
+<td>ClickSend SMS</td>
+<td>ClickSend</td>
+<td>basic</td>
+<td>Medium</td>
+<td><a href="https://developers.clicksend.com/docs/rest/v3/" target="_blank" rel="noreferrer">https://developers.clicksend.com/docs/rest/v3/</a></td>
+</tr>
+<tr>
+<td>67</td>
+<td>Linear</td>
+<td>Linear</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.linear.app/docs/graphql/working-with-the-graphql-api" target="_blank" rel="noreferrer">https://developers.linear.app/docs/graphql/working-with-the-graphql-api</a></td>
+</tr>
+<tr>
+<td>68</td>
+<td>Chatwork</td>
+<td>Chatwork</td>
+<td>token</td>
+<td>Medium</td>
+<td><a href="https://developer.chatwork.com/en/" target="_blank" rel="noreferrer">https://developer.chatwork.com/en/</a></td>
+</tr>
+<tr>
+<td>69</td>
+<td>Zoho Mail</td>
+<td>Zoho</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://www.zoho.com/mail/help/api/" target="_blank" rel="noreferrer">https://www.zoho.com/mail/help/api/</a></td>
+</tr>
+<tr>
+<td>70</td>
+<td>Pushover</td>
+<td>Pushover</td>
+<td>token</td>
+<td>Medium</td>
+<td><a href="https://pushover.net/api" target="_blank" rel="noreferrer">https://pushover.net/api</a></td>
+</tr>
+<tr>
+<td>71</td>
+<td>monday.com</td>
+<td>monday.com</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.monday.com/api-reference/docs" target="_blank" rel="noreferrer">https://developer.monday.com/api-reference/docs</a></td>
+</tr>
+<tr>
+<td>72</td>
+<td>Asana</td>
+<td>Asana</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.asana.com/docs" target="_blank" rel="noreferrer">https://developers.asana.com/docs</a></td>
+</tr>
+<tr>
+<td>73</td>
+<td>ClickUp</td>
+<td>ClickUp</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://clickup.com/api" target="_blank" rel="noreferrer">https://clickup.com/api</a></td>
+</tr>
+<tr>
+<td>74</td>
+<td>Jira Software Cloud</td>
+<td>Atlassian</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/" target="_blank" rel="noreferrer">https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/</a></td>
+</tr>
+<tr>
+<td>75</td>
+<td>Shopify</td>
+<td>Shopify</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://shopify.dev/docs/api" target="_blank" rel="noreferrer">https://shopify.dev/docs/api</a></td>
+</tr>
+<tr>
+<td>76</td>
+<td>WooCommerce</td>
+<td>WooCommerce</td>
+<td>basic</td>
+<td>Medium</td>
+<td><a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" rel="noreferrer">https://woocommerce.com/document/woocommerce-rest-api/</a></td>
+</tr>
+<tr>
+<td>77</td>
+<td>Square</td>
+<td>Block (Square)</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.squareup.com/reference/square" target="_blank" rel="noreferrer">https://developer.squareup.com/reference/square</a></td>
+</tr>
+<tr>
+<td>78</td>
+<td>ShipStation</td>
+<td>ShipStation</td>
+<td>basic</td>
+<td>Medium</td>
+<td><a href="https://www.shipstation.com/developer-api/" target="_blank" rel="noreferrer">https://www.shipstation.com/developer-api/</a></td>
+</tr>
+<tr>
+<td>79</td>
+<td>Gumroad</td>
+<td>Gumroad</td>
+<td>token</td>
+<td>Medium</td>
+<td><a href="https://gumroad.com/api" target="_blank" rel="noreferrer">https://gumroad.com/api</a></td>
+</tr>
+<tr>
+<td>80</td>
+<td>eBay</td>
+<td>eBay</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.ebay.com/develop/apis" target="_blank" rel="noreferrer">https://developer.ebay.com/develop/apis</a></td>
+</tr>
+<tr>
+<td>81</td>
+<td>Shippo</td>
+<td>Shippo</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://docs.goshippo.com/" target="_blank" rel="noreferrer">https://docs.goshippo.com/</a></td>
+</tr>
+<tr>
+<td>82</td>
+<td>BigCommerce</td>
+<td>BigCommerce</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.bigcommerce.com/api-docs" target="_blank" rel="noreferrer">https://developer.bigcommerce.com/api-docs</a></td>
+</tr>
+<tr>
+<td>83</td>
+<td>Amazon Seller Central</td>
+<td>Amazon</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer-docs.amazon.com/sp-api/" target="_blank" rel="noreferrer">https://developer-docs.amazon.com/sp-api/</a></td>
+</tr>
+<tr>
+<td>84</td>
+<td>QuickBooks Online</td>
+<td>Intuit</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.intuit.com/app/developer/qbo/docs/develop" target="_blank" rel="noreferrer">https://developer.intuit.com/app/developer/qbo/docs/develop</a></td>
+</tr>
+<tr>
+<td>85</td>
+<td>Xero</td>
+<td>Xero</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.xero.com/documentation/api/accounting/overview" target="_blank" rel="noreferrer">https://developer.xero.com/documentation/api/accounting/overview</a></td>
+</tr>
+<tr>
+<td>86</td>
+<td>Zoho Books</td>
+<td>Zoho</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://www.zoho.com/books/api/v3/" target="_blank" rel="noreferrer">https://www.zoho.com/books/api/v3/</a></td>
+</tr>
+<tr>
+<td>87</td>
+<td>YouTube</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.google.com/youtube/v3" target="_blank" rel="noreferrer">https://developers.google.com/youtube/v3</a></td>
+</tr>
+<tr>
+<td>88</td>
+<td>Dropbox</td>
+<td>Dropbox</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://www.dropbox.com/developers/documentation/http/documentation" target="_blank" rel="noreferrer">https://www.dropbox.com/developers/documentation/http/documentation</a></td>
+</tr>
+<tr>
+<td>89</td>
+<td>PandaDoc</td>
+<td>PandaDoc</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.pandadoc.com/reference/about" target="_blank" rel="noreferrer">https://developers.pandadoc.com/reference/about</a></td>
+</tr>
+<tr>
+<td>90</td>
+<td>Google Tasks</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.google.com/tasks" target="_blank" rel="noreferrer">https://developers.google.com/tasks</a></td>
+</tr>
+<tr>
+<td>91</td>
+<td>Todoist</td>
+<td>Doist</td>
+<td>token</td>
+<td>Medium</td>
+<td><a href="https://developer.todoist.com/rest/v2/" target="_blank" rel="noreferrer">https://developer.todoist.com/rest/v2/</a></td>
+</tr>
+<tr>
+<td>92</td>
+<td>Microsoft To Do</td>
+<td>Microsoft</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://learn.microsoft.com/en-us/graph/api/resources/todo-overview" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/graph/api/resources/todo-overview</a></td>
+</tr>
+<tr>
+<td>93</td>
+<td>CallTrackingMetrics</td>
+<td>CallTrackingMetrics</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://developers.calltrackingmetrics.com/" target="_blank" rel="noreferrer">https://developers.calltrackingmetrics.com/</a></td>
+</tr>
+<tr>
+<td>94</td>
+<td>Zadarma</td>
+<td>Zadarma</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://zadarma.com/en/support/api/" target="_blank" rel="noreferrer">https://zadarma.com/en/support/api/</a></td>
+</tr>
+<tr>
+<td>95</td>
+<td>Facebook Messenger</td>
+<td>Meta</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.facebook.com/docs/messenger-platform/" target="_blank" rel="noreferrer">https://developers.facebook.com/docs/messenger-platform/</a></td>
+</tr>
+<tr>
+<td>96</td>
+<td>Google Business Profile</td>
+<td>Google</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developers.google.com/my-business" target="_blank" rel="noreferrer">https://developers.google.com/my-business</a></td>
+</tr>
+<tr>
+<td>97</td>
+<td>Wix</td>
+<td>Wix</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://dev.wix.com/docs/rest" target="_blank" rel="noreferrer">https://dev.wix.com/docs/rest</a></td>
+</tr>
+<tr>
+<td>98</td>
+<td>WordPress</td>
+<td>WordPress</td>
+<td>oauth2</td>
+<td>Medium</td>
+<td><a href="https://developer.wordpress.org/rest-api/" target="_blank" rel="noreferrer">https://developer.wordpress.org/rest-api/</a></td>
+</tr>
+<tr>
+<td>99</td>
+<td>Mighty Networks</td>
+<td>Mighty Networks</td>
+<td>unknown</td>
+<td>Low</td>
+<td><a href="https://docs.mightynetworks.com/" target="_blank" rel="noreferrer">https://docs.mightynetworks.com/</a></td>
+</tr>
+<tr>
+<td>100</td>
+<td>Lemon Squeezy</td>
+<td>Lemon Squeezy</td>
+<td>api_key</td>
+<td>Medium</td>
+<td><a href="https://docs.lemonsqueezy.com/api" target="_blank" rel="noreferrer">https://docs.lemonsqueezy.com/api</a></td>
+</tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script>
+    const searchInput = document.getElementById("search");
+    const authFilter = document.getElementById("authFilter");
+    const countLabel = document.getElementById("count");
+    const rows = Array.from(document.querySelectorAll("#servicesTable tbody tr"));
+
+    const authValues = new Set();
+    for (const row of rows) {
+      authValues.add(row.children[3].textContent.trim());
+    }
+    for (const auth of Array.from(authValues).sort((a, b) => a.localeCompare(b))) {
+      const option = document.createElement("option");
+      option.value = auth;
+      option.textContent = auth;
+      authFilter.appendChild(option);
+    }
+
+    function applyFilters() {
+      const search = searchInput.value.trim().toLowerCase();
+      const auth = authFilter.value;
+      let visible = 0;
+
+      for (const row of rows) {
+        const text = row.textContent.toLowerCase();
+        const authCell = row.children[3].textContent.trim();
+        const showBySearch = search.length === 0 || text.includes(search);
+        const showByAuth = auth.length === 0 || authCell === auth;
+        const show = showBySearch && showByAuth;
+        row.style.display = show ? "" : "none";
+        if (show) {
+          visible += 1;
+        }
+      }
+
+      countLabel.textContent = `Showing ${visible} of ${rows.length}`;
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    authFilter.addEventListener("change", applyFilters);
+    applyFilters();
+  </script>
+</body>
+</html>

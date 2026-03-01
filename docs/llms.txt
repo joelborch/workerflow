@@ -15,9 +15,13 @@ Important Paths:
 Primary Commands:
 - `cd cloudflare && npm install`
 - `cd cloudflare && npm run init`
+- `cd cloudflare && npm run doctor`
+- `cd cloudflare && npm run quickstart:5min`
 - `cd cloudflare && npm run preflight`
 - `cd cloudflare && npm run bootstrap`
 - `cd cloudflare && npm run bootstrap:apply`
+- `cd cloudflare && npm run connector:new -- --service "<service>" --route <route_id>`
+- `cd cloudflare && npm run service-registry:build-index`
 - `cd cloudflare && npm run release:check`
 
 Manifest Modes:

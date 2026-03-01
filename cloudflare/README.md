@@ -29,6 +29,8 @@ See [../docs/ENTRYPOINTS.md](../docs/ENTRYPOINTS.md).
 cd cloudflare
 npm install
 npm run init
+npm run doctor
+npm run quickstart:5min
 npm run preflight
 ```
 
@@ -67,5 +69,8 @@ npm run deploy:ops
 - [../docs/CONNECTOR_CATALOG.md](../docs/CONNECTOR_CATALOG.md)
 - [../docs/AI_CONNECTOR_ONRAMP.md](../docs/AI_CONNECTOR_ONRAMP.md)
 - [../docs/SERVICE_API_INDEX.md](../docs/SERVICE_API_INDEX.md)
+- [../docs/SERVICE_API_INDEX.html](../docs/SERVICE_API_INDEX.html)
+- [../docs/GOVERNANCE.md](../docs/GOVERNANCE.md)
+- [../docs/SECRET_SCANNING_POLICY.md](../docs/SECRET_SCANNING_POLICY.md)
 - [../docs/SECURITY_MODEL.md](../docs/SECURITY_MODEL.md)
 - [../docs/RELEASE_PROCESS.md](../docs/RELEASE_PROCESS.md)

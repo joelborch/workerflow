@@ -4,6 +4,10 @@ This file is the LLM/agent entrypoint for connector implementation.
 
 It intentionally points to official vendor API docs and auth references instead of maintaining large placeholder connector code in-repo.
 
+Generated searchable HTML index:
+
+- `docs/SERVICE_API_INDEX.html` (built from `cloudflare/connector-registry/services.json`)
+
 ## Current Runtime Baseline (Executable)
 
 | Service | Runtime Routes | Auth | Base Docs Link |
@@ -46,3 +50,13 @@ Use this file as the canonical machine-readable source for connector discovery a
 3. Include source URLs whenever available.
 4. Use `null` for unknowns instead of guesses.
 5. Keep links copy/paste-safe for agent prompts.
+
+## Regeneration Commands
+
+```bash
+cd cloudflare
+npm run service-registry:refresh
+npm run service-registry:build-index
+npm run test:service-registry
+npm run test:service-registry-urls
+```

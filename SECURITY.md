@@ -26,3 +26,10 @@ Security reports are especially important for:
 - webhook ingress validation
 - replay/retry and dead-letter endpoints
 - connector auth and secret usage patterns
+
+## Security Automation
+
+- CodeQL workflow: `.github/workflows/codeql.yml`
+- Secret scanning workflow: `.github/workflows/secret-scan.yml`
+- Secret scanning policy: `docs/SECRET_SCANNING_POLICY.md`
+- Dependency cadence: `.github/dependabot.yml` (weekly for runtime, dashboard, and GitHub Actions)

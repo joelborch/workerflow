@@ -20,14 +20,17 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | [Benchmarking Guide](docs/BENCHMARKING.md) | Generate route throughput + cost profile reports |
 | [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md) | Agent-first bootstrap/deploy flow |
 | [Contributor Quickstart](docs/CONTRIBUTOR_QUICKSTART.md) | First OSS task workflow + label filters |
+| [Governance](docs/GOVERNANCE.md) | OSS ownership and merge decision process |
 | [Agent Operating Guide](AGENTS.md) | Repository working agreement for coding agents |
 | [Connector Model](docs/CONNECTOR_CATALOG.md) | Docs-first connector architecture and runtime mapping |
 | [AI Connector Onramp](docs/AI_CONNECTOR_ONRAMP.md) | Exact file-by-file workflow for agent connector implementation |
 | [Service API Index](docs/SERVICE_API_INDEX.md) | Official API doc links for agent connector implementation |
+| [Service API Index (HTML)](docs/SERVICE_API_INDEX.html) | Searchable index generated from `services.json` |
 | [Connector Build Spec](docs/CONNECTOR_BUILD_SPEC.md) | Runtime connector contract, tests, and quality gates |
 | [Agent Connector Playbook](docs/AGENT_CONNECTOR_PLAYBOOK.md) | Prompt/template workflow for agent-built connectors |
 | [Starter Examples](examples/README.md) | Copy/paste automation starters |
 | [Security Model](docs/SECURITY_MODEL.md) | Ingress auth, secret handling, RBAC |
+| [Secret Scanning Policy](docs/SECRET_SCANNING_POLICY.md) | Automated secret-scan policy and incident process |
 | [Production Readiness Checklist](docs/PRODUCTION_READINESS_CHECKLIST.md) | Production rollout baseline |
 
 ## Why WorkerFlow
@@ -86,6 +89,7 @@ workers/ops-dashboard -------> D1 + Queue APIs
 cd cloudflare
 npm install
 npm run init
+npm run doctor
 npm run preflight
 npm run bootstrap
 npm run release:check
@@ -107,6 +111,7 @@ WorkerFlow now uses a docs-first connector model:
 - [Connector Model](docs/CONNECTOR_CATALOG.md)
 - [AI Connector Onramp](docs/AI_CONNECTOR_ONRAMP.md)
 - [Service API Index](docs/SERVICE_API_INDEX.md)
+- [Service API Index (HTML)](docs/SERVICE_API_INDEX.html)
 - [Connector Build Spec](docs/CONNECTOR_BUILD_SPEC.md)
 - [Agent Connector Playbook](docs/AGENT_CONNECTOR_PLAYBOOK.md)
 - `cloudflare/connector-registry/services.json` (machine-readable service docs index)
@@ -132,12 +137,15 @@ WorkerFlow now uses a docs-first connector model:
 - [Latest Benchmark Cost Profile](docs/BENCHMARK_COST_PROFILE.md)
 - [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md)
 - [Contributor Quickstart](docs/CONTRIBUTOR_QUICKSTART.md)
+- [Governance](docs/GOVERNANCE.md)
 - [Architecture Notes](docs/ARCHITECTURE.md)
 - [Entrypoints](docs/ENTRYPOINTS.md)
 - [Security Model](docs/SECURITY_MODEL.md)
+- [Secret Scanning Policy](docs/SECRET_SCANNING_POLICY.md)
 - [Connector Model](docs/CONNECTOR_CATALOG.md)
 - [AI Connector Onramp](docs/AI_CONNECTOR_ONRAMP.md)
 - [Service API Index](docs/SERVICE_API_INDEX.md)
+- [Service API Index (HTML)](docs/SERVICE_API_INDEX.html)
 - [Connector Build Spec](docs/CONNECTOR_BUILD_SPEC.md)
 - [Agent Connector Playbook](docs/AGENT_CONNECTOR_PLAYBOOK.md)
 - [API and Contract Versioning Policy](docs/VERSIONING_POLICY.md)
