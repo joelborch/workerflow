@@ -557,8 +557,8 @@
       "rank": 26,
       "connectorName": "Flodesk",
       "officialVendorName": "Flodesk",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://developers.flodesk.com/",
+      "bestBaseLink": "https://developers.flodesk.com/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -571,7 +571,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://developers.flodesk.com/"
+      ]
     },
     {
       "rank": 27,
@@ -731,8 +733,8 @@
       "rank": 34,
       "connectorName": "Manychat",
       "officialVendorName": "ManyChat",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://api.manychat.com/swagger",
+      "bestBaseLink": "https://api.manychat.com/swagger",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -745,7 +747,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://api.manychat.com/swagger"
+      ]
     },
     {
       "rank": 35,
@@ -883,8 +887,8 @@
       "rank": 41,
       "connectorName": "Squarespace Forms",
       "officialVendorName": "Squarespace",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://developers.squarespace.com/",
+      "bestBaseLink": "https://developers.squarespace.com/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -896,8 +900,10 @@
       "changelogUrl": null,
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
-      "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "notes": "Using official Squarespace developer portal as canonical base; service-specific forms APIs may require account features.",
+      "sources": [
+        "https://developers.squarespace.com/"
+      ]
     },
     {
       "rank": 42,
@@ -925,8 +931,8 @@
       "rank": 43,
       "connectorName": "Tally",
       "officialVendorName": "Tally",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://developers.tally.so/",
+      "bestBaseLink": "https://developers.tally.so/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -939,7 +945,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://developers.tally.so/"
+      ]
     },
     {
       "rank": 44,
@@ -1011,8 +1019,8 @@
       "rank": 47,
       "connectorName": "WPForms",
       "officialVendorName": "WPForms",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://wpforms.com/developers/",
+      "bestBaseLink": "https://wpforms.com/developers/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -1025,7 +1033,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://wpforms.com/developers/"
+      ]
     },
     {
       "rank": 48,
@@ -1075,8 +1085,8 @@
       "rank": 50,
       "connectorName": "Dubsado",
       "officialVendorName": "Dubsado",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://help.dubsado.com/en/",
+      "bestBaseLink": "https://help.dubsado.com/en/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -1088,15 +1098,17 @@
       "changelogUrl": null,
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
-      "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "notes": "Using official Dubsado help center as canonical base; public API reference appears limited.",
+      "sources": [
+        "https://help.dubsado.com/en/"
+      ]
     },
     {
       "rank": 51,
       "connectorName": "Circle",
       "officialVendorName": "Circle",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://api.circle.so/",
+      "bestBaseLink": "https://api.circle.so/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -1109,7 +1121,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://api.circle.so/"
+      ]
     },
     {
       "rank": 52,
@@ -1159,8 +1173,8 @@
       "rank": 54,
       "connectorName": "HoneyBook",
       "officialVendorName": "HoneyBook",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://help.honeybook.com/en/",
+      "bestBaseLink": "https://help.honeybook.com/en/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -1172,15 +1186,17 @@
       "changelogUrl": null,
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
-      "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "notes": "Using official HoneyBook help center as canonical base; public API reference appears limited.",
+      "sources": [
+        "https://help.honeybook.com/en/"
+      ]
     },
     {
       "rank": 55,
       "connectorName": "Unbounce",
       "officialVendorName": "Unbounce",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://developer.unbounce.com/",
+      "bestBaseLink": "https://developer.unbounce.com/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -1193,7 +1209,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://developer.unbounce.com/"
+      ]
     },
     {
       "rank": 56,
@@ -1309,8 +1327,8 @@
       "rank": 61,
       "connectorName": "Quo",
       "officialVendorName": "Quo",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://www.quo.com/docs/mdx/api-reference/introduction",
+      "bestBaseLink": "https://www.quo.com/docs/mdx/api-reference/introduction",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -1323,7 +1341,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://www.quo.com/docs/mdx/api-reference/introduction"
+      ]
     },
     {
       "rank": 62,
@@ -2143,8 +2163,8 @@
       "rank": 99,
       "connectorName": "Mighty Networks",
       "officialVendorName": "Mighty Networks",
-      "officialApiDocsUrl": null,
-      "bestBaseLink": null,
+      "officialApiDocsUrl": "https://docs.mightynetworks.com/",
+      "bestBaseLink": "https://docs.mightynetworks.com/",
       "bestBaseLinkScore": null,
       "bestBaseLinkReason": null,
       "authType": "unknown",
@@ -2157,7 +2177,9 @@
       "docsRequiresLogin": "unknown",
       "confidence": "Low",
       "notes": "rank_composite_from_category_lists|no_public_official_api_docs_found_quickly",
-      "sources": []
+      "sources": [
+        "https://docs.mightynetworks.com/"
+      ]
     },
     {
       "rank": 100,
