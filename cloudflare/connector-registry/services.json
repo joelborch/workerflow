@@ -359,8 +359,8 @@
       "rank": 17,
       "connectorName": "ChatGPT (OpenAI)",
       "officialVendorName": "OpenAI",
-      "officialApiDocsUrl": "https://platform.openai.com/docs",
-      "bestBaseLink": "https://platform.openai.com/docs",
+      "officialApiDocsUrl": "https://developers.openai.com/",
+      "bestBaseLink": "https://developers.openai.com/",
       "bestBaseLinkScore": 84,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "api_key",
@@ -374,7 +374,7 @@
       "confidence": "High",
       "notes": null,
       "sources": [
-        "https://platform.openai.com/docs"
+        "https://developers.openai.com/"
       ]
     },
     {
@@ -535,8 +535,8 @@
       "rank": 25,
       "connectorName": "Brevo",
       "officialVendorName": "Brevo",
-      "officialApiDocsUrl": "https://developers.brevo.com/reference/getting-started-1",
-      "bestBaseLink": "https://developers.brevo.com/reference/getting-started-1",
+      "officialApiDocsUrl": "https://developers.brevo.com/reference",
+      "bestBaseLink": "https://developers.brevo.com/reference",
       "bestBaseLinkScore": 84,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "api_key",
@@ -550,7 +550,7 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://developers.brevo.com/reference/getting-started-1"
+        "https://developers.brevo.com/reference"
       ]
     },
     {
@@ -997,8 +997,8 @@
       "rank": 46,
       "connectorName": "Follow Up Boss",
       "officialVendorName": "Follow Up Boss",
-      "officialApiDocsUrl": "https://docs.followupboss.com/reference/intro",
-      "bestBaseLink": "https://docs.followupboss.com/reference/intro",
+      "officialApiDocsUrl": "https://docs.followupboss.com/",
+      "bestBaseLink": "https://docs.followupboss.com/",
       "bestBaseLinkScore": 82,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "api_key",
@@ -1012,7 +1012,7 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://docs.followupboss.com/reference/intro"
+        "https://docs.followupboss.com/"
       ]
     },
     {
@@ -1745,8 +1745,8 @@
       "rank": 80,
       "connectorName": "eBay",
       "officialVendorName": "eBay",
-      "officialApiDocsUrl": "https://developer.ebay.com/api-docs",
-      "bestBaseLink": "https://developer.ebay.com/api-docs",
+      "officialApiDocsUrl": "https://developer.ebay.com/develop/apis",
+      "bestBaseLink": "https://developer.ebay.com/develop/apis",
       "bestBaseLinkScore": 82,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "oauth2",
@@ -1760,15 +1760,15 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://developer.ebay.com/api-docs"
+        "https://developer.ebay.com/develop/apis"
       ]
     },
     {
       "rank": 81,
       "connectorName": "Shippo",
       "officialVendorName": "Shippo",
-      "officialApiDocsUrl": "https://docs.goshippo.com/docs/shippoapi/introduction",
-      "bestBaseLink": "https://docs.goshippo.com/docs/shippoapi/introduction",
+      "officialApiDocsUrl": "https://docs.goshippo.com/",
+      "bestBaseLink": "https://docs.goshippo.com/",
       "bestBaseLinkScore": 82,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "api_key",
@@ -1782,7 +1782,7 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://docs.goshippo.com/docs/shippoapi/introduction"
+        "https://docs.goshippo.com/"
       ]
     },
     {
@@ -2031,8 +2031,8 @@
       "rank": 93,
       "connectorName": "CallTrackingMetrics",
       "officialVendorName": "CallTrackingMetrics",
-      "officialApiDocsUrl": "https://calltrackingmetrics.com/api/docs",
-      "bestBaseLink": "https://calltrackingmetrics.com/api/docs",
+      "officialApiDocsUrl": "https://developers.calltrackingmetrics.com/",
+      "bestBaseLink": "https://developers.calltrackingmetrics.com/",
       "bestBaseLinkScore": 82,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "api_key",
@@ -2046,7 +2046,7 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://calltrackingmetrics.com/api/docs"
+        "https://developers.calltrackingmetrics.com/"
       ]
     },
     {
@@ -2119,8 +2119,8 @@
       "rank": 97,
       "connectorName": "Wix",
       "officialVendorName": "Wix",
-      "officialApiDocsUrl": "https://dev.wix.com/api/rest/getting-started",
-      "bestBaseLink": "https://dev.wix.com/api/rest/getting-started",
+      "officialApiDocsUrl": "https://dev.wix.com/docs/rest",
+      "bestBaseLink": "https://dev.wix.com/docs/rest",
       "bestBaseLinkScore": 82,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "oauth2",
@@ -2134,7 +2134,7 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://dev.wix.com/api/rest/getting-started"
+        "https://dev.wix.com/docs/rest"
       ]
     },
     {

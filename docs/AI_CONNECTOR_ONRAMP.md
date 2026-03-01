@@ -29,10 +29,13 @@ Ship connector route changes that are executable, tested, and aligned with the d
 
 ```bash
 cd cloudflare
+npm run service-registry:refresh
 npm run test:connector-registry
 npm run test:service-registry
 npm run release:check
 ```
+
+CI also runs `npm run test:service-registry-urls` to verify each registry URL returns `2xx/3xx`.
 
 ## Done Criteria
 

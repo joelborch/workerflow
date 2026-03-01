@@ -51,20 +51,15 @@ function run() {
   for (const service of parsed.services) {
     assert.ok(service.connectorName.trim().length > 0, "services.json: connectorName is required");
     assert.ok(service.officialVendorName.trim().length > 0, "services.json: officialVendorName is required");
-    assert.ok(
-      service.officialApiDocsUrl === null || isHttpsUrl(service.officialApiDocsUrl),
-      `${service.connectorName}: officialApiDocsUrl must be https or null`
-    );
-    assert.ok(
-      service.bestBaseLink === null || isHttpsUrl(service.bestBaseLink),
-      `${service.connectorName}: bestBaseLink must be https or null`
-    );
+    assert.ok(isHttpsUrl(service.officialApiDocsUrl), `${service.connectorName}: officialApiDocsUrl must be https`);
+    assert.ok(isHttpsUrl(service.bestBaseLink), `${service.connectorName}: bestBaseLink must be https`);
     assert.ok(
       service.bestBaseLinkScore === null || Number.isFinite(service.bestBaseLinkScore),
       `${service.connectorName}: bestBaseLinkScore must be number or null`
     );
     assert.ok(service.authType === null || service.authType.trim().length > 0, `${service.connectorName}: authType must not be empty`);
     assert.ok(Array.isArray(service.sources), `${service.connectorName}: sources must be an array`);
+    assert.ok(service.sources.length > 0, `${service.connectorName}: sources must include at least one URL`);
     for (const source of service.sources) {
       assert.ok(isHttpsUrl(source), `${service.connectorName}: source URL must be https`);
     }
