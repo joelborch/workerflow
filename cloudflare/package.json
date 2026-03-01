@@ -28,6 +28,8 @@
     "test:connector-harness": "npx tsx scripts/test_connector_harness.ts",
     "test:connector-registry": "npx tsx scripts/test_connector_registry.ts",
     "test:service-registry": "npx tsx scripts/test_service_registry_json.ts",
+    "test:service-registry-urls": "npx tsx scripts/test_service_registry_urls.ts",
+    "service-registry:refresh": "npx tsx scripts/refresh_service_registry.ts",
     "test:oauth-tokens": "npx tsx scripts/test_oauth_tokens.ts",
     "test:logging": "npx tsx scripts/test_logging.ts",
     "test:workspace-isolation": "npx tsx scripts/test_workspace_isolation.ts",
