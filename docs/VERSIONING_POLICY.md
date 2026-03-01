@@ -31,15 +31,19 @@ Rules:
 
 ## Connector Contract Policy
 
-Connector definitions are currently scaffolded metadata in:
+Connector metadata and implementation contracts live in:
 
-- `cloudflare/workers/workflow/src/connectors/community/definitions/`
+- `cloudflare/shared/connector_registry.ts`
+- `cloudflare/connector-registry/services.json`
+- `docs/CONNECTOR_BUILD_SPEC.md`
+- `docs/SERVICE_API_INDEX.md`
 
 Rules:
 
-1. Adding new connector definitions is non-breaking.
-2. Renaming connector IDs is breaking for consumers and docs.
-3. Removing required secrets from a connector is non-breaking; adding required secrets is potentially breaking and should be release-noted.
+1. Adding a new connector to `services.json` is non-breaking.
+2. Renaming runtime connector IDs or route IDs is breaking for dashboard/API consumers and should be release-noted.
+3. Adding required secrets for an existing runtime route is potentially breaking and should be release-noted.
+4. Replacing docs links for a connector is non-breaking if route contracts remain unchanged.
 
 ## Runtime Endpoint Stability
 

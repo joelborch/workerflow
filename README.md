@@ -21,7 +21,11 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | [Agent Clone-To-Deploy Runbook](docs/AGENT_CLONE_TO_DEPLOY_RUNBOOK.md) | Agent-first bootstrap/deploy flow |
 | [Contributor Quickstart](docs/CONTRIBUTOR_QUICKSTART.md) | First OSS task workflow + label filters |
 | [Agent Operating Guide](AGENTS.md) | Repository working agreement for coding agents |
-| [Community Connector Catalog](docs/CONNECTOR_CATALOG.md) | Connector scaffold model and extension path |
+| [Connector Model](docs/CONNECTOR_CATALOG.md) | Docs-first connector architecture and runtime mapping |
+| [AI Connector Onramp](docs/AI_CONNECTOR_ONRAMP.md) | Exact file-by-file workflow for agent connector implementation |
+| [Service API Index](docs/SERVICE_API_INDEX.md) | Official API doc links for agent connector implementation |
+| [Connector Build Spec](docs/CONNECTOR_BUILD_SPEC.md) | Runtime connector contract, tests, and quality gates |
+| [Agent Connector Playbook](docs/AGENT_CONNECTOR_PLAYBOOK.md) | Prompt/template workflow for agent-built connectors |
 | [Starter Examples](examples/README.md) | Copy/paste automation starters |
 | [Security Model](docs/SECURITY_MODEL.md) | Ingress auth, secret handling, RBAC |
 | [Production Readiness Checklist](docs/PRODUCTION_READINESS_CHECKLIST.md) | Production rollout baseline |
@@ -42,7 +46,7 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 | Data model | D1 idempotency, run ledger, dead letters, replay metadata |
 | Execution | queue-backed async + direct sync route execution |
 | Security | token auth, HMAC signing, rate-limit options, dashboard RBAC |
-| Connectors | 30 community connector scaffolds |
+| Connectors | docs-first index + executable runtime connector baseline |
 | UI | Cloudflare Pages operations dashboard |
 
 ## Cost Profile
@@ -98,13 +102,14 @@ WorkerFlow is documented so coding agents can bootstrap and deploy it end-to-end
 
 ## Connectors
 
-Community connector scaffolds live in:
+WorkerFlow now uses a docs-first connector model:
 
-- `cloudflare/workers/workflow/src/connectors/community/definitions/`
-
-Catalog and contributor guidance:
-
-- [Community Connector Catalog](docs/CONNECTOR_CATALOG.md)
+- [Connector Model](docs/CONNECTOR_CATALOG.md)
+- [AI Connector Onramp](docs/AI_CONNECTOR_ONRAMP.md)
+- [Service API Index](docs/SERVICE_API_INDEX.md)
+- [Connector Build Spec](docs/CONNECTOR_BUILD_SPEC.md)
+- [Agent Connector Playbook](docs/AGENT_CONNECTOR_PLAYBOOK.md)
+- `cloudflare/connector-registry/services.json` (machine-readable service docs index)
 
 ## Repository Map
 
@@ -130,7 +135,11 @@ Catalog and contributor guidance:
 - [Architecture Notes](docs/ARCHITECTURE.md)
 - [Entrypoints](docs/ENTRYPOINTS.md)
 - [Security Model](docs/SECURITY_MODEL.md)
-- [Community Connector Catalog](docs/CONNECTOR_CATALOG.md)
+- [Connector Model](docs/CONNECTOR_CATALOG.md)
+- [AI Connector Onramp](docs/AI_CONNECTOR_ONRAMP.md)
+- [Service API Index](docs/SERVICE_API_INDEX.md)
+- [Connector Build Spec](docs/CONNECTOR_BUILD_SPEC.md)
+- [Agent Connector Playbook](docs/AGENT_CONNECTOR_PLAYBOOK.md)
 - [API and Contract Versioning Policy](docs/VERSIONING_POLICY.md)
 - [Production Readiness Checklist](docs/PRODUCTION_READINESS_CHECKLIST.md)
 - [Brand Standard](docs/BRAND_STANDARD.md)
