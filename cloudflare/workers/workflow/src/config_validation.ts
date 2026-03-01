@@ -1,3 +1,4 @@
+import { getRouteSecretRequirement } from "../../../shared/connector_registry";
 import { ROUTES } from "../../../shared/routes";
 import { SCHEDULES } from "../../../shared/schedules";
 import { isRouteEnabled } from "../../../shared/task_enablement";
@@ -26,43 +27,11 @@ function requireAny(env: RuntimeEnv, errors: string[], context: string, label: s
 
 function validateHttpRoute(routePath: string, env: RuntimeEnv, errors: string[]) {
   const context = `route "${routePath}"`;
-
-  switch (routePath) {
-    case "chat_notify":
-    case "incident_create":
-      requireAny(env, errors, context, "chat webhook URL", [
-        "CHAT_WEBHOOK_URL",
-        "GCHAT_ALERTS_WEBHOOK_URL",
-        "GCHAT_ALERTS_WEBHOOK"
-      ]);
-      return;
-    case "slack_message":
-      requireAny(env, errors, context, "Slack webhook URL", ["SLACK_WEBHOOK_URL"]);
-      return;
-    case "github_issue_create":
-      requireAny(env, errors, context, "GitHub token", ["GITHUB_TOKEN"]);
-      return;
-    case "openai_chat":
-      requireAny(env, errors, context, "OpenAI API key", ["OPENAI_API_KEY"]);
-      return;
-    case "stripe_payment_intent_create":
-    case "stripe_customer_upsert":
-      requireAny(env, errors, context, "Stripe API key", ["STRIPE_API_KEY"]);
-      return;
-    case "notion_database_item_create":
-    case "notion_database_item_get":
-      requireAny(env, errors, context, "Notion token", ["NOTION_TOKEN"]);
-      return;
-    case "hubspot_contact_upsert":
-    case "hubspot_deal_upsert":
-      requireAny(env, errors, context, "HubSpot access token", ["HUBSPOT_ACCESS_TOKEN"]);
-      return;
-    case "lead_normalizer":
-      requireAny(env, errors, context, "Google AI key", ["GOOGLEAI_API_KEY", "LEAD_NORMALIZER_API_KEY"]);
-      return;
-    default:
-      return;
+  const requirement = getRouteSecretRequirement(routePath);
+  if (!requirement) {
+    return;
   }
+  requireAny(env, errors, context, requirement.label, requirement.requiredSecrets);
 }
 
 function validateSchedule(scheduleId: string, env: RuntimeEnv, errors: string[]) {

@@ -64,5 +64,8 @@ npm run deploy:ops
 - [docs/SETUP.md](docs/SETUP.md)
 - [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
 - [docs/OPS_DASHBOARD_API.md](docs/OPS_DASHBOARD_API.md)
+- [../docs/CONNECTOR_CATALOG.md](../docs/CONNECTOR_CATALOG.md)
+- [../docs/AI_CONNECTOR_ONRAMP.md](../docs/AI_CONNECTOR_ONRAMP.md)
+- [../docs/SERVICE_API_INDEX.md](../docs/SERVICE_API_INDEX.md)
 - [../docs/SECURITY_MODEL.md](../docs/SECURITY_MODEL.md)
 - [../docs/RELEASE_PROCESS.md](../docs/RELEASE_PROCESS.md)

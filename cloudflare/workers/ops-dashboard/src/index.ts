@@ -1,6 +1,7 @@
 import { recordAuditEvent } from "../../../shared/db";
 import { json } from "../../../shared/http";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { listRuntimeConnectorSecrets } from "../../../shared/connector_registry";
 import {
   listOAuthTokens,
   oauthTokenNeedsRefresh,
@@ -149,38 +150,7 @@ const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 250;
 const MAX_FILTER_LEN = 120;
 const DEFAULT_WORKSPACE = "default";
-const CONNECTOR_SECRETS: Array<{ id: string; requiredSecrets: string[]; routes: string[] }> = [
-  {
-    id: "slack",
-    requiredSecrets: ["SLACK_WEBHOOK_URL"],
-    routes: ["slack_message"]
-  },
-  {
-    id: "github",
-    requiredSecrets: ["GITHUB_TOKEN"],
-    routes: ["github_issue_create"]
-  },
-  {
-    id: "openai",
-    requiredSecrets: ["OPENAI_API_KEY"],
-    routes: ["openai_chat"]
-  },
-  {
-    id: "stripe",
-    requiredSecrets: ["STRIPE_API_KEY"],
-    routes: ["stripe_payment_intent_create", "stripe_customer_upsert"]
-  },
-  {
-    id: "notion",
-    requiredSecrets: ["NOTION_TOKEN"],
-    routes: ["notion_database_item_create", "notion_database_item_get"]
-  },
-  {
-    id: "hubspot",
-    requiredSecrets: ["HUBSPOT_ACCESS_TOKEN"],
-    routes: ["hubspot_contact_upsert", "hubspot_deal_upsert"]
-  }
-];
+const CONNECTOR_SECRETS: Array<{ id: string; requiredSecrets: string[]; routes: string[] }> = listRuntimeConnectorSecrets();
 
 const WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
   {

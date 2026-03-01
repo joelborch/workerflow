@@ -16,7 +16,7 @@ Recommended issue filters:
 Starter contribution areas:
 
 - improve docs clarity in runbooks (`docs/`)
-- add connector definitions under `cloudflare/workers/workflow/src/connectors/community/definitions/`
+- expand connector service docs index and registry (`docs/SERVICE_API_INDEX.md`, `cloudflare/connector-registry/`, `docs/AI_CONNECTOR_ONRAMP.md`)
 - extend tests for runtime guardrails (`cloudflare/scripts/test_*.ts`)
 - improve dashboard filters and UX (`pages-dashboard/src/`)
 

@@ -1,91 +1,58 @@
-# Community Connector Catalog
+# Connector Model
 
-WorkerFlow ships a scaffolded community connector catalog so contributors can quickly expand real-world integrations.
+WorkerFlow uses a docs-first connector model.
 
-Definitions live in:
+Instead of maintaining a large placeholder connector code catalog, the project keeps:
 
-- `cloudflare/workers/workflow/src/connectors/community/definitions/`
+- executable runtime connector primitives
+- a shared connector registry used by runtime and ops checks
+- a service API docs index for LLM/agent implementation workflows
 
-These are metadata-first scaffolds designed for rapid progression into production trigger/action implementations.
+## Source Of Truth
 
-## Implemented Connector Routes (Production-Ready Baseline)
+- Runtime secret requirements and route mapping:
+  - `cloudflare/shared/connector_registry.ts`
+- Service docs index:
+  - `docs/SERVICE_API_INDEX.md`
+  - `cloudflare/connector-registry/services.json`
+- Implementation contract:
+  - `docs/CONNECTOR_BUILD_SPEC.md`
+- Agent execution path:
+  - `docs/AI_CONNECTOR_ONRAMP.md`
 
-WorkerFlow currently ships nine executable connector-backed routes in the public runtime:
+## Runtime Connectors (Executable Baseline)
 
-- `slack_message`
-- `github_issue_create`
-- `openai_chat`
-- `stripe_payment_intent_create`
-- `stripe_customer_upsert`
-- `notion_database_item_create`
-- `notion_database_item_get`
-- `hubspot_contact_upsert`
-- `hubspot_deal_upsert`
+WorkerFlow currently ships executable connector-backed routes for:
 
-## Current Seed Connectors (30)
-
-- `slack`
-- `salesforce`
-- `hubspot`
-- `paypal`
-- `asana`
-- `stripe`
-- `github`
-- `trello`
-- `todoist`
-- `xero`
-- `jira`
-- `pipedrive`
-- `zendesk`
-- `google_analytics`
-- `notion`
-- `mailchimp`
-- `shopify`
-- `intercom`
-- `gitlab`
-- `woocommerce`
-- `dropbox`
-- `google_sheets`
-- `gmail`
-- `google_calendar`
-- `airtable`
-- `microsoft_teams`
-- `twilio`
-- `openai`
-- `discord`
-- `typeform`
-
-## Connector Module Shape
-
-Each connector module exports a typed `ConnectorDefinition` with:
-
-- provider metadata (`id`, `displayName`, docs URL, categories)
-- auth strategy and required secrets
-- at least one trigger scaffold
-- at least one action scaffold
+- chat webhooks (`chat_notify`, `incident_create`)
+- Slack (`slack_message`)
+- GitHub (`github_issue_create`)
+- OpenAI (`openai_chat`)
+- Stripe (`stripe_payment_intent_create`, `stripe_customer_upsert`)
+- Notion (`notion_database_item_create`, `notion_database_item_get`)
+- HubSpot (`hubspot_contact_upsert`, `hubspot_deal_upsert`)
+- lead normalization AI key requirements (`lead_normalizer`)
 
 ## Validation
 
-Connector quality checks run via:
-
 ```bash
 cd cloudflare
-npm run test:connector-catalog
+npm run test:connector-registry
+npm run test:service-registry
 npm run test:connector-harness
 ```
 
-This is included in `npm run release:check`.
+Both checks are included in `npm run release:check`.
 
-## How to Add a New Connector
+## Contributor Flow
 
-1. add a new file in `cloudflare/workers/workflow/src/connectors/community/definitions/<slug>.ts`
-2. export it from `definitions/index.ts` and include it in `CONNECTOR_DEFINITIONS`
-3. use explicit secret names in `requiredSecrets` for agent-friendly provisioning
+1. add/update a service entry in `cloudflare/connector-registry/services.json`
+2. add/update runtime route secret mapping in `cloudflare/shared/connector_registry.ts` (if route behavior changes)
+3. implement connector route/primitive using `docs/CONNECTOR_BUILD_SPEC.md`
 4. run `npm run release:check`
 
-## Maturity Path: Scaffold -> Production
+## Why Docs-First
 
-1. add a transport client with retries/timeouts and normalized errors
-2. implement trigger ingestion strategy (webhook or poll cursor)
-3. implement actions with idempotency-safe request keys where available
-4. add fixture tests in `cloudflare/scripts/`
+- lower maintenance than large scaffold catalogs
+- easier for agents to generate connector implementations from official APIs
+- clearer distinction between executable runtime behavior and future service coverage

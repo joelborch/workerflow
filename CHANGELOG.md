@@ -18,6 +18,12 @@ All notable changes to this project are documented in this file.
 - stronger top-level positioning and cost-profile documentation
 - brand language standard for docs (`docs/BRAND_STANDARD.md`)
 - expanded docs coverage for agent setup and connector catalog usage
+- docs-first connector planning assets:
+  - `docs/SERVICE_API_INDEX.md`
+  - `docs/CONNECTOR_BUILD_SPEC.md`
+  - `docs/AGENT_CONNECTOR_PLAYBOOK.md`
+  - `cloudflare/connector-registry/services.json`
+  - `cloudflare/shared/connector_registry.ts`
 
 ### Changed
 
@@ -25,6 +31,8 @@ All notable changes to this project are documented in this file.
 - rewritten `README.md` to emphasize Cloudflare-native, free-tier-friendly self-hosting
 - standardized wording/style across runtime and platform markdown docs
 - improved contributing guidance and quality-gate instructions
+- connector validation in runtime release checks now uses `test:connector-registry`
+- ops dashboard connector secret status now derives from shared runtime connector registry
 
 ## [0.2.0] - 2026-02-28
 
