@@ -19,7 +19,7 @@ It intentionally points to official vendor API docs and auth references instead 
 
 ## Top 100 Service Links (Imported)
 
-The Zapier Top-100 research dataset has been imported into:
+The top-100 connector research dataset has been imported into:
 
 - `cloudflare/connector-registry/services.json`
 
@@ -27,7 +27,7 @@ Current snapshot:
 
 - rows: `100`
 - rank range: `1..100`
-- includes Zapier app links/evidence, official docs, base links, auth type, and source URLs
+- includes discovery links/evidence, official docs, base links, auth type, and source URLs
 
 Quick examples from the imported set:
 
