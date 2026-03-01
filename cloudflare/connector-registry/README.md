@@ -8,7 +8,7 @@ Machine-readable service registry for docs-first connector development.
 
 ## Current Dataset
 
-- Zapier top-100 connector research import
+- top-100 connector research import
 - includes rank/evidence + official docs + best base link + source attribution
 
 ## Notes

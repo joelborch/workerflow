@@ -2,7 +2,7 @@
 
 Cloudflare-native automation orchestration you can self-host without paying recurring automation SaaS platform pricing.
 
-WorkerFlow gives you Zapier/Activepieces-style workflow building blocks on Cloudflare Workers so you keep control of runtime, secrets, contracts, and deployment.
+WorkerFlow gives you workflow-automation building blocks on Cloudflare Workers so you keep control of runtime, secrets, contracts, and deployment.
 
 For many small-to-medium automation workloads, this can run on Cloudflare free-tier resources with no VPS and no always-on servers.
 
