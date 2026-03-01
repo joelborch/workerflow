@@ -1,0 +1,13 @@
+title = "workerflow-gitleaks-config"
+
+[allowlist]
+description = "Public placeholder values and test fixtures"
+regexes = [
+  '''REPLACE_WITH_[A-Z0-9_]+''',
+  '''smoke-[a-z0-9_-]+''',
+  '''fixture-[a-z0-9_-]+''',
+  '''https://hooks\.slack\.com/services/T000/B000/[A-Za-z0-9_-]+''',
+  '''example\.com''',
+  '''chat\.example''',
+  '''hooks\.example'''
+]
