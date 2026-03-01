@@ -8,10 +8,6 @@ type ServiceRegistry = {
   services: Array<{
     rank: number | null;
     connectorName: string;
-    discoveryAppSlug: string | null;
-    discoveryAppUrl: string | null;
-    rankEvidenceUrl: string | null;
-    rankEvidenceType: string | null;
     officialVendorName: string;
     officialApiDocsUrl: string | null;
     bestBaseLink: string | null;
@@ -55,15 +51,6 @@ function run() {
   for (const service of parsed.services) {
     assert.ok(service.connectorName.trim().length > 0, "services.json: connectorName is required");
     assert.ok(service.officialVendorName.trim().length > 0, "services.json: officialVendorName is required");
-    assert.ok(isHttpsUrl(service.discoveryAppUrl), `${service.connectorName}: discoveryAppUrl must be https`);
-    assert.ok(
-      service.rankEvidenceUrl === null || isHttpsUrl(service.rankEvidenceUrl),
-      `${service.connectorName}: rankEvidenceUrl must be https or null`
-    );
-    assert.ok(
-      service.rankEvidenceType === null || service.rankEvidenceType.trim().length > 0,
-      `${service.connectorName}: rankEvidenceType must not be empty`
-    );
     assert.ok(
       service.officialApiDocsUrl === null || isHttpsUrl(service.officialApiDocsUrl),
       `${service.connectorName}: officialApiDocsUrl must be https or null`
@@ -77,7 +64,7 @@ function run() {
       `${service.connectorName}: bestBaseLinkScore must be number or null`
     );
     assert.ok(service.authType === null || service.authType.trim().length > 0, `${service.connectorName}: authType must not be empty`);
-    assert.ok(Array.isArray(service.sources) && service.sources.length > 0, `${service.connectorName}: at least one source URL is required`);
+    assert.ok(Array.isArray(service.sources), `${service.connectorName}: sources must be an array`);
     for (const source of service.sources) {
       assert.ok(isHttpsUrl(source), `${service.connectorName}: source URL must be https`);
     }

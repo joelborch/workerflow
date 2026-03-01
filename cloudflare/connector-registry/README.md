@@ -9,7 +9,7 @@ Machine-readable service registry for docs-first connector development.
 ## Current Dataset
 
 - top-100 connector research import
-- includes rank/evidence + official docs + best base link + source attribution
+- includes priority rank + official docs + best base link + source attribution
 
 ## Notes
 

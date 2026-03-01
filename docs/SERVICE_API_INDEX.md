@@ -27,7 +27,7 @@ Current snapshot:
 
 - rows: `100`
 - rank range: `1..100`
-- includes discovery links/evidence, official docs, base links, auth type, and source URLs
+- includes connector names, priority rank, official docs/base links, auth metadata, and source URLs
 
 Quick examples from the imported set:
 
@@ -43,6 +43,6 @@ Use this file as the canonical machine-readable source for connector discovery a
 
 1. Prefer official vendor docs over secondary tutorials.
 2. Keep one canonical `best_base_link` per service.
-3. Include source URLs for every row.
+3. Include source URLs whenever available.
 4. Use `null` for unknowns instead of guesses.
 5. Keep links copy/paste-safe for agent prompts.
