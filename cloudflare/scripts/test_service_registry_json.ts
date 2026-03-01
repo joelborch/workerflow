@@ -8,10 +8,10 @@ type ServiceRegistry = {
   services: Array<{
     rank: number | null;
     connectorName: string;
-    zapierAppSlug: string | null;
-    zapierAppUrl: string | null;
-    zapierRankEvidenceUrl: string | null;
-    zapierRankEvidenceType: string | null;
+    discoveryAppSlug: string | null;
+    discoveryAppUrl: string | null;
+    rankEvidenceUrl: string | null;
+    rankEvidenceType: string | null;
     officialVendorName: string;
     officialApiDocsUrl: string | null;
     bestBaseLink: string | null;
@@ -55,7 +55,15 @@ function run() {
   for (const service of parsed.services) {
     assert.ok(service.connectorName.trim().length > 0, "services.json: connectorName is required");
     assert.ok(service.officialVendorName.trim().length > 0, "services.json: officialVendorName is required");
-    assert.ok(isHttpsUrl(service.zapierAppUrl), `${service.connectorName}: zapierAppUrl must be https`);
+    assert.ok(isHttpsUrl(service.discoveryAppUrl), `${service.connectorName}: discoveryAppUrl must be https`);
+    assert.ok(
+      service.rankEvidenceUrl === null || isHttpsUrl(service.rankEvidenceUrl),
+      `${service.connectorName}: rankEvidenceUrl must be https or null`
+    );
+    assert.ok(
+      service.rankEvidenceType === null || service.rankEvidenceType.trim().length > 0,
+      `${service.connectorName}: rankEvidenceType must not be empty`
+    );
     assert.ok(
       service.officialApiDocsUrl === null || isHttpsUrl(service.officialApiDocsUrl),
       `${service.connectorName}: officialApiDocsUrl must be https or null`
