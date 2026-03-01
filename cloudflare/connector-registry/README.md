@@ -5,6 +5,7 @@ Machine-readable service registry for docs-first connector development.
 ## Files
 
 - `services.json`: canonical service docs index used for connector planning and agent workflows
+- `scaffolds/`: generated connector scaffold notes (`npm run connector:new -- ...`)
 
 ## Current Dataset
 
@@ -23,5 +24,6 @@ Machine-readable service registry for docs-first connector development.
 From `cloudflare/`:
 
 - refresh/normalize registry links and sources: `npm run service-registry:refresh`
+- generate searchable docs page: `npm run service-registry:build-index`
 - validate schema guarantees: `npm run test:service-registry`
 - validate URL health (`2xx/3xx`): `npm run test:service-registry-urls`

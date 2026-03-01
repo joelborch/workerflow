@@ -5,6 +5,9 @@
   "description": "WorkerFlow v1 runtime for Cloudflare-hosted automation orchestration",
   "scripts": {
     "init": "node scripts/init_workerflow_project.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "quickstart:5min": "bash scripts/five_minute_success.sh",
+    "connector:new": "node scripts/generate_connector_scaffold.mjs",
     "typecheck": "tsc --noEmit",
     "preflight": "node scripts/preflight.mjs",
     "preflight:strict": "node scripts/preflight.mjs --strict",
@@ -30,6 +33,7 @@
     "test:service-registry": "npx tsx scripts/test_service_registry_json.ts",
     "test:service-registry-urls": "npx tsx scripts/test_service_registry_urls.ts",
     "service-registry:refresh": "npx tsx scripts/refresh_service_registry.ts",
+    "service-registry:build-index": "node scripts/generate_service_api_index_html.mjs",
     "test:oauth-tokens": "npx tsx scripts/test_oauth_tokens.ts",
     "test:logging": "npx tsx scripts/test_logging.ts",
     "test:workspace-isolation": "npx tsx scripts/test_workspace_isolation.ts",

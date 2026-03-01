@@ -8,35 +8,87 @@ body:
     id: connector
     attributes:
       label: Connector name
-      placeholder: e.g. Linear
+      placeholder: e.g. Airtable
     validations:
       required: true
+
+  - type: input
+    id: service_docs
+    attributes:
+      label: Official API docs URL
+      description: Use vendor-owned API docs (no third-party tutorials).
+      placeholder: https://developer.vendor.com/docs
+    validations:
+      required: true
+
+  - type: input
+    id: base_link
+    attributes:
+      label: Best base docs link for agents
+      description: Single canonical entrypoint URL for implementation.
+      placeholder: https://developer.vendor.com/api
+    validations:
+      required: true
+
   - type: textarea
     id: use_case
     attributes:
       label: Use case
-      description: What workflow should this unlock?
+      description: What workflow does this unlock?
     validations:
       required: true
-  - type: checkboxes
-    id: scope
+
+  - type: input
+    id: route_ids
     attributes:
-      label: Requested scope
-      options:
-        - label: Trigger(s)
-        - label: Action(s)
-        - label: Both
-  - type: textarea
-    id: endpoints
-    attributes:
-      label: API docs/endpoints
-      description: Link vendor docs if available.
-  - type: textarea
-    id: auth
+      label: Proposed route ID(s)
+      description: Lowercase snake_case route IDs expected.
+      placeholder: airtable_record_create, airtable_record_get
+    validations:
+      required: true
+
+  - type: input
+    id: auth_model
     attributes:
       label: Auth model
-      description: API key, OAuth2, webhook signature, etc.
-  - type: textarea
-    id: priority
+      description: e.g. api_key, oauth2, webhook_signature.
+      placeholder: oauth2
+    validations:
+      required: true
+
+  - type: input
+    id: required_secrets
     attributes:
-      label: Priority and impact
+      label: Required secret/env names
+      description: List expected keys for `shared/connector_registry.ts`.
+      placeholder: AIRTABLE_API_KEY, AIRTABLE_API_BASE_URL
+    validations:
+      required: true
+
+  - type: textarea
+    id: payload_examples
+    attributes:
+      label: Request and response examples
+      description: Minimal JSON examples for handler payload + expected output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: test_plan
+    attributes:
+      label: Test plan
+      description: Which tests will be added/updated (`test_handler_fixtures.ts`, `test_connector_harness.ts`, etc.)?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: done_criteria
+    attributes:
+      label: Done criteria acknowledgement
+      options:
+        - label: I will include route contract updates (`shared/routes.ts`, `docs/ENTRYPOINTS.md`)
+          required: true
+        - label: I will include connector + handler wiring updates
+          required: true
+        - label: I will include tests and docs updates in the same PR
+          required: true

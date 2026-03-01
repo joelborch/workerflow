@@ -4,10 +4,17 @@ Use this playbook when asking an AI agent to implement a connector route in Work
 
 Before using this template, follow `docs/AI_CONNECTOR_ONRAMP.md` for the exact file-by-file implementation flow.
 
+Optional bootstrap before implementation:
+
+```bash
+cd cloudflare
+npm run connector:new -- --service "<service>" --route <route_id>
+```
+
 ## Inputs You Provide
 
 1. target service name
-2. base docs link (from `docs/SERVICE_API_INDEX.md`)
+2. base docs link (from `docs/SERVICE_API_INDEX.md` or `docs/SERVICE_API_INDEX.html`)
 3. desired route ID(s)
 4. trigger/action behavior in plain language
 5. required payload fields

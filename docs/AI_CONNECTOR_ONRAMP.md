@@ -13,6 +13,7 @@ Ship connector route changes that are executable, tested, and aligned with the d
 3. implementation rules: `docs/CONNECTOR_BUILD_SPEC.md`
 4. prompt scaffold for delegation: `docs/AGENT_CONNECTOR_PLAYBOOK.md`
 5. runtime secret registry: `cloudflare/shared/connector_registry.ts`
+6. optional scaffold generator: `cd cloudflare && npm run connector:new -- --service "<name>" --route <route_id>`
 
 ## Exact Implementation Steps
 
@@ -30,6 +31,7 @@ Ship connector route changes that are executable, tested, and aligned with the d
 ```bash
 cd cloudflare
 npm run service-registry:refresh
+npm run service-registry:build-index
 npm run test:connector-registry
 npm run test:service-registry
 npm run release:check

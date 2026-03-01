@@ -32,6 +32,8 @@ Install and validate runtime:
 ```bash
 cd cloudflare
 npm install
+npm run doctor
+npm run quickstart:5min
 npm run migrations:guard:strict
 npm run release:check
 ```
@@ -56,7 +58,23 @@ Before opening PR:
 - update docs when adding new env vars, routes, or ops behaviors
 - link issue in PR description using `Closes #<number>`
 
-## 4) Labeling Conventions
+## 4) Connector Contributor Fast Path
+
+Use scaffold generator for new connector routes:
+
+```bash
+cd cloudflare
+npm run connector:new -- --service "Example Service" --route example_service_action
+npm run connector:new -- --service "Example Service" --route example_service_action --dry-run
+```
+
+Then complete manual wiring and tests listed in:
+
+- `cloudflare/connector-registry/scaffolds/<route-id>.md`
+- `docs/AI_CONNECTOR_ONRAMP.md`
+- `docs/CONNECTOR_BUILD_SPEC.md`
+
+## 5) Labeling Conventions
 
 Core labels used for onboarding:
 

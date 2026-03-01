@@ -4,7 +4,10 @@ updates:
     directory: "/cloudflare"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 8
     labels:
       - dependencies
       - security
@@ -15,9 +18,27 @@ updates:
     directory: "/pages-dashboard"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+      day: "monday"
+      time: "05:20"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 8
     labels:
       - dependencies
       - security
     commit-message:
       prefix: "chore(deps-dashboard)"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:40"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci-cd
+      - security
+    commit-message:
+      prefix: "chore(deps-actions)"

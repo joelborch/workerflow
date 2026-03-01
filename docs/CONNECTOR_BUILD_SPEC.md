@@ -11,6 +11,13 @@ A connector implementation includes:
 - required secret validation in `cloudflare/shared/connector_registry.ts`
 - tests in `cloudflare/scripts/`
 
+Optional scaffold bootstrap:
+
+```bash
+cd cloudflare
+npm run connector:new -- --service "<service>" --route <route_id> --dry-run
+```
+
 ## Required Design Rules
 
 1. Keep transport logic in connector primitives, not route handlers.

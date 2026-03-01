@@ -19,6 +19,7 @@ Goal: clone WorkerFlow, create Cloudflare resources, configure bindings/secrets,
 git clone https://github.com/joelborch/workerflow.git
 cd workerflow/cloudflare
 npm install
+npm run doctor
 npx wrangler login
 ```
 
@@ -81,6 +82,7 @@ Common optional secrets:
 ## 6. Validate Before Deploy
 
 ```bash
+npm run quickstart:5min
 npm run migrations:guard:strict
 npm run release:check
 npm run smoke:handlers

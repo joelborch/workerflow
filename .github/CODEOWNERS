@@ -1,1 +1,25 @@
+# Global fallback
 * @joelborch
+
+# Runtime + contracts
+/cloudflare/ @joelborch
+/infra/ @joelborch
+
+# Dashboard
+/pages-dashboard/ @joelborch
+
+# Documentation and contribution process
+/docs/ @joelborch
+/README.md @joelborch
+/AGENTS.md @joelborch
+
+# CI/CD + governance
+/.github/workflows/ @joelborch
+/.github/ISSUE_TEMPLATE/ @joelborch
+/.github/pull_request_template.md @joelborch
+/.github/dependabot.yml @joelborch
+/.github/CODEOWNERS @joelborch
+
+# Security policy
+/SECURITY.md @joelborch
+/docs/SECRET_SCANNING_POLICY.md @joelborch
