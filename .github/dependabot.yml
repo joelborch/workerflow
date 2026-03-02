@@ -7,7 +7,11 @@ updates:
       day: "monday"
       time: "05:00"
       timezone: "Etc/UTC"
-    open-pull-requests-limit: 8
+    open-pull-requests-limit: 2
+    groups:
+      cloudflare-dependencies:
+        patterns:
+          - "*"
     labels:
       - dependencies
       - security
@@ -21,7 +25,13 @@ updates:
       day: "monday"
       time: "05:20"
       timezone: "Etc/UTC"
-    open-pull-requests-limit: 8
+    open-pull-requests-limit: 2
+    groups:
+      dashboard-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "eslint-plugin-react-hooks"
     labels:
       - dependencies
       - security
@@ -35,7 +45,11 @@ updates:
       day: "monday"
       time: "05:40"
       timezone: "Etc/UTC"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 1
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
     labels:
       - dependencies
       - ci-cd
