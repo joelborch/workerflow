@@ -1925,7 +1925,7 @@ function buildDashboardHtml(env: Env) {
     </aside>
     <div id="timeline-tooltip" class="timeline-tooltip" aria-hidden="true"></div>
 
-    <script>
+    <script id="ops-dashboard-app-script">
       if (window.__wmOpsDashboardBooted) {
         // no-op
       } else {
@@ -3375,8 +3375,17 @@ function buildDashboardHtml(env: Env) {
 }
 
 function extractInlineDashboardScript(html: string) {
-  const match = html.match(/<script>\s*([\s\S]*?)\s*<\/script>/);
-  return match?.[1] ?? "";
+  const openTag = "<script id=\"ops-dashboard-app-script\">";
+  const start = html.indexOf(openTag);
+  if (start === -1) {
+    return "";
+  }
+  const scriptStart = start + openTag.length;
+  const scriptEnd = html.indexOf("</script>", scriptStart);
+  if (scriptEnd === -1) {
+    return "";
+  }
+  return html.slice(scriptStart, scriptEnd);
 }
 
 async function getSummary(url: URL, env: Env) {
