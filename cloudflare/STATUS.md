@@ -1,6 +1,6 @@
 # Cloudflare Runtime Status
 
-Last updated: 2026-02-28
+Last updated: 2026-03-04
 
 ## Positioning
 
@@ -19,7 +19,7 @@ WorkerFlow v1 is a practical automation runtime for teams that want cloud automa
 
 Default manifest currently ships with:
 
-- 15 HTTP routes
+- 21 HTTP routes
 - 6 cron schedules
 
 These are generic starter recipes for common patterns (transform, notify, fanout, incident, digest, cleanup, rollups).
