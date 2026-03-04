@@ -1,12 +1,36 @@
 # WorkerFlow
 
+[![Cloudflare CI](https://github.com/joelborch/workerflow/actions/workflows/cloudflare-typecheck.yml/badge.svg)](https://github.com/joelborch/workerflow/actions/workflows/cloudflare-typecheck.yml)
+[![Pages Dashboard CI](https://github.com/joelborch/workerflow/actions/workflows/pages-dashboard-ci.yml/badge.svg)](https://github.com/joelborch/workerflow/actions/workflows/pages-dashboard-ci.yml)
+[![Secret Scan](https://github.com/joelborch/workerflow/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/joelborch/workerflow/actions/workflows/secret-scan.yml)
+[![License](https://img.shields.io/github/license/joelborch/workerflow)](LICENSE)
+[![GitHub Repo stars](https://img.shields.io/github/stars/joelborch/workerflow?style=social)](https://github.com/joelborch/workerflow)
+
 Cloudflare-native automation orchestration you can self-host without paying recurring automation SaaS platform pricing.
 
 WorkerFlow gives you workflow-automation building blocks on Cloudflare Workers so you keep control of runtime, secrets, contracts, and deployment.
 
 For many small-to-medium automation workloads, this can run on Cloudflare free-tier resources with no VPS and no always-on servers.
 
+If WorkerFlow is useful for your team, please star the repo and share an issue with your use case.
+
 ---
+
+## Try In 5 Minutes
+
+```bash
+cd cloudflare
+npm install
+npm run init
+npm run doctor
+npm run quickstart:5min
+npm run release:check
+```
+
+Then send your first route call:
+
+- walkthrough with screenshots: [Starter Walkthrough](docs/STARTER_WALKTHROUGH.md)
+- copy/paste recipes: [Starter Examples](examples/README.md)
 
 ## Quick Links
 
@@ -81,18 +105,6 @@ workers/queue-consumer -----> workers/workflow
 
 workers/scheduler -----------> Queue
 workers/ops-dashboard -------> D1 + Queue APIs
-```
-
-## Quick Start
-
-```bash
-cd cloudflare
-npm install
-npm run init
-npm run doctor
-npm run preflight
-npm run bootstrap
-npm run release:check
 ```
 
 ## LLM + Agent Friendly Setup
