@@ -40,7 +40,7 @@ For many small-to-medium automation workloads, this can run on Cloudflare free-t
 - keep execution logic, secrets, and deploy process in your own repository
 - expose explicit route/schedule contracts so agents and contributors can safely extend the platform
 
-## At A Glance (`0.2.0`)
+## At A Glance (`0.3.0`)
 
 | Area | Included |
 | --- | --- |

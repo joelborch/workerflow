@@ -1,7 +1,7 @@
 {
   "name": "workerflow-cloudflare-runtime",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "WorkerFlow v1 runtime for Cloudflare-hosted automation orchestration",
   "scripts": {
     "init": "node scripts/init_workerflow_project.mjs",
