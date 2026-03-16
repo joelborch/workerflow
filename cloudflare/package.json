@@ -59,8 +59,8 @@
     "deploy:workflow": "wrangler deploy --config workers/workflow/wrangler.jsonc"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260307.1",
+    "@cloudflare/workers-types": "^4.20260316.1",
     "typescript": "^5.8.2",
-    "wrangler": "^4.71.0"
+    "wrangler": "^4.73.0"
   }
 }
