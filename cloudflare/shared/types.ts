@@ -38,6 +38,7 @@ export interface Env {
   ENABLED_HTTP_ROUTES?: string;
   DISABLED_HTTP_ROUTES?: string;
   API_INGRESS_TOKEN?: string;
+  WORKFLOW_INTERNAL_TOKEN?: string;
   API_HMAC_SECRET?: string;
   API_HMAC_MAX_SKEW_SECONDS?: string;
   API_RATE_LIMIT_PER_MINUTE?: string;

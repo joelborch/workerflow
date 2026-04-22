@@ -111,6 +111,9 @@ async function run() {
   const dbState = buildMockDb();
   const queue: QueueTask[] = [];
 
+  const API_INGRESS_TOKEN = "e2e-ingress-token";
+  const WORKFLOW_INTERNAL_TOKEN = "e2e-workflow-internal-token";
+
   const workflowEnv: Env = {
     DB: dbState.db,
     AUTOMATION_QUEUE: {
@@ -120,21 +123,35 @@ async function run() {
     } as unknown as Queue<QueueTask>,
     WORKFLOW_SERVICE: {} as Fetcher,
     ENV_NAME: "test",
-    OPENAI_API_KEY: "fixture-openai"
+    OPENAI_API_KEY: "fixture-openai",
+    WORKFLOW_INTERNAL_TOKEN
   };
 
   const workflowService = {
     async fetch(input: string | URL | Request, init?: RequestInit) {
+      const originalRequest = input instanceof Request ? input : undefined;
       const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
       const path = new URL(url).pathname;
+      const forwardedToken =
+        (init?.headers as Record<string, string> | undefined)?.["x-workflow-internal-token"] ??
+        originalRequest?.headers.get("x-workflow-internal-token") ??
+        "";
       if (path === "/health/config") {
-        return workflowWorker.fetch(new Request("https://workflow.example/health/config"), workflowEnv);
+        return workflowWorker.fetch(
+          new Request("https://workflow.example/health/config", {
+            headers: { "x-workflow-internal-token": forwardedToken }
+          }),
+          workflowEnv
+        );
       }
       if (path === "/run-sync" || path === "/run-async") {
         return workflowWorker.fetch(
           new Request(`https://workflow.example${path}`, {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers: {
+              "content-type": "application/json",
+              "x-workflow-internal-token": forwardedToken
+            },
             body: String(init?.body ?? "{}")
           }),
           workflowEnv
@@ -152,7 +169,9 @@ async function run() {
       }
     } as unknown as Queue<QueueTask>,
     WORKFLOW_SERVICE: workflowService,
-    ENV_NAME: "test"
+    ENV_NAME: "test",
+    API_INGRESS_TOKEN,
+    WORKFLOW_INTERNAL_TOKEN
   };
 
   const originalFetch = globalThis.fetch;
@@ -173,7 +192,8 @@ async function run() {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-trace-id": "e2e-sync-1"
+          "x-trace-id": "e2e-sync-1",
+          "x-api-token": API_INGRESS_TOKEN
         },
         body: JSON.stringify({
           prompt: "hello from e2e"
@@ -188,7 +208,8 @@ async function run() {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-trace-id": "e2e-async-1"
+          "x-trace-id": "e2e-async-1",
+          "x-api-token": API_INGRESS_TOKEN
         },
         body: JSON.stringify({ hello: "async" })
       }),
@@ -209,7 +230,8 @@ async function run() {
         DB: dbState.db,
         AUTOMATION_QUEUE: apiEnv.AUTOMATION_QUEUE,
         WORKFLOW_SERVICE: workflowService,
-        ENV_NAME: "test"
+        ENV_NAME: "test",
+        WORKFLOW_INTERNAL_TOKEN
       } as Env
     );
 
@@ -222,7 +244,8 @@ async function run() {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-trace-id": "e2e-fail-1"
+          "x-trace-id": "e2e-fail-1",
+          "x-api-token": API_INGRESS_TOKEN
         },
         body: JSON.stringify({ text: "will fail due missing secret" })
       }),
@@ -242,7 +265,8 @@ async function run() {
         DB: dbState.db,
         AUTOMATION_QUEUE: apiEnv.AUTOMATION_QUEUE,
         WORKFLOW_SERVICE: workflowService,
-        ENV_NAME: "test"
+        ENV_NAME: "test",
+        WORKFLOW_INTERNAL_TOKEN
       } as Env
     );
 

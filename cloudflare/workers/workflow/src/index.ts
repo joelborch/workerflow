@@ -90,6 +90,27 @@ async function executeTask(task: QueueTask, env: Env): Promise<unknown | SyncHtt
   throw new Error(`Unsupported task kind "${task.kind}"`);
 }
 
+function timingSafeStringEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
+function isInternalCallerAuthorized(request: Request, env: Env): boolean {
+  const expected = env.WORKFLOW_INTERNAL_TOKEN?.trim();
+  if (!expected) {
+    console.error("WORKFLOW_INTERNAL_TOKEN is not configured — denying request");
+    return false;
+  }
+  const provided = request.headers.get("x-workflow-internal-token")?.trim() ?? "";
+  return timingSafeStringEqual(provided, expected);
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const resolvedEnv = await resolveWorkflowSecretsStore(env);
@@ -100,6 +121,9 @@ export default {
       return json({ ok: true, env: resolvedEnv.ENV_NAME, worker: "workflow" });
     }
     if (url.pathname === "/health/config") {
+      if (!isInternalCallerAuthorized(request, resolvedEnv)) {
+        return json({ error: "unauthorized" }, { status: 401 });
+      }
       const configErrors = validateEnabledManifestConfig(resolvedEnv, {
         routes: manifest.routes,
         schedules: manifest.schedules
@@ -119,6 +143,10 @@ export default {
 
     if (url.pathname !== "/run-sync" && url.pathname !== "/run-async") {
       return json({ error: "not found" }, { status: 404 });
+    }
+
+    if (!isInternalCallerAuthorized(request, resolvedEnv)) {
+      return json({ error: "unauthorized" }, { status: 401 });
     }
 
     const task = (await request.json()) as QueueTask;

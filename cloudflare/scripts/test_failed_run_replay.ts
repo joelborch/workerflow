@@ -96,12 +96,17 @@ async function run() {
         queued.push(task);
       }
     } as unknown as Queue<QueueTask>,
-    ENV_NAME: "test"
+    ENV_NAME: "test",
+    OPS_DASHBOARD_TOKEN: "failed-run-replay-token",
+    OPS_DASHBOARD_WRITE_TOKEN: "failed-run-replay-token"
   };
+
+  const authHeaders = { authorization: `Bearer ${env.OPS_DASHBOARD_TOKEN}` };
 
   const successResponse = await opsDashboardWorker.fetch(
     new Request("https://ops.example.com/api/replay/trace-failed", {
-      method: "POST"
+      method: "POST",
+      headers: authHeaders
     }),
     env as any
   );
@@ -113,7 +118,8 @@ async function run() {
 
   const invalidResponse = await opsDashboardWorker.fetch(
     new Request("https://ops.example.com/api/replay/trace-succeeded", {
-      method: "POST"
+      method: "POST",
+      headers: authHeaders
     }),
     env as any
   );

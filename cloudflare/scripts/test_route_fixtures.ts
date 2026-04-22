@@ -68,7 +68,9 @@ function createTestEnv() {
         });
       }
     } as unknown as Fetcher,
-    ENV_NAME: "test"
+    ENV_NAME: "test",
+    API_INGRESS_TOKEN: "fixture-ingress-token",
+    WORKFLOW_INTERNAL_TOKEN: "fixture-workflow-internal-token"
   };
 
   return { env, queuedTasks, syncTasks };
@@ -154,6 +156,7 @@ function buildPostRequest(path: string, body: unknown, traceId: string) {
     headers: {
       "content-type": "application/json",
       "x-trace-id": traceId,
+      "x-api-token": "fixture-ingress-token",
       origin: "https://fixture-client.example"
     },
     body: JSON.stringify(body)
