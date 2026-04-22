@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "workerflow-runtime-ops-dashboard",
   "main": "src/index.ts",
+  "workers_dev": false,
   "compatibility_date": "2026-02-27",
   "account_id": "REPLACE_WITH_CLOUDFLARE_ACCOUNT_ID",
   "observability": {

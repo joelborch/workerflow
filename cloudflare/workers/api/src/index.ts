@@ -130,14 +130,26 @@ function readIngressToken(request: Request) {
   return authorization.trim();
 }
 
+function timingSafeStringEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
 function isIngressAuthorized(request: Request, env: Env) {
   const requiredToken = env.API_INGRESS_TOKEN?.trim();
   if (!requiredToken) {
-    return true;
+    console.error("API_INGRESS_TOKEN is not configured — denying request");
+    return false;
   }
 
   const provided = readIngressToken(request);
-  return provided === requiredToken;
+  return timingSafeStringEqual(provided, requiredToken);
 }
 
 function envInt(env: Env, key: keyof Env) {
@@ -426,9 +438,23 @@ async function enqueueAsyncTask(env: Env, task: QueueTask) {
 }
 
 async function runSyncTask(env: Env, task: QueueTask) {
+  const internalToken = env.WORKFLOW_INTERNAL_TOKEN?.trim();
+  if (!internalToken) {
+    return json(
+      {
+        traceId: task.traceId,
+        error: "workflow service misconfigured",
+        details: "WORKFLOW_INTERNAL_TOKEN is not set"
+      },
+      { status: 500 }
+    );
+  }
   const response = await env.WORKFLOW_SERVICE.fetch("http://workflow.internal/run-sync", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      "x-workflow-internal-token": internalToken
+    },
     body: JSON.stringify(task)
   });
 
