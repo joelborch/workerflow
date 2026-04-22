@@ -143,9 +143,17 @@ function timingSafeStringEqual(a: string, b: string): boolean {
 
 function isIngressAuthorized(request: Request, env: Env) {
   const requiredToken = env.API_INGRESS_TOKEN?.trim();
-  if (!requiredToken) {
-    console.error("API_INGRESS_TOKEN is not configured — denying request");
+  const hmacSecret = env.API_HMAC_SECRET?.trim();
+
+  // Fail-closed: at least one auth mechanism must be configured.
+  if (!requiredToken && !hmacSecret) {
+    console.error("Neither API_INGRESS_TOKEN nor API_HMAC_SECRET is configured — denying request");
     return false;
+  }
+
+  // If only HMAC is configured, defer to validateIngressSignature (called after this).
+  if (!requiredToken) {
+    return true;
   }
 
   const provided = readIngressToken(request);

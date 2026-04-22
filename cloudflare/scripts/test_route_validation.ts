@@ -54,7 +54,9 @@ function env() {
           });
         }
       } as unknown as Fetcher,
-      ENV_NAME: "test"
+      ENV_NAME: "test",
+      API_INGRESS_TOKEN: "route-validation-token",
+      WORKFLOW_INTERNAL_TOKEN: "route-validation-internal"
     } as Env,
     queuedTasks
   };
@@ -80,7 +82,8 @@ async function run() {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-trace-id": "route-validation-1"
+        "x-trace-id": "route-validation-1",
+        "x-api-token": "route-validation-token"
       },
       body: JSON.stringify({ amount: "bad" })
     }),
