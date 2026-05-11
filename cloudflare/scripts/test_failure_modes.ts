@@ -3,12 +3,15 @@ import assert from "node:assert/strict";
 import type { Env } from "../shared/types";
 import workflowWorker from "../workers/workflow/src/index";
 
+const WORKFLOW_INTERNAL_TOKEN = "failure-modes-internal-token";
+
 function env(): Env {
   return {
     DB: {} as D1Database,
     AUTOMATION_QUEUE: {} as Queue<unknown>,
     WORKFLOW_SERVICE: {} as Fetcher,
-    ENV_NAME: "test"
+    ENV_NAME: "test",
+    WORKFLOW_INTERNAL_TOKEN
   } as unknown as Env;
 }
 
@@ -16,7 +19,10 @@ async function run() {
   const unsupportedTaskResponse = await workflowWorker.fetch(
     new Request("https://workflow.example/run-sync", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "x-workflow-internal-token": WORKFLOW_INTERNAL_TOKEN
+      },
       body: JSON.stringify({
         kind: "unsupported_kind",
         traceId: "trace-unsupported",
@@ -33,7 +39,10 @@ async function run() {
   const missingRouteResponse = await workflowWorker.fetch(
     new Request("https://workflow.example/run-sync", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "x-workflow-internal-token": WORKFLOW_INTERNAL_TOKEN
+      },
       body: JSON.stringify({
         kind: "http_route",
         traceId: "trace-missing-route",

@@ -49,6 +49,10 @@ function isRetryableStatus(status: number) {
   return status === 408 || status === 425 || status === 429 || status >= 500;
 }
 
+function isReachableButBlockedStatus(status: number) {
+  return status === 401 || status === 403;
+}
+
 async function fetchWithTimeout(url: string, method: "HEAD" | "GET") {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -83,6 +87,9 @@ async function checkSingleUrl(url: string): Promise<UrlCheckResult> {
       if (status >= 200 && status < 400) {
         return { url, ok: true, status };
       }
+      if (isReachableButBlockedStatus(status)) {
+        return { url, ok: true, status };
+      }
 
       if (attempt < MAX_RETRIES && isRetryableStatus(status)) {
         await sleep(250 * (attempt + 1));
@@ -111,6 +118,9 @@ async function checkSingleUrl(url: string): Promise<UrlCheckResult> {
   if (curlResult.status === 0) {
     const statusCode = Number.parseInt(curlResult.stdout.trim(), 10);
     if (Number.isFinite(statusCode) && statusCode >= 200 && statusCode < 400) {
+      return { url, ok: true, status: statusCode };
+    }
+    if (Number.isFinite(statusCode) && isReachableButBlockedStatus(statusCode)) {
       return { url, ok: true, status: statusCode };
     }
     return { url, ok: false, status: statusCode, reason: `curl status ${statusCode}` };

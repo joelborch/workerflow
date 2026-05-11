@@ -134,16 +134,25 @@ async function run() {
   }
 
   {
-    const { env } = createTestEnv({ API_RATE_LIMIT_PER_MINUTE: "1" });
+    const { env } = createTestEnv({
+      API_RATE_LIMIT_PER_MINUTE: "1",
+      API_INGRESS_TOKEN: "rate-limit-token"
+    });
 
     const first = await apiWorker.fetch(
-      makeRequest("/api/webhook_echo", body, "security-rate-1", { "cf-connecting-ip": "203.0.113.1" }),
+      makeRequest("/api/webhook_echo", body, "security-rate-1", {
+        "cf-connecting-ip": "203.0.113.1",
+        "x-api-token": "rate-limit-token"
+      }),
       env
     );
     assert.equal(first.status, 202);
 
     const second = await apiWorker.fetch(
-      makeRequest("/api/webhook_echo", body, "security-rate-2", { "cf-connecting-ip": "203.0.113.1" }),
+      makeRequest("/api/webhook_echo", body, "security-rate-2", {
+        "cf-connecting-ip": "203.0.113.1",
+        "x-api-token": "rate-limit-token"
+      }),
       env
     );
     assert.equal(second.status, 429);
@@ -152,6 +161,7 @@ async function run() {
   {
     const { env } = createTestEnv({
       API_RATE_LIMIT_PER_MINUTE: "10",
+      API_INGRESS_TOKEN: "route-limit-token",
       API_ROUTE_LIMITS_JSON: JSON.stringify({
         webhook_echo: {
           rpm: 1,
@@ -161,19 +171,28 @@ async function run() {
     });
 
     const first = await apiWorker.fetch(
-      makeRequest("/api/webhook_echo", body, "security-route-limit-1", { "cf-connecting-ip": "203.0.113.90" }),
+      makeRequest("/api/webhook_echo", body, "security-route-limit-1", {
+        "cf-connecting-ip": "203.0.113.90",
+        "x-api-token": "route-limit-token"
+      }),
       env
     );
     assert.equal(first.status, 202);
 
     const blocked = await apiWorker.fetch(
-      makeRequest("/api/webhook_echo", body, "security-route-limit-2", { "cf-connecting-ip": "203.0.113.90" }),
+      makeRequest("/api/webhook_echo", body, "security-route-limit-2", {
+        "cf-connecting-ip": "203.0.113.90",
+        "x-api-token": "route-limit-token"
+      }),
       env
     );
     assert.equal(blocked.status, 429);
 
     const allowedOtherRoute = await apiWorker.fetch(
-      makeRequest("/api/noop_ack", body, "security-route-limit-3", { "cf-connecting-ip": "203.0.113.90" }),
+      makeRequest("/api/noop_ack", body, "security-route-limit-3", {
+        "cf-connecting-ip": "203.0.113.90",
+        "x-api-token": "route-limit-token"
+      }),
       env
     );
     assert.equal(allowedOtherRoute.status, 202);
