@@ -125,11 +125,16 @@ async function run() {
   const env = {
     DB: buildMockDb(),
     AUTOMATION_QUEUE: {} as Queue<unknown>,
-    ENV_NAME: "test"
+    ENV_NAME: "test",
+    OPS_DASHBOARD_TOKEN: "workspace-isolation-token",
+    OPS_DASHBOARD_READ_TOKEN: "workspace-isolation-token",
+    OPS_DASHBOARD_WRITE_TOKEN: "workspace-isolation-token"
   };
 
+  const authHeaders = { authorization: `Bearer ${env.OPS_DASHBOARD_TOKEN}` };
+
   const allRuns = await opsDashboardWorker.fetch(
-    new Request("https://ops.example.com/api/runs?limit=20", { method: "GET" }),
+    new Request("https://ops.example.com/api/runs?limit=20", { method: "GET", headers: authHeaders }),
     env as any
   );
   assert.equal(allRuns.status, 200);
@@ -137,7 +142,7 @@ async function run() {
   assert.equal(allPayload.runs.length, 2);
 
   const teamRuns = await opsDashboardWorker.fetch(
-    new Request("https://ops.example.com/api/runs?limit=20&workspace=team-a", { method: "GET" }),
+    new Request("https://ops.example.com/api/runs?limit=20&workspace=team-a", { method: "GET", headers: authHeaders }),
     env as any
   );
   assert.equal(teamRuns.status, 200);
@@ -146,7 +151,7 @@ async function run() {
   assert.equal(teamPayload.runs[0]?.workspaceId, "team-a");
 
   const teamDeadLetters = await opsDashboardWorker.fetch(
-    new Request("https://ops.example.com/api/dead-letters?workspace=team-a", { method: "GET" }),
+    new Request("https://ops.example.com/api/dead-letters?workspace=team-a", { method: "GET", headers: authHeaders }),
     env as any
   );
   assert.equal(teamDeadLetters.status, 200);

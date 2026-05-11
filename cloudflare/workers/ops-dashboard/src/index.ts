@@ -21,6 +21,7 @@ type Env = {
   OPS_DASHBOARD_READ_TOKEN?: string;
   OPS_DASHBOARD_WRITE_TOKEN?: string;
   OPS_DASHBOARD_EXTENSIONS_JSON?: string;
+  WORKFLOW_INTERNAL_TOKEN?: string;
   MANIFEST_MODE?: string;
   ROUTES_CONFIG_JSON?: string;
   SCHEDULES_CONFIG_JSON?: string;
@@ -435,12 +436,24 @@ function readAuthToken(request: Request) {
 
 type DashboardAccess = "none" | "read" | "write";
 
+function timingSafeStringEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
 function dashboardAccess(request: Request, env: Env): DashboardAccess {
   const writeToken = env.OPS_DASHBOARD_WRITE_TOKEN?.trim() || env.OPS_DASHBOARD_TOKEN?.trim() || "";
   const readToken = env.OPS_DASHBOARD_READ_TOKEN?.trim() || writeToken;
 
   if (!readToken && !writeToken) {
-    return "write";
+    console.error("Ops dashboard tokens are not configured — denying all access");
+    return "none";
   }
 
   const providedToken = readAuthToken(request);
@@ -448,11 +461,11 @@ function dashboardAccess(request: Request, env: Env): DashboardAccess {
     return "none";
   }
 
-  if (writeToken && providedToken === writeToken) {
+  if (writeToken && timingSafeStringEqual(providedToken, writeToken)) {
     return "write";
   }
 
-  if (readToken && providedToken === readToken) {
+  if (readToken && timingSafeStringEqual(providedToken, readToken)) {
     return "read";
   }
 
@@ -4588,8 +4601,18 @@ async function getSecretsHealth(env: Env) {
   }
 
   try {
+    const internalToken = env.WORKFLOW_INTERNAL_TOKEN?.trim();
+    if (!internalToken) {
+      return json({
+        available: false,
+        reason: "WORKFLOW_INTERNAL_TOKEN is not configured on ops-dashboard"
+      });
+    }
     const response = await env.WORKFLOW_SERVICE.fetch("http://workflow.internal/health/config", {
-      method: "GET"
+      method: "GET",
+      headers: {
+        "x-workflow-internal-token": internalToken
+      }
     });
 
     if (!response.ok) {

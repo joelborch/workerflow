@@ -43,9 +43,16 @@ export default {
         });
         await recordRunStart(env.DB, task);
 
+        const internalToken = env.WORKFLOW_INTERNAL_TOKEN?.trim();
+        if (!internalToken) {
+          throw new Error("WORKFLOW_INTERNAL_TOKEN is not configured");
+        }
         const response = await env.WORKFLOW_SERVICE.fetch("http://workflow.internal/run-async", {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: {
+            "content-type": "application/json",
+            "x-workflow-internal-token": internalToken
+          },
           body: JSON.stringify(task)
         });
 
