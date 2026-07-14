@@ -12,7 +12,7 @@
     "test:watch": "vitest",
     "preview": "vite preview",
     "release:check": "npm run lint && npm run test && npm run build",
-    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name workerflow-dashboard"
+    "deploy:pages": "npm run build && bash scripts/deploy-production.sh"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.2.9",
