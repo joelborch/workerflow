@@ -52,11 +52,11 @@
     "dev:scheduler": "wrangler dev --config workers/scheduler/wrangler.jsonc",
     "dev:queue": "wrangler dev --config workers/queue-consumer/wrangler.jsonc",
     "dev:workflow": "wrangler dev --config workers/workflow/wrangler.jsonc",
-    "deploy:api": "wrangler deploy --config workers/api/wrangler.jsonc",
-    "deploy:ops": "wrangler deploy --config workers/ops-dashboard/wrangler.jsonc",
-    "deploy:scheduler": "wrangler deploy --config workers/scheduler/wrangler.jsonc",
-    "deploy:queue": "wrangler deploy --config workers/queue-consumer/wrangler.jsonc",
-    "deploy:workflow": "wrangler deploy --config workers/workflow/wrangler.jsonc"
+    "deploy:api": "bash scripts/deploy-production.sh api",
+    "deploy:ops": "bash scripts/deploy-production.sh ops",
+    "deploy:scheduler": "bash scripts/deploy-production.sh scheduler",
+    "deploy:queue": "bash scripts/deploy-production.sh queue",
+    "deploy:workflow": "bash scripts/deploy-production.sh workflow"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260629.1",

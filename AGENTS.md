@@ -91,3 +91,9 @@ Use clear prefixes:
 - `chore:` maintenance/refactor/tooling
 
 Prefer small, reviewable commits with explicit impact.
+
+## Production operation boundary
+
+Local development, release checks, fixture tests, and builds may run without confirmation. Deploying any Worker or Pages project, applying remote migrations, changing production bindings, routes, or Cloudflare secrets, or running a production smoke test that mutates state requires an explicit request for that exact operation and fresh human approval.
+
+Use the guarded `npm run deploy:*` commands for approved deployments. Do not bypass the repository's approval scripts with raw Wrangler commands. Keep public configs placeholder-based, keep credentials in Cloudflare secrets or ignored local files, and never let tests fall back to production services or data.
