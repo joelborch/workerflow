@@ -32,6 +32,10 @@ updates:
           - "*"
     ignore:
       - dependency-name: "eslint-plugin-react-hooks"
+      # typescript-eslint 8.x requires TypeScript <6.1.0.
+      - dependency-name: "typescript"
+        versions:
+          - ">=7.0.0 <8.0.0"
     labels:
       - dependencies
       - security
