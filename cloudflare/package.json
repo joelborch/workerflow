@@ -59,9 +59,9 @@
     "deploy:workflow": "bash scripts/deploy-production.sh workflow"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260629.1",
-    "typescript": "^6.0.3",
-    "wrangler": "^4.105.0"
+    "@cloudflare/workers-types": "^5.20260714.1",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.110.0"
   },
   "overrides": {
     "esbuild": "0.28.1",
