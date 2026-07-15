@@ -2,6 +2,10 @@ type UnwrapBodyOptions = {
   preserveEnvelopeWhenExtraKeys?: boolean;
 };
 
+export function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" ? value as Record<string, unknown> : {};
+}
+
 export function asObject(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
 }

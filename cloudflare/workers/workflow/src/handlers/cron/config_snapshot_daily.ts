@@ -5,12 +5,8 @@ type SnapshotResult = {
   snapshottedAt: string;
 };
 
-type SnapshotPayload = {
-  includeDisabled?: unknown;
-};
-
 export function handle(payload: unknown): SnapshotResult {
-  const value = payload && typeof payload === "object" ? (payload as SnapshotPayload) : {};
+  const value = asRecord(payload);
 
   return {
     ok: true,
@@ -19,3 +15,4 @@ export function handle(payload: unknown): SnapshotResult {
     snapshottedAt: new Date().toISOString()
   };
 }
+import { asRecord } from "../../lib/payload";

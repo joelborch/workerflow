@@ -5,12 +5,8 @@ type DigestResult = {
   channel: string;
 };
 
-type DigestPayload = {
-  channel?: unknown;
-};
-
 export function handle(payload: unknown): DigestResult {
-  const value = payload && typeof payload === "object" ? (payload as DigestPayload) : {};
+  const value = asRecord(payload);
   const channel = typeof value.channel === "string" && value.channel.trim().length > 0 ? value.channel.trim() : "ops";
 
   return {
@@ -20,3 +16,4 @@ export function handle(payload: unknown): DigestResult {
     channel
   };
 }
+import { asRecord } from "../../lib/payload";

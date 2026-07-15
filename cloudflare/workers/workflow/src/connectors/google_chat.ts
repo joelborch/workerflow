@@ -7,9 +7,7 @@ export async function postToGoogleChat(webhookUrl: string, text: string) {
     body: JSON.stringify({ text })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Google Chat webhook failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "Google Chat webhook failed");
 }
+import { requireOk } from "./http_retry";
 

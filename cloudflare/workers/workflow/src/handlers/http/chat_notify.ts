@@ -1,4 +1,5 @@
 import type { Env } from "../../../../../shared/types";
+import { requireOk } from "../../connectors/http_retry";
 import { readEnvString, requireContextEnv, type EnvContext } from "../../lib/env";
 import { unwrapObjectBody } from "../../lib/payload";
 
@@ -31,10 +32,7 @@ export async function handle(requestPayload: unknown, traceId: string, context?:
     })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Chat webhook failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "Chat webhook failed");
 
   const endpointHost = new URL(webhookUrl).host;
   return {

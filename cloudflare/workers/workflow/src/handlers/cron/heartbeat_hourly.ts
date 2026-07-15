@@ -1,7 +1,4 @@
-type HeartbeatPayload = {
-  target?: unknown;
-  scheduledTime?: unknown;
-};
+import { asRecord } from "../../lib/payload";
 
 type HeartbeatResult = {
   ok: true;
@@ -12,7 +9,7 @@ type HeartbeatResult = {
 };
 
 export function handle(payload: unknown): HeartbeatResult {
-  const value = payload && typeof payload === "object" ? (payload as HeartbeatPayload) : {};
+  const value = asRecord(payload);
   const target = typeof value.target === "string" ? value.target : "f/examples/heartbeat_hourly";
   const scheduledTime = typeof value.scheduledTime === "string" ? value.scheduledTime : new Date().toISOString();
 

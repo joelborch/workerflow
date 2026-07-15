@@ -1,4 +1,4 @@
-import { fetchWithRetry } from "./http_retry";
+import { fetchWithRetry, requireOk } from "./http_retry";
 
 type PostSlackMessageArgs = {
   webhookUrl: string;
@@ -18,10 +18,7 @@ export async function postSlackMessage(args: PostSlackMessageArgs) {
     })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Slack webhook failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "Slack webhook failed");
 
   return {
     ok: true as const

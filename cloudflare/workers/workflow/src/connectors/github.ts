@@ -1,4 +1,4 @@
-import { fetchWithRetry } from "./http_retry";
+import { fetchWithRetry, requireOk } from "./http_retry";
 
 type CreateGithubIssueArgs = {
   token: string;
@@ -35,10 +35,7 @@ export async function createGithubIssue(args: CreateGithubIssueArgs) {
     })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`GitHub issue create failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "GitHub issue create failed");
 
   const data = (await response.json()) as CreateGithubIssueResponse;
   return {
