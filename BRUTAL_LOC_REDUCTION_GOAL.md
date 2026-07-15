@@ -6,6 +6,31 @@
 
 This file is a plan only. No implementation, dependency change, generated artifact refresh, commit, push, deployment, migration, remote smoke test, or Cloudflare mutation is authorized.
 
+## Implementation outcome
+
+The owner subsequently authorized implementation, logical commits, and pushes on `codex/brutal-loc-reduction-2026-07-15`. The work stopped at the plan's risk boundary after removing **504 net physical lines of handwritten production code**: the reducible surface fell from 14,486 to 13,982 lines, while operational-tooling LOC stayed unchanged. No savings are claimed from tests, prompts, documentation, generated files, lockfiles, contracts, migrations, examples, or metadata.
+
+The production reduction consists of:
+
+- 270 lines from canonical non-prompt handler input, context, environment, metadata, and payload helpers;
+- 124 lines from shared route enablement, rate-limit parsing, constant-time token comparison, Secrets Store detection, and path decoding;
+- 45 lines from the Pages dashboard request and filter core, including the proven unreachable empty fallback branch;
+- 65 lines from ops result/query context mapping, connector response checks, cron payload normalization, and core/shared type adapters.
+
+The fixed whole-repository measurement grew from 35,923 lines in 240 tracked files because the implementation retained its safety evidence: three new characterization/integrity tests, a pinned test runner and lock entry, this goal/report artifact, and smoke-only configuration. Those additions are reported separately and do not reduce the 504-line production result.
+
+Final verification passed:
+
+- `cloudflare/npm run release:check`, including prompt integrity for all 13 protected files, route/schedule fixtures, security, replay, workspace isolation, connector registries, failure modes, end-to-end runtime behavior, and TypeScript;
+- `cloudflare/npx tsc --noEmit --noUnusedLocals --noUnusedParameters`;
+- `cloudflare/npm run smoke:handlers` with 27 of 27 cases passing;
+- `cloudflare/npm run smoke:ops` against local Wrangler/D1 state;
+- `pages-dashboard/npm run release:check` with lint, 22 tests, coverage, typecheck, and build;
+- Gitleaks 8.30.1 across all eight implementation commits, with no leaks found;
+- `git diff --check`, prompt byte hashes, and upstream/worktree checks.
+
+No Cloudflare Worker or Pages deployment, remote migration, production smoke test, binding/route/secret mutation, or production write was performed. The external service-registry URL sweep and browser visual pass were not run because no registry URL or visual code changed; the local registry contract tests and both dashboard builds remained green.
+
 ## Objective
 
 Reduce the largest defensible amount of handwritten WorkerFlow production and operational-tooling code while preserving every observable route, schedule, payload, status code, error contract, persistence behavior, security boundary, telemetry field, extension point, browser behavior, visual output, artifact output, and prompt byte.
