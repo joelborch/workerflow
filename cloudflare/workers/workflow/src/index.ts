@@ -2,6 +2,7 @@ import { json } from "../../../shared/http";
 import { runtimeLog } from "../../../shared/logger";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
 import { validateRoutePayload } from "../../../shared/route_validation";
+import { timingSafeStringEqual } from "../../../shared/security";
 import type { Env, QueueTask, SyncHttpPassthrough } from "../../../shared/types";
 import { validateEnabledManifestConfig, validateTaskConfig } from "./config_validation";
 import { CRON_SCHEDULE_HANDLERS } from "./handlers/cron";
@@ -88,17 +89,6 @@ async function executeTask(task: QueueTask, env: Env): Promise<unknown | SyncHtt
     return runScheduledJob(task, env);
   }
   throw new Error(`Unsupported task kind "${task.kind}"`);
-}
-
-function timingSafeStringEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
 }
 
 function isInternalCallerAuthorized(request: Request, env: Env): boolean {

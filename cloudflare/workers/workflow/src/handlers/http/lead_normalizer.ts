@@ -1,4 +1,4 @@
-import { unwrapBody } from "../../lib/payload";
+import { readString, unwrapObjectBody } from "../../lib/payload";
 
 type NormalizedLead = {
   fullName: string;
@@ -13,31 +13,16 @@ type NormalizeResult = {
   normalized: NormalizedLead;
 };
 
-function asObject(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {} as Record<string, unknown>;
-  }
-  return value as Record<string, unknown>;
-}
-
-function stringValue(record: Record<string, unknown>, key: string) {
-  const raw = record[key];
-  if (typeof raw !== "string") {
-    return "";
-  }
-  return raw.trim();
-}
-
 export function handle(requestPayload: unknown): NormalizeResult {
-  const body = asObject(unwrapBody(requestPayload));
+  const body = unwrapObjectBody(requestPayload);
 
-  const firstName = stringValue(body, "firstName");
-  const lastName = stringValue(body, "lastName");
-  const fullName = stringValue(body, "fullName") || [firstName, lastName].filter(Boolean).join(" ") || "Unknown";
+  const firstName = readString(body, "firstName");
+  const lastName = readString(body, "lastName");
+  const fullName = readString(body, "fullName") || [firstName, lastName].filter(Boolean).join(" ") || "Unknown";
 
-  const email = stringValue(body, "email").toLowerCase() || "unknown@example.com";
-  const phone = stringValue(body, "phone").replace(/[^\d+]/g, "");
-  const source = stringValue(body, "source") || "unspecified";
+  const email = readString(body, "email").toLowerCase() || "unknown@example.com";
+  const phone = readString(body, "phone").replace(/[^\d+]/g, "");
+  const source = readString(body, "source") || "unspecified";
 
   return {
     ok: true,

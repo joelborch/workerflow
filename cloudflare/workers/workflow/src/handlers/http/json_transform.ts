@@ -1,23 +1,10 @@
-import { unwrapBody } from "../../lib/payload";
-
-type TransformRequest = {
-  data?: unknown;
-  pick?: unknown;
-  rename?: unknown;
-};
+import { asObject, unwrapObjectBody } from "../../lib/payload";
 
 type TransformResult = {
   ok: true;
   route: "json_transform";
   transformed: Record<string, unknown>;
 };
-
-function asObject(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {};
-  }
-  return value as Record<string, unknown>;
-}
 
 function stringArray(value: unknown) {
   if (!Array.isArray(value)) {
@@ -27,7 +14,7 @@ function stringArray(value: unknown) {
 }
 
 export function handle(requestPayload: unknown): TransformResult {
-  const body = asObject(unwrapBody(requestPayload)) as TransformRequest;
+  const body = unwrapObjectBody(requestPayload);
   const source = asObject(body.data ?? body);
   const pick = stringArray(body.pick);
   const rename = asObject(body.rename);

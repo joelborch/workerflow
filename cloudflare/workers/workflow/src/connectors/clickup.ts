@@ -13,10 +13,7 @@ export async function fetchClickupTask(token: string, taskId: string) {
     }
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`ClickUp task fetch failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "ClickUp task fetch failed");
 
   return (await response.json()) as Record<string, unknown>;
 }
@@ -35,10 +32,7 @@ export async function createClickupTask(args: ClickupCreateTaskArgs) {
     })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`ClickUp create task failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "ClickUp create task failed");
 
   return await response.json();
 }
@@ -53,9 +47,7 @@ export async function addClickupTaskComment(taskId: string, commentText: string,
     body: JSON.stringify({ comment_text: commentText })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`ClickUp API failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "ClickUp API failed");
 }
+import { requireOk } from "./http_retry";
 

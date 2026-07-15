@@ -8,7 +8,8 @@
     "enabled": true
   },
   "vars": {
-    "ENV_NAME": "dev-smoke"
+    "ENV_NAME": "dev-smoke",
+    "OPS_DASHBOARD_TOKEN": "smoke-test-token"
   },
   "d1_databases": [
     {

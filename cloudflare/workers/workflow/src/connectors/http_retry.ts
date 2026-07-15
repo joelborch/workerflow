@@ -7,6 +7,13 @@ export type RetryOptions = {
 
 const DEFAULT_RETRY_STATUSES = [408, 425, 429, 500, 502, 503, 504];
 
+export async function requireOk(response: Response, label: string) {
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`${label}: ${response.status} ${response.statusText} ${errorText}`);
+  }
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

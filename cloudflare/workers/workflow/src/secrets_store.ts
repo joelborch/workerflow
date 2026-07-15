@@ -1,17 +1,5 @@
+import { isSecretsStoreBinding } from "../../../shared/security";
 import type { Env } from "../../../shared/types";
-
-type SecretsStoreBinding = {
-  get: () => Promise<string>;
-};
-
-function isSecretsStoreBinding(value: unknown): value is SecretsStoreBinding {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "get" in value &&
-    typeof (value as { get?: unknown }).get === "function"
-  );
-}
 
 export async function resolveWorkflowSecretsStore(env: Env): Promise<Env> {
   const source = env as unknown as Record<string, unknown>;

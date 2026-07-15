@@ -136,6 +136,15 @@ describe("apiGet", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
+  it("wraps GET network failures with the attempted URL", async () => {
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("offline"));
+
+    await expect(apiGet({ path: "api/ops/summary", token: "" })).rejects.toMatchObject({
+      message: "Network request failed for http://127.0.0.1:8787/api/ops/summary",
+      status: 0
+    });
+  });
+
   it("replays a failed run with encoded trace id and auth header", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       mockResponse({
@@ -183,5 +192,12 @@ describe("apiGet", () => {
       message: "Replay request failed (500)",
       status: 500
     });
+  });
+
+  it("preserves the underlying network error when replay cannot connect", async () => {
+    const networkError = new Error("offline");
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(networkError);
+
+    await expect(replayRun("", "trace-789")).rejects.toBe(networkError);
   });
 });

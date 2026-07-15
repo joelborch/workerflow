@@ -1,3 +1,4 @@
+import { asObject } from "../lib/payload";
 import { fetchWithRetry } from "./http_retry";
 
 type NotionRequestArgs = {
@@ -41,13 +42,6 @@ const NOTION_VERSION = "2022-06-28";
 
 function asText(value: unknown) {
   return typeof value === "string" ? value : "";
-}
-
-function asObject(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {} as Record<string, unknown>;
-  }
-  return value as Record<string, unknown>;
 }
 
 async function notionRequest<T>(args: NotionRequestArgs) {

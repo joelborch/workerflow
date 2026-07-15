@@ -1,4 +1,4 @@
-import { fetchWithRetry } from "./http_retry";
+import { fetchWithRetry, requireOk } from "./http_retry";
 
 type StripePaymentIntentCreateArgs = {
   apiKey: string;
@@ -90,10 +90,7 @@ async function stripeRequest<T>(args: {
     ...(args.body ? { body: args.body.toString() } : {})
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Stripe request failed: ${response.status} ${response.statusText} ${errorText}`);
-  }
+  await requireOk(response, "Stripe request failed");
 
   return (await response.json()) as T;
 }

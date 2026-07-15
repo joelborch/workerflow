@@ -1,9 +1,6 @@
 import type { Env } from "../../../../../shared/types";
-import { unwrapBody } from "../../lib/payload";
-
-type HandlerContext = {
-  env: Env;
-};
+import { readEnvString, requireContextEnv, type EnvContext } from "../../lib/env";
+import { unwrapObjectBody } from "../../lib/payload";
 
 type FanoutResult = {
   ok: true;
@@ -12,13 +9,6 @@ type FanoutResult = {
   delivered: number;
   failed: number;
 };
-
-function asObject(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {};
-  }
-  return value as Record<string, unknown>;
-}
 
 function asWebhookList(value: unknown): string[] {
   if (!Array.isArray(value)) {
@@ -32,21 +22,12 @@ function asWebhookList(value: unknown): string[] {
     .slice(0, 20);
 }
 
-function envString(env: Env, key: string) {
-  const raw = (env as unknown as Record<string, unknown>)[key];
-  return typeof raw === "string" ? raw.trim() : "";
-}
-
-export async function handle(requestPayload: unknown, _traceId: string, context?: HandlerContext): Promise<FanoutResult> {
-  const env = context?.env;
-  if (!env) {
-    throw new Error("Execution context missing env");
-  }
-
-  const body = asObject(unwrapBody(requestPayload));
+export async function handle(requestPayload: unknown, _traceId: string, context?: EnvContext<Env>): Promise<FanoutResult> {
+  const env = requireContextEnv(context);
+  const body = unwrapObjectBody(requestPayload);
   const payload = body.payload ?? body;
   const targets = asWebhookList(body.webhooks);
-  const fallback = envString(env, "FANOUT_SHARED_WEBHOOK_URL");
+  const fallback = readEnvString(env, ["FANOUT_SHARED_WEBHOOK_URL"]);
   const webhooks = targets.length > 0 ? targets : fallback ? [fallback] : [];
 
   let delivered = 0;

@@ -1,10 +1,7 @@
 import type { Env } from "../../../../../shared/types";
 import { postSlackMessage } from "../../connectors/slack";
-import { unwrapBody } from "../../lib/payload";
-
-type HandlerContext = {
-  env: Env;
-};
+import { readEnvString, requireContextEnv, type EnvContext } from "../../lib/env";
+import { unwrapObjectBody } from "../../lib/payload";
 
 type SlackMessageResult = {
   ok: true;
@@ -13,28 +10,12 @@ type SlackMessageResult = {
   endpointHost: string;
 };
 
-function asObject(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {} as Record<string, unknown>;
-  }
-  return value as Record<string, unknown>;
-}
-
-function envString(env: Env, key: string) {
-  const raw = (env as unknown as Record<string, unknown>)[key];
-  return typeof raw === "string" ? raw.trim() : "";
-}
-
-export async function handle(requestPayload: unknown, traceId: string, context?: HandlerContext): Promise<SlackMessageResult> {
-  const env = context?.env;
-  if (!env) {
-    throw new Error("Execution context missing env");
-  }
-
-  const body = asObject(unwrapBody(requestPayload));
+export async function handle(requestPayload: unknown, traceId: string, context?: EnvContext<Env>): Promise<SlackMessageResult> {
+  const env = requireContextEnv(context);
+  const body = unwrapObjectBody(requestPayload);
   const message = typeof body.text === "string" && body.text.trim().length > 0 ? body.text.trim() : "Automation event";
   const bodyWebhook = typeof body.webhookUrl === "string" ? body.webhookUrl.trim() : "";
-  const webhookUrl = bodyWebhook || envString(env, "SLACK_WEBHOOK_URL");
+  const webhookUrl = bodyWebhook || readEnvString(env, ["SLACK_WEBHOOK_URL"]);
 
   if (!webhookUrl) {
     throw new Error("SLACK_WEBHOOK_URL is required");

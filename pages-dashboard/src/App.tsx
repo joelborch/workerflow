@@ -49,6 +49,7 @@ type TimelineBucket = "hour" | "minute";
 type RunsSortKey = "startedAt" | "status" | "scope";
 type RunsSortDir = "asc" | "desc";
 type SecretStatusFilter = "" | "ready" | "partial" | "missing";
+type TextFilterKey = "status" | "kind" | "workspaceId" | "routePath" | "scheduleId" | "search";
 
 type Filters = {
   range: TimeRangePreset;
@@ -75,6 +76,7 @@ const DEFAULT_FILTERS: Filters = {
   limit: 80,
   refreshSeconds: 30
 };
+const URL_FILTER_KEYS = ["range", "bucket", "status", "kind", "workspace", "routePath", "scheduleId", "search", "limit", "refresh"];
 
 function initialToken() {
   const local = typeof window !== "undefined" ? window.localStorage.getItem(OPS_TOKEN_KEY) : "";
@@ -84,29 +86,46 @@ function initialToken() {
   return getDefaultOpsToken();
 }
 
+function normalizeFilters(candidate: Partial<Record<keyof Filters, unknown>>): Filters {
+  const limit = Number(candidate.limit);
+  const refreshSeconds = Number(candidate.refreshSeconds);
+  const text = (key: TextFilterKey) => typeof candidate[key] === "string" ? candidate[key] : DEFAULT_FILTERS[key];
+
+  return {
+    range: candidate.range === "1h" || candidate.range === "6h" || candidate.range === "24h" || candidate.range === "7d"
+      ? candidate.range
+      : DEFAULT_FILTERS.range,
+    bucket: candidate.bucket === "minute" ? "minute" : "hour",
+    status: text("status"),
+    kind: text("kind"),
+    workspaceId: text("workspaceId"),
+    routePath: text("routePath"),
+    scheduleId: text("scheduleId"),
+    search: text("search"),
+    limit: Number.isFinite(limit) && limit > 0 ? Math.min(limit, 250) : DEFAULT_FILTERS.limit,
+    refreshSeconds: Number.isFinite(refreshSeconds) && refreshSeconds > 0
+      ? Math.min(refreshSeconds, 300)
+      : DEFAULT_FILTERS.refreshSeconds
+  };
+}
+
 function readFiltersFromUrl(): Filters {
   if (typeof window === "undefined") {
     return DEFAULT_FILTERS;
   }
   const params = new URLSearchParams(window.location.search);
-  const range = params.get("range");
-  const bucket = params.get("bucket");
-  const refreshSeconds = Number.parseInt(params.get("refresh") ?? "", 10);
-  const limit = Number.parseInt(params.get("limit") ?? "", 10);
-
-  return {
-    range: range === "1h" || range === "6h" || range === "24h" || range === "7d" ? range : DEFAULT_FILTERS.range,
-    bucket: bucket === "minute" ? "minute" : "hour",
+  return normalizeFilters({
+    range: params.get("range"),
+    bucket: params.get("bucket"),
     status: params.get("status") ?? "",
     kind: params.get("kind") ?? "",
     workspaceId: params.get("workspace") ?? "",
     routePath: params.get("routePath") ?? "",
     scheduleId: params.get("scheduleId") ?? "",
     search: params.get("search") ?? "",
-    limit: Number.isFinite(limit) && limit > 0 ? Math.min(limit, 250) : DEFAULT_FILTERS.limit,
-    refreshSeconds:
-      Number.isFinite(refreshSeconds) && refreshSeconds > 0 ? Math.min(refreshSeconds, 300) : DEFAULT_FILTERS.refreshSeconds
-  };
+    limit: Number.parseInt(params.get("limit") ?? "", 10),
+    refreshSeconds: Number.parseInt(params.get("refresh") ?? "", 10)
+  });
 }
 
 function readFiltersFromStorage(): Filters | null {
@@ -130,25 +149,7 @@ function readFiltersFromStorage(): Filters | null {
     return null;
   }
 
-  const candidate = parsed as Partial<Filters>;
-  const range = candidate.range;
-  const bucket = candidate.bucket;
-  const limit = Number(candidate.limit);
-  const refreshSeconds = Number(candidate.refreshSeconds);
-
-  return {
-    range: range === "1h" || range === "6h" || range === "24h" || range === "7d" ? range : DEFAULT_FILTERS.range,
-    bucket: bucket === "minute" ? "minute" : "hour",
-    status: typeof candidate.status === "string" ? candidate.status : DEFAULT_FILTERS.status,
-    kind: typeof candidate.kind === "string" ? candidate.kind : DEFAULT_FILTERS.kind,
-    workspaceId: typeof candidate.workspaceId === "string" ? candidate.workspaceId : DEFAULT_FILTERS.workspaceId,
-    routePath: typeof candidate.routePath === "string" ? candidate.routePath : DEFAULT_FILTERS.routePath,
-    scheduleId: typeof candidate.scheduleId === "string" ? candidate.scheduleId : DEFAULT_FILTERS.scheduleId,
-    search: typeof candidate.search === "string" ? candidate.search : DEFAULT_FILTERS.search,
-    limit: Number.isFinite(limit) && limit > 0 ? Math.min(limit, 250) : DEFAULT_FILTERS.limit,
-    refreshSeconds:
-      Number.isFinite(refreshSeconds) && refreshSeconds > 0 ? Math.min(refreshSeconds, 300) : DEFAULT_FILTERS.refreshSeconds
-  };
+  return normalizeFilters(parsed as Partial<Record<keyof Filters, unknown>>);
 }
 
 function writeFiltersToStorage(filters: Filters) {
@@ -163,9 +164,7 @@ function hasUrlFilterOverrides() {
     return false;
   }
   const params = new URLSearchParams(window.location.search);
-  return ["range", "bucket", "status", "kind", "workspace", "routePath", "scheduleId", "search", "limit", "refresh"].some(
-    (key) => params.has(key)
-  );
+  return URL_FILTER_KEYS.some((key) => params.has(key));
 }
 
 function readInitialFilters(): Filters {

@@ -1,4 +1,4 @@
-import { unwrapBody } from "../../lib/payload";
+import { asObject, unwrapObjectBody } from "../../lib/payload";
 
 type RenderResult = {
   ok: true;
@@ -6,15 +6,8 @@ type RenderResult = {
   rendered: string;
 };
 
-function asObject(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {};
-  }
-  return value as Record<string, unknown>;
-}
-
 export function handle(requestPayload: unknown): RenderResult {
-  const body = asObject(unwrapBody(requestPayload));
+  const body = unwrapObjectBody(requestPayload);
   const template = typeof body.template === "string" ? body.template : "Hello {{name}}";
   const values = asObject(body.values);
 
