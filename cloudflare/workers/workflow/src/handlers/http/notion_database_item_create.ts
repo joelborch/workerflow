@@ -1,10 +1,7 @@
 import type { Env } from "../../../../../shared/types";
 import { createNotionDatabaseItem } from "../../connectors/notion";
-import { unwrapBody } from "../../lib/payload";
-
-type HandlerContext = {
-  env: Env;
-};
+import { readEnvString, requireContextEnv, type EnvContext } from "../../lib/env";
+import { asObject, unwrapObjectBody } from "../../lib/payload";
 
 type NotionDatabaseItemCreateResult = {
   ok: true;
@@ -15,30 +12,14 @@ type NotionDatabaseItemCreateResult = {
   createdTime: string;
 };
 
-function asObject(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {} as Record<string, unknown>;
-  }
-  return value as Record<string, unknown>;
-}
-
-function envString(env: Env, key: string) {
-  const raw = (env as unknown as Record<string, unknown>)[key];
-  return typeof raw === "string" ? raw.trim() : "";
-}
-
 export async function handle(
   requestPayload: unknown,
   _traceId: string,
-  context?: HandlerContext
+  context?: EnvContext<Env>
 ): Promise<NotionDatabaseItemCreateResult> {
-  const env = context?.env;
-  if (!env) {
-    throw new Error("Execution context missing env");
-  }
-
-  const body = asObject(unwrapBody(requestPayload));
-  const token = envString(env, "NOTION_TOKEN");
+  const env = requireContextEnv(context);
+  const body = unwrapObjectBody(requestPayload);
+  const token = readEnvString(env, ["NOTION_TOKEN"]);
   if (!token) {
     throw new Error("NOTION_TOKEN is required");
   }

@@ -1,10 +1,7 @@
 import type { Env } from "../../../../../shared/types";
 import { upsertStripeCustomer } from "../../connectors/stripe";
-import { unwrapBody } from "../../lib/payload";
-
-type HandlerContext = {
-  env: Env;
-};
+import { readEnvString, requireContextEnv, type EnvContext } from "../../lib/env";
+import { toScalarMetadata, unwrapObjectBody } from "../../lib/payload";
 
 type StripeCustomerUpsertResult = {
   ok: true;
@@ -15,40 +12,10 @@ type StripeCustomerUpsertResult = {
   created: boolean;
 };
 
-function asObject(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {} as Record<string, unknown>;
-  }
-  return value as Record<string, unknown>;
-}
-
-function envString(env: Env, key: string) {
-  const raw = (env as unknown as Record<string, unknown>)[key];
-  return typeof raw === "string" ? raw.trim() : "";
-}
-
-function toMetadata(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return undefined;
-  }
-
-  const out: Record<string, string> = {};
-  for (const [key, item] of Object.entries(value)) {
-    if (typeof item === "string" || typeof item === "number" || typeof item === "boolean") {
-      out[key] = String(item);
-    }
-  }
-  return Object.keys(out).length > 0 ? out : undefined;
-}
-
-export async function handle(requestPayload: unknown, traceId: string, context?: HandlerContext): Promise<StripeCustomerUpsertResult> {
-  const env = context?.env;
-  if (!env) {
-    throw new Error("Execution context missing env");
-  }
-
-  const body = asObject(unwrapBody(requestPayload));
-  const apiKey = envString(env, "STRIPE_API_KEY");
+export async function handle(requestPayload: unknown, traceId: string, context?: EnvContext<Env>): Promise<StripeCustomerUpsertResult> {
+  const env = requireContextEnv(context);
+  const body = unwrapObjectBody(requestPayload);
+  const apiKey = readEnvString(env, ["STRIPE_API_KEY"]);
   if (!apiKey) {
     throw new Error("STRIPE_API_KEY is required");
   }
@@ -67,7 +34,7 @@ export async function handle(requestPayload: unknown, traceId: string, context?:
     email,
     ...(name ? { name } : {}),
     ...(phone ? { phone } : {}),
-    metadata: toMetadata(body.metadata),
+    metadata: toScalarMetadata(body.metadata),
     idempotencyKey: explicitIdempotencyKey || `workerflow-${traceId}-stripe-customer`
   });
 

@@ -1,8 +1,5 @@
 import type { Env } from "../../../../../shared/types";
-
-type CronContext = {
-  env: Env;
-};
+import { readEnvString, requireContextEnv, type EnvContext } from "../../lib/env";
 
 type CleanupResult = {
   ok: true;
@@ -11,21 +8,10 @@ type CleanupResult = {
   retentionDays: number;
 };
 
-function envString(env: Env, key: string) {
-  const raw = (env as unknown as Record<string, unknown>)[key];
-  if (typeof raw !== "string") {
-    return "";
-  }
-  return raw.trim();
-}
+export async function handle(payload: unknown, _traceId: string, context?: EnvContext<Env>): Promise<CleanupResult> {
+  const env = requireContextEnv(context, "Cron execution context missing env");
 
-export async function handle(payload: unknown, _traceId: string, context?: CronContext): Promise<CleanupResult> {
-  const env = context?.env;
-  if (!env) {
-    throw new Error("Cron execution context missing env");
-  }
-
-  const secret = envString(env, "CLEANUP_SIGNING_SECRET");
+  const secret = readEnvString(env, ["CLEANUP_SIGNING_SECRET"]);
   if (!secret) {
     throw new Error("CLEANUP_SIGNING_SECRET is required");
   }
