@@ -277,6 +277,15 @@ function withWorkspaceClause(
   bindings.push(workspaceId);
 }
 
+function runRangeContext(url: URL, additionalClauses: string[] = []) {
+  const range = resolveTimeRange(url);
+  const workspaceId = readWorkspaceFilter(url);
+  const clauses = ["started_at >= ?1", "started_at <= ?2", ...additionalClauses];
+  const bindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(clauses, bindings, workspaceId);
+  return { range, workspaceId, clauses, bindings };
+}
+
 async function parseJsonBody(request: Request) {
   try {
     return (await request.json()) as Record<string, unknown>;
@@ -564,6 +573,26 @@ function formatDuration(ms: number | null) {
   const minutes = Math.floor(ms / 60_000);
   const seconds = Math.floor((ms % 60_000) / 1000);
   return `${minutes}m ${seconds}s`;
+}
+
+function mapRunRow(row: RunRow) {
+  return {
+    traceId: row.traceId,
+    workspaceId: row.workspaceId,
+    kind: row.kind,
+    routePath: row.routePath,
+    scheduleId: row.scheduleId,
+    status: row.status,
+    startedAt: row.startedAt,
+    finishedAt: row.finishedAt,
+    duration: formatDuration(durationMs(row.startedAt, row.finishedAt)),
+    output: row.output,
+    error: row.error
+  };
+}
+
+function countRowsByStatus(rows: Array<{ status: string; count: number | string }>) {
+  return new Map(rows.map((row) => [row.status, toCount(row.count)]));
 }
 
 function routePath(url: URL) {
@@ -3335,11 +3364,7 @@ function extractInlineDashboardScript(html: string) {
 }
 
 async function getSummary(url: URL, env: Env) {
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const runClauses = ["started_at >= ?1", "started_at <= ?2"];
-  const runBindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(runClauses, runBindings, workspaceId);
+  const { range, workspaceId, clauses: runClauses, bindings: runBindings } = runRangeContext(url);
   const deadLetterClauses = ["created_at >= ?1", "created_at <= ?2"];
   const deadLetterBindings: unknown[] = [range.since, range.until];
   withWorkspaceClause(deadLetterClauses, deadLetterBindings, workspaceId);
@@ -3377,10 +3402,7 @@ async function getSummary(url: URL, env: Env) {
     .bind(...deadLetterBindings)
     .first<{ count: number | string }>();
 
-  const countsByStatus = new Map<string, number>();
-  for (const row of statusRows.results) {
-    countsByStatus.set(row.status, toCount(row.count));
-  }
+  const countsByStatus = countRowsByStatus(statusRows.results);
 
   const totalRuns = [...countsByStatus.values()].reduce((acc, value) => acc + value, 0);
 
@@ -3402,11 +3424,7 @@ async function getSummary(url: URL, env: Env) {
 }
 
 async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[], schedulesManifest: ScheduleDefinition[]) {
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const runClauses = ["started_at >= ?1", "started_at <= ?2"];
-  const runBindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(runClauses, runBindings, workspaceId);
+  const { range, workspaceId, clauses: runClauses, bindings: runBindings } = runRangeContext(url);
 
   const routeRows = await env.DB
     .prepare(
@@ -3618,19 +3636,7 @@ async function getRuns(url: URL, env: Env) {
       kind: kindFilter ?? null,
       workspaceId
     },
-    runs: rows.results.map((row) => ({
-      traceId: row.traceId,
-      workspaceId: row.workspaceId,
-      kind: row.kind,
-      routePath: row.routePath,
-      scheduleId: row.scheduleId,
-      status: row.status,
-      startedAt: row.startedAt,
-      finishedAt: row.finishedAt,
-      duration: formatDuration(durationMs(row.startedAt, row.finishedAt)),
-      output: row.output,
-      error: row.error
-    }))
+    runs: rows.results.map(mapRunRow)
   });
 }
 
@@ -3709,19 +3715,7 @@ async function getRunDetail(traceId: string, env: Env) {
 
   return json({
     traceId,
-    run: {
-      traceId: run.traceId,
-      workspaceId: run.workspaceId,
-      kind: run.kind,
-      routePath: run.routePath,
-      scheduleId: run.scheduleId,
-      status: run.status,
-      startedAt: run.startedAt,
-      finishedAt: run.finishedAt,
-      duration: formatDuration(durationMs(run.startedAt, run.finishedAt)),
-      output: run.output,
-      error: run.error
-    },
+    run: mapRunRow(run),
     deadLetter: deadLetter
       ? {
           id: deadLetter.id,
@@ -4249,11 +4243,7 @@ async function enqueueManualScheduleRun(
 
 async function getTimeline(url: URL, env: Env) {
   const bucket = parseTimelineResolution(url.searchParams.get("bucket"));
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const clauses = ["started_at >= ?1", "started_at <= ?2"];
-  const bindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(clauses, bindings, workspaceId);
+  const { range, workspaceId, clauses, bindings } = runRangeContext(url);
 
   const bucketExpr = getTimelineBucketExpr(bucket);
 
@@ -4401,10 +4391,7 @@ async function getTimelineDetail(url: URL, env: Env) {
     .bind(...bindings, limit)
     .all<TimelineDetailRunRow>();
 
-  const countsByStatus = new Map<string, number>();
-  for (const row of statusRows.results) {
-    countsByStatus.set(row.status, toCount(row.count));
-  }
+  const countsByStatus = countRowsByStatus(statusRows.results);
   const succeeded = countsByStatus.get("succeeded") ?? 0;
   const failed = countsByStatus.get("failed") ?? 0;
   const running = (countsByStatus.get("started") ?? 0) + (countsByStatus.get("running") ?? 0);
@@ -4444,11 +4431,11 @@ async function getTimelineDetail(url: URL, env: Env) {
 
 async function getErrorClusters(url: URL, env: Env) {
   const limit = parseLimit(url.searchParams.get("limit"));
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const clauses = ["started_at >= ?1", "started_at <= ?2", "status = 'failed'", "error IS NOT NULL", "error != ''"];
-  const bindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(clauses, bindings, workspaceId);
+  const { range, workspaceId, clauses, bindings } = runRangeContext(url, [
+    "status = 'failed'",
+    "error IS NOT NULL",
+    "error != ''"
+  ]);
 
   const rows = await env.DB
     .prepare(

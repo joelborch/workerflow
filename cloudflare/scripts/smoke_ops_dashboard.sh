@@ -7,7 +7,7 @@ cd "$ROOT_DIR"
 CONFIG="workers/ops-dashboard/wrangler.smoke.jsonc"
 PORT="${PORT:-8791}"
 BASE_URL="http://127.0.0.1:${PORT}"
-TOKEN="${OPS_DASHBOARD_TOKEN:-smoke-test-token}"
+TOKEN="smoke-test-token"
 LOG_FILE="${TMPDIR:-/tmp}/ops-dashboard-dev.log"
 RESPONSE_FILE="${TMPDIR:-/tmp}/ops-dashboard-response.json"
 
