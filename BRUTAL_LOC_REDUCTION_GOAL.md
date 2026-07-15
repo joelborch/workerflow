@@ -26,7 +26,7 @@ Final verification passed:
 - `cloudflare/npm run smoke:handlers` with 27 of 27 cases passing;
 - `cloudflare/npm run smoke:ops` against local Wrangler/D1 state;
 - `pages-dashboard/npm run release:check` with lint, 22 tests, coverage, typecheck, and build;
-- Gitleaks 8.30.1 across all eight implementation commits, with no leaks found;
+- Gitleaks 8.30.1 across the complete implementation branch history, with no leaks found;
 - `git diff --check`, prompt byte hashes, and upstream/worktree checks.
 
 No Cloudflare Worker or Pages deployment, remote migration, production smoke test, binding/route/secret mutation, or production write was performed. The external service-registry URL sweep and browser visual pass were not run because no registry URL or visual code changed; the local registry contract tests and both dashboard builds remained green.
