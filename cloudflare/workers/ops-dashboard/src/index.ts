@@ -1,6 +1,8 @@
 import { recordAuditEvent } from "../../../shared/db";
-import { json } from "../../../shared/http";
+import { decodePathParameter, json } from "../../../shared/http";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { parseRouteRateLimits } from "../../../shared/runtime_config";
+import { timingSafeStringEqual } from "../../../shared/security";
 import { listRuntimeConnectorSecrets } from "../../../shared/connector_registry";
 import {
   listOAuthTokens,
@@ -275,32 +277,13 @@ function withWorkspaceClause(
   bindings.push(workspaceId);
 }
 
-function parseRouteRateLimitConfig(env: Env) {
-  const raw = env.API_ROUTE_LIMITS_JSON?.trim();
-  if (!raw) {
-    return {} as Record<string, { rpm: number; burst: number }>;
-  }
-  try {
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return {} as Record<string, { rpm: number; burst: number }>;
-    }
-    const output: Record<string, { rpm: number; burst: number }> = {};
-    for (const [routePath, value] of Object.entries(parsed)) {
-      if (!value || typeof value !== "object" || Array.isArray(value)) {
-        continue;
-      }
-      const candidate = value as Record<string, unknown>;
-      const rpm = typeof candidate.rpm === "number" ? Math.floor(candidate.rpm) : 0;
-      const burst = typeof candidate.burst === "number" ? Math.floor(candidate.burst) : 0;
-      if (rpm > 0) {
-        output[routePath] = { rpm, burst: Math.max(0, burst) };
-      }
-    }
-    return output;
-  } catch {
-    return {} as Record<string, { rpm: number; burst: number }>;
-  }
+function runRangeContext(url: URL, additionalClauses: string[] = []) {
+  const range = resolveTimeRange(url);
+  const workspaceId = readWorkspaceFilter(url);
+  const clauses = ["started_at >= ?1", "started_at <= ?2", ...additionalClauses];
+  const bindings: unknown[] = [range.since, range.until];
+  withWorkspaceClause(clauses, bindings, workspaceId);
+  return { range, workspaceId, clauses, bindings };
 }
 
 async function parseJsonBody(request: Request) {
@@ -435,17 +418,6 @@ function readAuthToken(request: Request) {
 }
 
 type DashboardAccess = "none" | "read" | "write";
-
-function timingSafeStringEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
-}
 
 function dashboardAccess(request: Request, env: Env): DashboardAccess {
   const writeToken = env.OPS_DASHBOARD_WRITE_TOKEN?.trim() || env.OPS_DASHBOARD_TOKEN?.trim() || "";
@@ -603,63 +575,53 @@ function formatDuration(ms: number | null) {
   return `${minutes}m ${seconds}s`;
 }
 
+function mapRunRow(row: RunRow) {
+  return {
+    traceId: row.traceId,
+    workspaceId: row.workspaceId,
+    kind: row.kind,
+    routePath: row.routePath,
+    scheduleId: row.scheduleId,
+    status: row.status,
+    startedAt: row.startedAt,
+    finishedAt: row.finishedAt,
+    duration: formatDuration(durationMs(row.startedAt, row.finishedAt)),
+    output: row.output,
+    error: row.error
+  };
+}
+
+function countRowsByStatus(rows: Array<{ status: string; count: number | string }>) {
+  return new Map(rows.map((row) => [row.status, toCount(row.count)]));
+}
+
 function routePath(url: URL) {
   const normalized = url.pathname.replace(/\/+$/, "");
   return normalized.length === 0 ? "/" : normalized;
 }
 
 function retryTraceIdFromPath(pathname: string) {
-  const match = pathname.match(/^\/api\/retry\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/retry\/([^/]+)$/);
 }
 
 function replayTraceIdFromPath(pathname: string) {
-  const match = pathname.match(/^\/api\/replay\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/replay\/([^/]+)$/);
 }
 
 function routePathFromDetailPath(pathname: string) {
-  const match = pathname.match(/^\/api\/route-detail\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/route-detail\/([^/]+)$/);
 }
 
 function scheduleIdFromDetailPath(pathname: string) {
-  const match = pathname.match(/^\/api\/cron-detail\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/cron-detail\/([^/]+)$/);
 }
 
 function scheduleIdFromRunPath(pathname: string) {
-  const match = pathname.match(/^\/api\/cron-run\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/cron-run\/([^/]+)$/);
 }
 
 function traceIdFromRunDetailPath(pathname: string) {
-  const match = pathname.match(/^\/api\/run-detail\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/run-detail\/([^/]+)$/);
 }
 
 function isQueueTask(value: unknown): value is QueueTask {
@@ -3402,11 +3364,7 @@ function extractInlineDashboardScript(html: string) {
 }
 
 async function getSummary(url: URL, env: Env) {
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const runClauses = ["started_at >= ?1", "started_at <= ?2"];
-  const runBindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(runClauses, runBindings, workspaceId);
+  const { range, workspaceId, clauses: runClauses, bindings: runBindings } = runRangeContext(url);
   const deadLetterClauses = ["created_at >= ?1", "created_at <= ?2"];
   const deadLetterBindings: unknown[] = [range.since, range.until];
   withWorkspaceClause(deadLetterClauses, deadLetterBindings, workspaceId);
@@ -3444,10 +3402,7 @@ async function getSummary(url: URL, env: Env) {
     .bind(...deadLetterBindings)
     .first<{ count: number | string }>();
 
-  const countsByStatus = new Map<string, number>();
-  for (const row of statusRows.results) {
-    countsByStatus.set(row.status, toCount(row.count));
-  }
+  const countsByStatus = countRowsByStatus(statusRows.results);
 
   const totalRuns = [...countsByStatus.values()].reduce((acc, value) => acc + value, 0);
 
@@ -3469,11 +3424,7 @@ async function getSummary(url: URL, env: Env) {
 }
 
 async function getCatalog(url: URL, env: Env, routesManifest: RouteDefinition[], schedulesManifest: ScheduleDefinition[]) {
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const runClauses = ["started_at >= ?1", "started_at <= ?2"];
-  const runBindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(runClauses, runBindings, workspaceId);
+  const { range, workspaceId, clauses: runClauses, bindings: runBindings } = runRangeContext(url);
 
   const routeRows = await env.DB
     .prepare(
@@ -3685,19 +3636,7 @@ async function getRuns(url: URL, env: Env) {
       kind: kindFilter ?? null,
       workspaceId
     },
-    runs: rows.results.map((row) => ({
-      traceId: row.traceId,
-      workspaceId: row.workspaceId,
-      kind: row.kind,
-      routePath: row.routePath,
-      scheduleId: row.scheduleId,
-      status: row.status,
-      startedAt: row.startedAt,
-      finishedAt: row.finishedAt,
-      duration: formatDuration(durationMs(row.startedAt, row.finishedAt)),
-      output: row.output,
-      error: row.error
-    }))
+    runs: rows.results.map(mapRunRow)
   });
 }
 
@@ -3776,19 +3715,7 @@ async function getRunDetail(traceId: string, env: Env) {
 
   return json({
     traceId,
-    run: {
-      traceId: run.traceId,
-      workspaceId: run.workspaceId,
-      kind: run.kind,
-      routePath: run.routePath,
-      scheduleId: run.scheduleId,
-      status: run.status,
-      startedAt: run.startedAt,
-      finishedAt: run.finishedAt,
-      duration: formatDuration(durationMs(run.startedAt, run.finishedAt)),
-      output: run.output,
-      error: run.error
-    },
+    run: mapRunRow(run),
     deadLetter: deadLetter
       ? {
           id: deadLetter.id,
@@ -4316,11 +4243,7 @@ async function enqueueManualScheduleRun(
 
 async function getTimeline(url: URL, env: Env) {
   const bucket = parseTimelineResolution(url.searchParams.get("bucket"));
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const clauses = ["started_at >= ?1", "started_at <= ?2"];
-  const bindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(clauses, bindings, workspaceId);
+  const { range, workspaceId, clauses, bindings } = runRangeContext(url);
 
   const bucketExpr = getTimelineBucketExpr(bucket);
 
@@ -4468,10 +4391,7 @@ async function getTimelineDetail(url: URL, env: Env) {
     .bind(...bindings, limit)
     .all<TimelineDetailRunRow>();
 
-  const countsByStatus = new Map<string, number>();
-  for (const row of statusRows.results) {
-    countsByStatus.set(row.status, toCount(row.count));
-  }
+  const countsByStatus = countRowsByStatus(statusRows.results);
   const succeeded = countsByStatus.get("succeeded") ?? 0;
   const failed = countsByStatus.get("failed") ?? 0;
   const running = (countsByStatus.get("started") ?? 0) + (countsByStatus.get("running") ?? 0);
@@ -4511,11 +4431,11 @@ async function getTimelineDetail(url: URL, env: Env) {
 
 async function getErrorClusters(url: URL, env: Env) {
   const limit = parseLimit(url.searchParams.get("limit"));
-  const range = resolveTimeRange(url);
-  const workspaceId = readWorkspaceFilter(url);
-  const clauses = ["started_at >= ?1", "started_at <= ?2", "status = 'failed'", "error IS NOT NULL", "error != ''"];
-  const bindings: unknown[] = [range.since, range.until];
-  withWorkspaceClause(clauses, bindings, workspaceId);
+  const { range, workspaceId, clauses, bindings } = runRangeContext(url, [
+    "status = 'failed'",
+    "error IS NOT NULL",
+    "error != ''"
+  ]);
 
   const rows = await env.DB
     .prepare(
@@ -4899,7 +4819,7 @@ export default {
         extensions: dashboardExtensions.length,
         rateLimits: {
           defaultPerMinute: Number.parseInt(env.API_RATE_LIMIT_PER_MINUTE || "0", 10) || 0,
-          byRoute: parseRouteRateLimitConfig(env)
+          byRoute: parseRouteRateLimits(env.API_ROUTE_LIMITS_JSON)
         }
       });
     }

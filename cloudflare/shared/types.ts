@@ -1,19 +1,12 @@
-export type RequestMode = "sync" | "async";
+import type {
+  CoreRouteDefinition,
+  CoreScheduleDefinition,
+  RequestMode as CoreRequestMode
+} from "../../packages/core-runtime/src/types";
 
-export type RouteDefinition = {
-  routePath: string;
-  requestType: RequestMode;
-  flowPath: string;
-  wrapBody: boolean;
-};
-
-export type ScheduleDefinition = {
-  id: string;
-  cron: string;
-  enabled: boolean;
-  target: string;
-  timeZone: string;
-};
+export type RequestMode = CoreRequestMode;
+export type RouteDefinition = CoreRouteDefinition;
+export type ScheduleDefinition = CoreScheduleDefinition;
 
 export type QueueTaskKind = "http_route" | "scheduled_job";
 

@@ -2,6 +2,9 @@ import { isDuplicateDelivery, markIdempotent } from "../../../shared/db";
 import { json, readTraceId } from "../../../shared/http";
 import { runtimeLog } from "../../../shared/logger";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { parseRouteRateLimits } from "../../../shared/runtime_config";
+import { isSecretsStoreBinding, timingSafeStringEqual } from "../../../shared/security";
+import { isRouteEnabled } from "../../../shared/task_enablement";
 import { validateRoutePayload } from "../../../shared/route_validation";
 import { isSyncHttpPassthrough } from "../../../shared/types";
 import type { Env, QueueTask } from "../../../shared/types";
@@ -14,24 +17,6 @@ const LEGACY_ALERT_MAX_BODY_CHARS = 4000;
 const DEFAULT_HMAC_MAX_SKEW_SECONDS = 300;
 
 const rateLimitWindow = new Map<string, { windowStartMs: number; count: number }>();
-
-type RouteRateLimitSetting = {
-  rpm: number;
-  burst: number;
-};
-
-type SecretsStoreBinding = {
-  get: () => Promise<string>;
-};
-
-function isSecretsStoreBinding(value: unknown): value is SecretsStoreBinding {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "get" in value &&
-    typeof (value as { get?: unknown }).get === "function"
-  );
-}
 
 function withCors(response: Response, request: Request) {
   const headers = new Headers(response.headers);
@@ -130,17 +115,6 @@ function readIngressToken(request: Request) {
   return authorization.trim();
 }
 
-function timingSafeStringEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
-}
-
 function isIngressAuthorized(request: Request, env: Env) {
   const requiredToken = env.API_INGRESS_TOKEN?.trim();
   const hmacSecret = env.API_HMAC_SECRET?.trim();
@@ -172,41 +146,6 @@ function envInt(env: Env, key: keyof Env) {
   return parsed;
 }
 
-function parseRouteRateLimits(env: Env) {
-  const raw = env.API_ROUTE_LIMITS_JSON?.trim();
-  if (!raw) {
-    return {} as Record<string, RouteRateLimitSetting>;
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    return {} as Record<string, RouteRateLimitSetting>;
-  }
-
-  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    return {} as Record<string, RouteRateLimitSetting>;
-  }
-
-  const output: Record<string, RouteRateLimitSetting> = {};
-  for (const [routePath, value] of Object.entries(parsed as Record<string, unknown>)) {
-    if (!value || typeof value !== "object" || Array.isArray(value)) {
-      continue;
-    }
-    const candidate = value as Record<string, unknown>;
-    const rpm = typeof candidate.rpm === "number" ? Math.floor(candidate.rpm) : 0;
-    const burst = typeof candidate.burst === "number" ? Math.floor(candidate.burst) : 0;
-    if (rpm > 0) {
-      output[routePath] = {
-        rpm,
-        burst: Math.max(0, burst)
-      };
-    }
-  }
-  return output;
-}
-
 function readClientKey(request: Request) {
   const forwarded = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for");
   if (forwarded && forwarded.trim().length > 0) {
@@ -216,7 +155,7 @@ function readClientKey(request: Request) {
 }
 
 function checkRateLimit(request: Request, env: Env, routePath?: string) {
-  const routeLimits = parseRouteRateLimits(env);
+  const routeLimits = parseRouteRateLimits(env.API_ROUTE_LIMITS_JSON);
   const routeSetting = routePath ? routeLimits[routePath] : undefined;
   const limitPerMinute = routeSetting?.rpm ?? envInt(env, "API_RATE_LIMIT_PER_MINUTE");
   const burst = routeSetting?.burst ?? 0;
@@ -393,37 +332,6 @@ async function alertLegacyEndpointHit(request: Request, url: URL, env: Env, trac
       error: error instanceof Error ? error.message : String(error)
     });
   }
-}
-
-function parseRouteSet(value: unknown) {
-  if (typeof value !== "string") {
-    return null;
-  }
-
-  const normalized = value
-    .split(",")
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-
-  if (normalized.length === 0) {
-    return null;
-  }
-
-  return new Set(normalized);
-}
-
-function isRouteEnabled(routePath: string, env: Env) {
-  const enabled = parseRouteSet(env.ENABLED_HTTP_ROUTES);
-  if (enabled && !enabled.has(routePath)) {
-    return false;
-  }
-
-  const disabled = parseRouteSet(env.DISABLED_HTTP_ROUTES);
-  if (disabled && disabled.has(routePath)) {
-    return false;
-  }
-
-  return true;
 }
 
 async function parseBody(request: Request) {

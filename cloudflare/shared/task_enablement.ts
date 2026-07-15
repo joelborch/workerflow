@@ -13,13 +13,8 @@ type RouteGateEnv = {
   DISABLED_HTTP_ROUTES?: string;
 };
 
-export function parseRouteSet(value: unknown) {
-  return parseRouteSetCore(value);
-}
-
-export function isRouteEnabled(routePath: string, env: RouteGateEnv) {
-  return isRouteEnabledCore(routePath, env);
-}
+export const parseRouteSet = parseRouteSetCore;
+export const isRouteEnabled = isRouteEnabledCore;
 
 type ReplayManifestOptions = {
   routes?: RouteDefinition[];

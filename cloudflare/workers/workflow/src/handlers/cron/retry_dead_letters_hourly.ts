@@ -5,13 +5,8 @@ type RetryResult = {
   dryRun: boolean;
 };
 
-type RetryPayload = {
-  maxRetries?: unknown;
-  dryRun?: unknown;
-};
-
 export function handle(payload: unknown): RetryResult {
-  const value = payload && typeof payload === "object" ? (payload as RetryPayload) : {};
+  const value = asRecord(payload);
   const maxRetriesRaw = Number(value.maxRetries);
   const maxRetries = Number.isFinite(maxRetriesRaw) && maxRetriesRaw > 0 ? Math.floor(maxRetriesRaw) : 50;
 
@@ -22,3 +17,4 @@ export function handle(payload: unknown): RetryResult {
     dryRun: value.dryRun === true
   };
 }
+import { asRecord } from "../../lib/payload";

@@ -1,4 +1,5 @@
 import { WorkflowHandlerError } from "../lib/errors";
+import { asObject } from "../lib/payload";
 import { fetchWithRetry } from "./http_retry";
 
 type HubspotRequestArgs = {
@@ -48,13 +49,6 @@ type HubspotDealUpsertArgs = {
 type HubspotObjectType = "contacts" | "deals";
 
 const HUBSPOT_API_BASE = "https://api.hubapi.com";
-
-function asObject(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {} as Record<string, unknown>;
-  }
-  return value as Record<string, unknown>;
-}
 
 function asText(value: unknown) {
   return typeof value === "string" ? value : "";

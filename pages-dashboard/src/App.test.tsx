@@ -40,6 +40,7 @@ function renderApp() {
 
 describe("App dashboard", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     window.localStorage.clear();
     window.history.replaceState(null, "", "/");
 
@@ -285,6 +286,100 @@ describe("App dashboard", () => {
       range?: string;
     };
     expect(saved.range).toBe("1h");
+  });
+
+  it("gives URL filters precedence over storage and clamps numeric bounds", async () => {
+    window.localStorage.setItem(
+      "workerflow.ops.filters.v1",
+      JSON.stringify({
+        range: "7d",
+        bucket: "hour",
+        status: "succeeded",
+        kind: "scheduled_job",
+        workspaceId: "saved-team",
+        routePath: "/hooks/saved",
+        scheduleId: "digest_daily",
+        search: "saved",
+        limit: 20,
+        refreshSeconds: 15
+      })
+    );
+    window.history.replaceState(
+      null,
+      "",
+      "/?range=1h&bucket=minute&workspace=url-team&routePath=%2Fhooks%2Furl&limit=999&refresh=999"
+    );
+
+    renderApp();
+
+    expect((await screen.findByLabelText("Time Window") as HTMLSelectElement).value).toBe("1h");
+    expect((screen.getByLabelText("Timeline Bucket") as HTMLSelectElement).value).toBe("minute");
+    expect((screen.getByLabelText("Workspace") as HTMLInputElement).value).toBe("url-team");
+    expect((screen.getByLabelText("Route Path") as HTMLInputElement).value).toBe("/hooks/url");
+    expect((screen.getByLabelText("API Limit") as HTMLInputElement).value).toBe("250");
+
+    await waitFor(() => {
+      expect(mockedApi.loadRuns).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          workspaceId: "url-team",
+          routePath: "/hooks/url",
+          limit: 250
+        })
+      );
+    });
+
+    const saved = JSON.parse(window.localStorage.getItem("workerflow.ops.filters.v1") || "{}") as {
+      range?: string;
+      workspaceId?: string;
+      routePath?: string;
+      limit?: number;
+      refreshSeconds?: number;
+    };
+    expect(saved).toMatchObject({
+      range: "1h",
+      workspaceId: "url-team",
+      routePath: "/hooks/url",
+      limit: 250,
+      refreshSeconds: 300
+    });
+    expect(new URLSearchParams(window.location.search).get("refresh")).toBe("300");
+  });
+
+  it("uses URL defaults instead of leaking saved values when any URL filter is present", async () => {
+    window.localStorage.setItem(
+      "workerflow.ops.filters.v1",
+      JSON.stringify({
+        range: "7d",
+        bucket: "minute",
+        status: "succeeded",
+        kind: "http_route",
+        workspaceId: "saved-team",
+        routePath: "/hooks/saved",
+        scheduleId: "",
+        search: "saved",
+        limit: 20,
+        refreshSeconds: 15
+      })
+    );
+    window.history.replaceState(null, "", "/?status=failed&range=invalid&limit=-1&refresh=0");
+
+    renderApp();
+
+    expect((await screen.findByLabelText("Time Window") as HTMLSelectElement).value).toBe("24h");
+    expect((screen.getByLabelText("Timeline Bucket") as HTMLSelectElement).value).toBe("hour");
+    expect((screen.getByLabelText("Status") as HTMLSelectElement).value).toBe("failed");
+    expect((screen.getByLabelText("Workspace") as HTMLInputElement).value).toBe("");
+    expect((screen.getByLabelText("Route Path") as HTMLInputElement).value).toBe("");
+    expect((screen.getByLabelText("API Limit") as HTMLInputElement).value).toBe("80");
+    expect((screen.getByLabelText("Refresh (sec)") as HTMLSelectElement).value).toBe("30");
+
+    await waitFor(() => {
+      expect(mockedApi.loadRuns).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({ status: "failed", workspaceId: undefined, routePath: undefined, limit: 80 })
+      );
+    });
   });
 
   it("compares two runs side by side", async () => {
