@@ -28,3 +28,8 @@ export function readTraceId(request: Request) {
   }
   return crypto.randomUUID();
 }
+
+export function decodePathParameter(pathname: string, pattern: RegExp) {
+  const match = pathname.match(pattern);
+  return match?.[1] ? decodeURIComponent(match[1]) : undefined;
+}

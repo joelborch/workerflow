@@ -1,6 +1,8 @@
 import { recordAuditEvent } from "../../../shared/db";
-import { json } from "../../../shared/http";
+import { decodePathParameter, json } from "../../../shared/http";
 import { resolveRuntimeManifest } from "../../../shared/manifest";
+import { parseRouteRateLimits } from "../../../shared/runtime_config";
+import { timingSafeStringEqual } from "../../../shared/security";
 import { listRuntimeConnectorSecrets } from "../../../shared/connector_registry";
 import {
   listOAuthTokens,
@@ -275,34 +277,6 @@ function withWorkspaceClause(
   bindings.push(workspaceId);
 }
 
-function parseRouteRateLimitConfig(env: Env) {
-  const raw = env.API_ROUTE_LIMITS_JSON?.trim();
-  if (!raw) {
-    return {} as Record<string, { rpm: number; burst: number }>;
-  }
-  try {
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return {} as Record<string, { rpm: number; burst: number }>;
-    }
-    const output: Record<string, { rpm: number; burst: number }> = {};
-    for (const [routePath, value] of Object.entries(parsed)) {
-      if (!value || typeof value !== "object" || Array.isArray(value)) {
-        continue;
-      }
-      const candidate = value as Record<string, unknown>;
-      const rpm = typeof candidate.rpm === "number" ? Math.floor(candidate.rpm) : 0;
-      const burst = typeof candidate.burst === "number" ? Math.floor(candidate.burst) : 0;
-      if (rpm > 0) {
-        output[routePath] = { rpm, burst: Math.max(0, burst) };
-      }
-    }
-    return output;
-  } catch {
-    return {} as Record<string, { rpm: number; burst: number }>;
-  }
-}
-
 async function parseJsonBody(request: Request) {
   try {
     return (await request.json()) as Record<string, unknown>;
@@ -435,17 +409,6 @@ function readAuthToken(request: Request) {
 }
 
 type DashboardAccess = "none" | "read" | "write";
-
-function timingSafeStringEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
-}
 
 function dashboardAccess(request: Request, env: Env): DashboardAccess {
   const writeToken = env.OPS_DASHBOARD_WRITE_TOKEN?.trim() || env.OPS_DASHBOARD_TOKEN?.trim() || "";
@@ -609,57 +572,27 @@ function routePath(url: URL) {
 }
 
 function retryTraceIdFromPath(pathname: string) {
-  const match = pathname.match(/^\/api\/retry\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/retry\/([^/]+)$/);
 }
 
 function replayTraceIdFromPath(pathname: string) {
-  const match = pathname.match(/^\/api\/replay\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/replay\/([^/]+)$/);
 }
 
 function routePathFromDetailPath(pathname: string) {
-  const match = pathname.match(/^\/api\/route-detail\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/route-detail\/([^/]+)$/);
 }
 
 function scheduleIdFromDetailPath(pathname: string) {
-  const match = pathname.match(/^\/api\/cron-detail\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/cron-detail\/([^/]+)$/);
 }
 
 function scheduleIdFromRunPath(pathname: string) {
-  const match = pathname.match(/^\/api\/cron-run\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/cron-run\/([^/]+)$/);
 }
 
 function traceIdFromRunDetailPath(pathname: string) {
-  const match = pathname.match(/^\/api\/run-detail\/([^/]+)$/);
-  if (!match?.[1]) {
-    return undefined;
-  }
-
-  return decodeURIComponent(match[1]);
+  return decodePathParameter(pathname, /^\/api\/run-detail\/([^/]+)$/);
 }
 
 function isQueueTask(value: unknown): value is QueueTask {
@@ -4899,7 +4832,7 @@ export default {
         extensions: dashboardExtensions.length,
         rateLimits: {
           defaultPerMinute: Number.parseInt(env.API_RATE_LIMIT_PER_MINUTE || "0", 10) || 0,
-          byRoute: parseRouteRateLimitConfig(env)
+          byRoute: parseRouteRateLimits(env.API_ROUTE_LIMITS_JSON)
         }
       });
     }
