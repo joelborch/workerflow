@@ -49,6 +49,7 @@
     "@babel/core": "7.29.6",
     "esbuild": "0.28.1",
     "flatted": "^3.4.1",
+    "postcss": "^8.5.23",
     "undici": "^7.29.0"
   }
 }
