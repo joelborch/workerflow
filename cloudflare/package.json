@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.3.0",
   "description": "WorkerFlow v1 runtime for Cloudflare-hosted automation orchestration",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "init": "node scripts/init_workerflow_project.mjs",
     "doctor": "node scripts/doctor.mjs",
