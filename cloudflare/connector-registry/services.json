@@ -1811,8 +1811,8 @@
       "rank": 83,
       "connectorName": "Amazon Seller Central",
       "officialVendorName": "Amazon",
-      "officialApiDocsUrl": "https://developer.amazonservices.com/documentation",
-      "bestBaseLink": "https://developer.amazonservices.com/documentation",
+      "officialApiDocsUrl": "https://developer-docs.amazon.com/sp-api/docs/welcome",
+      "bestBaseLink": "https://developer-docs.amazon.com/sp-api/docs/welcome",
       "bestBaseLinkScore": 82,
       "bestBaseLinkReason": "Official API docs landing page; central navigation toward auth/reference.",
       "authType": "oauth2",
@@ -1826,7 +1826,7 @@
       "confidence": "Medium",
       "notes": "rank_composite_from_category_lists",
       "sources": [
-        "https://developer.amazonservices.com/documentation"
+        "https://developer-docs.amazon.com/sp-api/docs/welcome"
       ]
     },
     {

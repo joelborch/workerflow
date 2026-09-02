@@ -40,8 +40,8 @@ function fail(message) {
 
 function checkNode() {
   const [major] = process.versions.node.split(".").map((part) => Number.parseInt(part, 10));
-  if (!Number.isFinite(major) || major < 20) {
-    fail(`Node.js >=20 is required (found ${process.versions.node})`);
+  if (!Number.isFinite(major) || major < 22) {
+    fail(`Node.js >=22 is required (found ${process.versions.node})`);
     return;
   }
   ok(`Node.js ${process.versions.node}`);
