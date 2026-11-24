@@ -16,8 +16,8 @@ GOOGLE_ADMIN_USER=replace-me
 # SCHEDULES_CONFIG_JSON=[{"id":"example_daily","cron":"0 0 * * *","enabled":true,"target":"f/example/daily","timeZone":"UTC"}]
 
 # API route gating (optional; workers/api)
-# ENABLED_HTTP_ROUTES=example_email_forwarding,example_pdf_flow,example_sheets_webhook
-# DISABLED_HTTP_ROUTES=example_qa_webhook
+# ENABLED_HTTP_ROUTES=chat_notify,lead_normalizer,webhook_fanout
+# DISABLED_HTTP_ROUTES=webhook_echo
 
 # Shared integrations
 GSHEETS_TOKEN=replace-me
