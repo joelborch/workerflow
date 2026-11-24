@@ -97,9 +97,8 @@ wait_for_server
 health_json="$(curl -fsS "$BASE_URL/health")"
 echo "$health_json" | jq -e '.ok == true and .worker == "ops-dashboard"' >/dev/null
 
-dashboard_html="$(curl -fsS "$BASE_URL/")"
-printf '%s' "$dashboard_html" | rg -q "WorkerFlow Cloudflare Ops Deck"
-printf '%s' "$dashboard_html" | rg -q "Summary"
+root_json="$(curl -fsS "$BASE_URL/")"
+echo "$root_json" | jq -e '.service == "workerflow-ops-dashboard" and .mode == "headless"' >/dev/null
 
 unauth_status="$(curl -sS -o "$RESPONSE_FILE" -w "%{http_code}" "$BASE_URL/api/summary")"
 if [[ "$unauth_status" == "401" ]]; then

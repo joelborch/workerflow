@@ -18,7 +18,9 @@ Auth headers:
 
 ## Core Endpoints
 
+- `GET /` (headless service descriptor and endpoint index)
 - `GET /health`
+- `GET /api/meta`
 - `GET /api/summary`
 - `GET /api/catalog`
 - `GET /api/runs`
@@ -30,18 +32,10 @@ Auth headers:
 - `GET /api/route-detail/{routePath}`
 - `GET /api/cron-detail/{scheduleId}`
 - `POST /api/cron-run/{scheduleId}`
-- `GET /api/templates`
 - `GET /api/secrets-health`
 - `GET /api/oauth-tokens`
 - `POST /api/oauth-tokens/upsert`
 - `GET /api/audit-events`
-
-## Extension-Friendly Endpoints
-
-- `GET /api/meta`
-- `GET /api/extensions`
-
-`/api/extensions` is driven by `OPS_DASHBOARD_EXTENSIONS_JSON`.
 
 ## Workspace Filter
 

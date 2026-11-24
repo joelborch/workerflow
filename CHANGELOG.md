@@ -4,7 +4,14 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
-No entries yet.
+### Removed
+
+- `/api/templates` and `/api/extensions` endpoints from `cloudflare/workers/ops-dashboard` (along with the embedded dashboard HTML, `/app.js`, `/api/app.js`, and `/favicon.*` asset routes, turning `GET /` into headless JSON service metadata)
+- `pages-dashboard/` frontend, `packages/handler-sdk`, `packages/recipes-example`, `packages/recipes-private`, static `cloudflare/connector-registry/`, `examples/openapi-sdk-ts/`, dead workflow connectors (`google_auth`, `clickup`, `google_ai`, `google_chat`), and redundant docs/bench scripts
+
+### Changed
+
+- Consolidated the standalone `cloudflare/scripts/test_*.ts` runners onto `node:test` under `cloudflare/tests/*.test.ts` (including the prompt-integrity hash check) backed by shared pure-JS helpers in `cloudflare/tests/helpers/{d1,connector_harness}.ts`
 
 ## [0.3.0] - 2026-03-04
 

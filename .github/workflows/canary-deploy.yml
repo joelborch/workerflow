@@ -41,28 +41,11 @@ jobs:
       - run: npm ci
       - run: npm run release:check
 
-  dashboard-release-check:
-    name: dashboard-release-check
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: pages-dashboard
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22.22.2
-          cache: npm
-          cache-dependency-path: pages-dashboard/package-lock.json
-      - run: npm ci
-      - run: npm run release:check
-
   deploy-canary:
     name: deploy-canary
     runs-on: ubuntu-latest
     needs:
       - release-checks
-      - dashboard-release-check
     defaults:
       run:
         working-directory: cloudflare

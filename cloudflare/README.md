@@ -1,8 +1,6 @@
 # WorkerFlow Cloudflare Runtime
 
-Cloudflare-native automation runtime for WorkerFlow.
-
-This directory contains the deployable workers, shared contracts, migration files, and runtime checks that power an event-driven automation platform without requiring a VPS.
+Headless Cloudflare-native automation runtime for WorkerFlow.
 
 ## Runtime Components
 
@@ -10,55 +8,15 @@ This directory contains the deployable workers, shared contracts, migration file
 - `workers/workflow`: route/schedule dispatch and handler execution
 - `workers/queue-consumer`: async queue consumption and workflow invocation
 - `workers/scheduler`: cron producer for scheduled jobs
-- `workers/ops-dashboard`: run/dead-letter/retry and operational APIs
-- `shared/`: route/schedule contracts + helper utilities
+- `workers/ops-dashboard`: headless run, dead-letter, replay, and operational JSON APIs
+- `shared/`: route/schedule contracts and helper utilities
 - `migrations/d1/`: D1 schema migrations
-
-## Starter Catalog
-
-Default manifest includes:
-
-- 21 HTTP routes
-- 6 schedules
-
-See [../docs/ENTRYPOINTS.md](../docs/ENTRYPOINTS.md).
-
-## Local Setup
-
-```bash
-cd cloudflare
-npm install
-npm run init
-npm run doctor
-npm run quickstart:5min
-npm run preflight
-```
 
 ## Validation Gate
 
 ```bash
+cd cloudflare
 npm run release:check
-```
-
-## Local Development
-
-```bash
-npm run dev:workflow
-npm run dev:queue
-npm run dev:api
-npm run dev:scheduler
-npm run dev:ops
-```
-
-## Deploy
-
-```bash
-npm run preflight:strict
-npm run deploy:workflow
-npm run deploy:queue
-npm run deploy:api
-npm run deploy:scheduler
-npm run deploy:ops
 ```
 
 ## Key Docs
@@ -66,11 +24,8 @@ npm run deploy:ops
 - [docs/SETUP.md](docs/SETUP.md)
 - [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
 - [docs/OPS_DASHBOARD_API.md](docs/OPS_DASHBOARD_API.md)
-- [../docs/CONNECTOR_CATALOG.md](../docs/CONNECTOR_CATALOG.md)
-- [../docs/AI_CONNECTOR_ONRAMP.md](../docs/AI_CONNECTOR_ONRAMP.md)
-- [../docs/SERVICE_API_INDEX.md](../docs/SERVICE_API_INDEX.md)
-- [../docs/SERVICE_API_INDEX.html](../docs/SERVICE_API_INDEX.html)
-- [../docs/GOVERNANCE.md](../docs/GOVERNANCE.md)
-- [../docs/SECRET_SCANNING_POLICY.md](../docs/SECRET_SCANNING_POLICY.md)
+- [../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
+- [../docs/CLOUDFLARE_SETUP_RUNBOOK.md](../docs/CLOUDFLARE_SETUP_RUNBOOK.md)
 - [../docs/SECURITY_MODEL.md](../docs/SECURITY_MODEL.md)
-- [../docs/RELEASE_PROCESS.md](../docs/RELEASE_PROCESS.md)
+- [../docs/CANARY_DEPLOY_RUNBOOK.md](../docs/CANARY_DEPLOY_RUNBOOK.md)
+- [../docs/MIGRATION_ROLLBACK_RUNBOOK.md](../docs/MIGRATION_ROLLBACK_RUNBOOK.md)

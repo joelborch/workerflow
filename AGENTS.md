@@ -4,50 +4,20 @@ This file defines how coding agents should work in this repository.
 
 ## Mission
 
-Maintain and extend WorkerFlow as a Cloudflare-native automation runtime that is safe for public OSS use, easy to deploy, and easy for other agents to operate.
+Maintain and extend WorkerFlow as a headless, Cloudflare-native automation runtime that is safe for public OSS use, easy to deploy, and easy to verify.
 
 ## Repo Layout
 
-- `cloudflare/`: runtime workers, contracts, migrations, deploy scripts
-- `pages-dashboard/`: Cloudflare Pages dashboard frontend
-- `docs/`: runbooks, architecture, security, release process
-- `packages/`: extracted modules (`core-runtime`, `handler-sdk`, recipes)
+- `cloudflare/`: headless runtime workers (`api`, `workflow`, `queue-consumer`, `scheduler`, `ops-dashboard`), contracts, migrations, tests, and deploy scripts
+- `docs/`: core setup, architecture, security, canary, and rollback runbooks
+- `packages/`: `core-runtime` shared primitives
 - `infra/`: Cloudflare resource templates/spec
-
-## Standard Agent Workflow
-
-1. Read scope docs first:
-   - `README.md`
-   - `docs/ENTRYPOINTS.md`
-   - `docs/SECURITY_MODEL.md`
-   - `docs/AI_CONNECTOR_ONRAMP.md` (for connector work)
-2. Implement minimal safe change.
-3. Run relevant quality gates.
-4. Verify no public secret exposure.
-5. Commit with focused message.
 
 ## Required Validation
 
-### Runtime changes (`cloudflare/`)
-
 ```bash
 cd cloudflare
 npm run release:check
-```
-
-### Dashboard changes (`pages-dashboard/`)
-
-```bash
-cd pages-dashboard
-npm run release:check
-```
-
-### Connector registry/docs changes
-
-```bash
-cd cloudflare
-npm run test:connector-registry
-npm run test:service-registry
 ```
 
 ## Deploy Order (Cloudflare Runtime)
@@ -67,30 +37,12 @@ npm run deploy:ops
 - Keep public config files placeholder-based (`REPLACE_WITH_*`).
 - Use `wrangler secret put` for sensitive values.
 - Validate docs/examples do not include private domains or project-specific credentials.
-- Follow `docs/PUBLIC_EXPORT_CHECKLIST.md` before publishing any shared branch.
-
-## Documentation Rules
-
-- Keep language aligned with `docs/BRAND_STANDARD.md`.
-- Keep setup commands copy/paste safe.
-- Update docs in the same PR when behavior changes.
 
 ## Private/Public Split Expectations
 
 - Public repo: generic runtime/platform capabilities only.
 - Private overlay repo: business-specific handlers, connectors, customer workflows.
 - If moving changes from private to public, sanitize first and retain only reusable components.
-
-## Commit Conventions
-
-Use clear prefixes:
-
-- `feat:` new capability
-- `fix:` behavior correction
-- `docs:` documentation-only changes
-- `chore:` maintenance/refactor/tooling
-
-Prefer small, reviewable commits with explicit impact.
 
 ## Production operation boundary
 

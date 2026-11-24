@@ -31,5 +31,5 @@ Security reports are especially important for:
 
 - CodeQL workflow: `.github/workflows/codeql.yml`
 - Secret scanning workflow: `.github/workflows/secret-scan.yml`
-- Secret scanning policy: `docs/SECRET_SCANNING_POLICY.md`
-- Dependency cadence: `.github/dependabot.yml` (weekly for runtime, dashboard, and GitHub Actions)
+- Security model: `docs/SECURITY_MODEL.md`
+- Dependency cadence: `.github/dependabot.yml` (weekly for runtime and GitHub Actions)

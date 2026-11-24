@@ -10,7 +10,7 @@ body:
       label: Area
       options:
         - cloudflare-runtime
-        - pages-dashboard
+        - ops-dashboard
         - connectors
         - docs
         - ci-cd

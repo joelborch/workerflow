@@ -77,7 +77,7 @@ body:
     id: test_plan
     attributes:
       label: Test plan
-      description: Which tests will be added/updated (`test_handler_fixtures.ts`, `test_connector_harness.ts`, etc.)?
+      description: Which tests will be added/updated (`cloudflare/tests/*.test.ts`)?
     validations:
       required: true
 
@@ -86,7 +86,7 @@ body:
     attributes:
       label: Done criteria acknowledgement
       options:
-        - label: I will include route contract updates (`shared/routes.ts`, `docs/ENTRYPOINTS.md`)
+        - label: I will include route contract updates (`shared/routes.ts`)
           required: true
         - label: I will include connector + handler wiring updates
           required: true

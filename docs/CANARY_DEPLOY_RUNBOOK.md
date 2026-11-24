@@ -26,17 +26,16 @@ Optional but recommended when dispatching:
 ## Execution Flow
 
 1. runtime release checks (`cloudflare/npm run release:check`)
-2. dashboard release checks (`pages-dashboard/npm run release:check`)
-3. required deploy secret validation
-4. canary API worker deploy (`wrangler deploy --name <canary_worker_name>`)
-5. optional canary health URL probe
-6. optional full rollout deploy in safe order:
+2. required deploy secret validation
+3. canary API worker deploy (`wrangler deploy --name <canary_worker_name>`)
+4. optional canary health URL probe
+5. optional full rollout deploy in safe order:
    - workflow
    - queue consumer
    - api
    - scheduler
    - ops dashboard
-7. optional production health URL probe
+6. optional production health URL probe
 
 ## Rollback
 

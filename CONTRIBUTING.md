@@ -1,10 +1,12 @@
 # Contributing
 
-Thanks for contributing to WorkerFlow, a Cloudflare-native automation runtime.
+Thanks for contributing to WorkerFlow, a headless Cloudflare-native automation runtime.
 
-For first-time contributors, start with:
+For setup and architecture details, start with:
 
-- `docs/CONTRIBUTOR_QUICKSTART.md`
+- `README.md`
+- `cloudflare/docs/SETUP.md`
+- `docs/ARCHITECTURE.md`
 
 ## Development Setup
 
@@ -12,8 +14,6 @@ For first-time contributors, start with:
    - `cd cloudflare && npm install`
 2. run preflight checks:
    - `cd cloudflare && npm run preflight`
-3. for dashboard changes, install dashboard dependencies:
-   - `cd pages-dashboard && npm install`
 
 ## Before Opening a PR
 
@@ -24,27 +24,18 @@ cd cloudflare
 npm run release:check
 ```
 
-For dashboard changes, also run:
-
-```bash
-cd pages-dashboard
-npm run release:check
-```
-
 ## Pull Request Guidelines
 
 - keep changes scoped and focused
 - avoid unrelated refactors in the same PR
-- add or update tests for behavior changes
+- add or update tests under `cloudflare/tests/` for behavior changes
 - link the related issue in PR description (`Closes #...`)
 - run `npm run migrations:guard:strict` in `cloudflare/` for migration safety changes
 - document new environment variables in `cloudflare/docs/ENVIRONMENT.md`
-- align new docs language with `docs/BRAND_STANDARD.md`
 
 ## Breaking Changes
 
 If a change intentionally breaks route or schedule compatibility:
 
 1. update `cloudflare/contracts/routes.v1.json` and/or `cloudflare/contracts/schedules.v1.json`
-2. call out the breaking change explicitly in the PR description
-3. update `docs/UPGRADE_GUIDE.md`
+2. call out the breaking change explicitly in the PR description and `CHANGELOG.md`

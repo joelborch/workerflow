@@ -119,29 +119,6 @@ function checkWranglerPlaceholders() {
   warn(`placeholder IDs remain in wrangler configs: ${pending.join(", ")}`);
 }
 
-function checkServiceRegistry() {
-  const relPath = "connector-registry/services.json";
-  const absPath = join(root, relPath);
-
-  if (!existsSync(absPath)) {
-    fail(`missing service registry: ${relPath}`);
-    return;
-  }
-
-  try {
-    const parsed = JSON.parse(readFileSync(absPath, "utf8"));
-    const count = Array.isArray(parsed.services) ? parsed.services.length : 0;
-    if (count === 0) {
-      fail("service registry contains no services");
-      return;
-    }
-    ok(`service registry loaded (${count} services)`);
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
-    fail(`service registry JSON is invalid: ${reason}`);
-  }
-}
-
 function main() {
   console.log("WorkerFlow Doctor (cloudflare)");
   checkNode();
@@ -149,7 +126,6 @@ function main() {
   checkWrangler();
   checkInitArtifacts();
   checkWranglerPlaceholders();
-  checkServiceRegistry();
 
   console.log("\nSummary");
   console.log(`- failures: ${failures.length}`);

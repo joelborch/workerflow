@@ -16,8 +16,8 @@ npm run doctor
 echo "[4/6] Running migration contract guard"
 npm run migrations:guard:strict
 
-echo "[5/6] Validating route payload contracts"
-npm run test:route-validation
+echo "[5/6] Running runtime test suite"
+npm test
 
 echo "[6/6] Running local handler smoke test"
 npm run smoke:handlers
